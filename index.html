@@ -14,14 +14,18 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Port Energy">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+<link rel="dns-prefetch" href="https://n-0-script.googleusercontent.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <script src="config.js"></script>
 <style>
   :root { --navy:#121B54; --magenta:#E8127C; }
   html, body { margin:0; height:100%; background:var(--navy); font-family: Arial, Helvetica, sans-serif; overflow:hidden; }
-  #erp { position:fixed; inset:0; width:100%; height:100%; border:0; background:#F3F5FC; opacity:0; transition:opacity .5s; }
+  #erp { position:fixed; inset:0; width:100%; height:100%; border:0; background:#121B54; opacity:0; transition:opacity .3s; }
   #erp.ready { opacity:1; }
   #splash { position:fixed; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; color:#fff; text-align:center; padding:24px;
-    background: radial-gradient(900px 600px at 10% 5%, #2A3FC4 0%, transparent 60%), radial-gradient(700px 500px at 95% 95%, #8A1060 0%, transparent 55%), linear-gradient(160deg,#0A1033,#121B54 50%,#0B0F2E); transition:opacity .5s; z-index:2; }
+    background: radial-gradient(900px 600px at 10% 5%, #2A3FC4 0%, transparent 60%), radial-gradient(700px 500px at 95% 95%, #8A1060 0%, transparent 55%), linear-gradient(160deg,#0A1033,#121B54 50%,#0B0F2E); transition:opacity .3s; z-index:2; }
   #splash.hide { opacity:0; pointer-events:none; }
   .logo { background:#fff; border-radius:18px; padding:12px 18px; box-shadow:0 20px 40px -18px rgba(0,0,0,.6); }
   .logo img { height:54px; display:block; }
@@ -58,8 +62,11 @@
     if (!navigator.onLine) return fail('No internet connection. Connect to mobile data or Wi-Fi and tap Try again.');
     f.src = url;
     var t = setTimeout(function () { if (!f.classList.contains('ready')) msg.textContent = 'Slow network… still loading.'; }, 9000);
-    f.onload = function () { clearTimeout(t); f.classList.add('ready'); sp.classList.add('hide'); };
+    // keep our splash until the ERP itself says it is ready (one smooth screen, like a native app)
+    f.onload = function () { clearTimeout(t); setTimeout(show, 6000); };
   }
+  function show() { if (f.classList.contains('ready')) return; f.classList.add('ready'); sp.classList.add('hide'); }
+  window.addEventListener('message', function (e) { if (e.data === 'pe-ready') show(); });
   retry.onclick = load;
   window.addEventListener('online', function () { if (!f.classList.contains('ready')) load(); });
   // Install button (Android Chrome / Edge)

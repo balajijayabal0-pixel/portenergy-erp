@@ -1,3 +1,1 @@
-// ===== ONLY CHANGE THIS LINE =====
-// Paste your Apps Script Web App URL (Deploy > Manage deployments > Web app URL, ends with /exec)
-window.ERP_URL = 'PASTE_YOUR_WEB_APP_URL_HERE';
+window.ERP_URL = 'https://script.google.com/macros/s/AKfycbwpyBEr2Qk1r3oIQ1PJpGPNhPN6pNwZ37iG17ofaqbVDjZnFALEHgLwufxr0aB8n1EK/exec';

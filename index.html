@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<!-- © 2026 Port Energy Private Limited. All rights reserved. Proprietary and confidential. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Port Energy ERP</title>
+<meta name="theme-color" content="#121B54">
+<meta name="description" content="Port Energy Private Limited ERP">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/favicon.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Port Energy">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<script src="config.js"></script>
+<style>
+  :root { --navy:#121B54; --magenta:#E8127C; }
+  html, body { margin:0; height:100%; background:var(--navy); font-family: Arial, Helvetica, sans-serif; overflow:hidden; }
+  #erp { position:fixed; inset:0; width:100%; height:100%; border:0; background:#F3F5FC; opacity:0; transition:opacity .5s; }
+  #erp.ready { opacity:1; }
+  #splash { position:fixed; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; color:#fff; text-align:center; padding:24px;
+    background: radial-gradient(900px 600px at 10% 5%, #2A3FC4 0%, transparent 60%), radial-gradient(700px 500px at 95% 95%, #8A1060 0%, transparent 55%), linear-gradient(160deg,#0A1033,#121B54 50%,#0B0F2E); transition:opacity .5s; z-index:2; }
+  #splash.hide { opacity:0; pointer-events:none; }
+  .logo { background:#fff; border-radius:18px; padding:12px 18px; box-shadow:0 20px 40px -18px rgba(0,0,0,.6); }
+  .logo img { height:54px; display:block; }
+  .motto { font-size:26px; font-weight:800; line-height:1.15; }
+  .motto span { color:#FF5FA8; }
+  .spin { width:34px; height:34px; border-radius:50%; border:3px solid rgba(255,255,255,.2); border-top-color:var(--magenta); animation:r 0.9s linear infinite; }
+  @keyframes r { to { transform:rotate(360deg); } }
+  .msg { font-size:14px; color:#C9D4FF; max-width:320px; line-height:1.5; }
+  .btn { border:0; border-radius:12px; padding:12px 22px; font-weight:bold; font-size:15px; cursor:pointer; color:#fff; background:linear-gradient(90deg,#E8127C,#6A2BB8); display:none; }
+  .btn.show { display:inline-block; }
+  .copy { position:absolute; bottom:14px; font-size:11px; color:#8F9BD0; }
+</style>
+</head>
+<body>
+<div id="splash">
+  <div class="logo"><img src="icons/logo-full.png" alt="Port Energy Private Limited"></div>
+  <div class="motto">Impossible can be <span>possible.</span></div>
+  <div class="spin" id="spin"></div>
+  <div class="msg" id="msg">Opening Port Energy ERP…</div>
+  <button class="btn" id="retry">Try again</button>
+  <button class="btn" id="install">Install Port Energy app</button>
+  <div class="copy">© 2026 Port Energy Private Limited. All rights reserved.</div>
+</div>
+<iframe id="erp" title="Port Energy ERP" allow="camera; clipboard-read; clipboard-write; fullscreen" referrerpolicy="no-referrer-when-downgrade"></iframe>
+<script>
+(function () {
+  var f = document.getElementById('erp'), sp = document.getElementById('splash'), msg = document.getElementById('msg'),
+      retry = document.getElementById('retry'), inst = document.getElementById('install'), spin = document.getElementById('spin');
+  var url = window.ERP_URL || '';
+  function fail(t) { spin.style.display = 'none'; msg.textContent = t; retry.className = 'btn show'; }
+  function load() {
+    retry.className = 'btn'; spin.style.display = ''; msg.textContent = 'Opening Port Energy ERP…';
+    if (!/^https:\/\/script\.google\.com\/.+\/exec/.test(url)) return fail('Setup needed: paste the Web App URL in config.js.');
+    if (!navigator.onLine) return fail('No internet connection. Connect to mobile data or Wi-Fi and tap Try again.');
+    f.src = url;
+    var t = setTimeout(function () { if (!f.classList.contains('ready')) msg.textContent = 'Slow network… still loading.'; }, 9000);
+    f.onload = function () { clearTimeout(t); f.classList.add('ready'); sp.classList.add('hide'); };
+  }
+  retry.onclick = load;
+  window.addEventListener('online', function () { if (!f.classList.contains('ready')) load(); });
+  // Install button (Android Chrome / Edge)
+  var deferred = null;
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); deferred = e; inst.className = 'btn show'; });
+  inst.onclick = function () { if (!deferred) return; deferred.prompt(); deferred.userChoice.then(function () { deferred = null; inst.className = 'btn'; }); };
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () {});
+  load();
+})();
+</script>
+</body>
+</html>

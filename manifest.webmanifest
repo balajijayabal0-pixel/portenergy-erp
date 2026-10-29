@@ -1,0 +1,17 @@
+{
+  "name": "Port Energy ERP",
+  "short_name": "Port Energy",
+  "description": "Port Energy Private Limited - ERP for approvals, procurement, accounts and site work",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#121B54",
+  "theme_color": "#121B54",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

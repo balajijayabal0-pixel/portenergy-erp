@@ -1,0 +1,48 @@
+PORT ENERGY ERP - MOBILE APP (install like a real app)
+© 2026 Port Energy Private Limited. All rights reserved.
+==========================================================
+
+WHAT THIS IS
+  A small launcher with the Port Energy logo. It opens your Google Apps Script ERP
+  full screen. All data stays in your Google Sheet. Code updates come automatically.
+
+STEP 1 - PUT YOUR ERP LINK (1 minute)
+  Open config.js in Notepad. Replace PASTE_YOUR_WEB_APP_URL_HERE with your
+  Web App URL (Apps Script > Deploy > Manage deployments > copy URL ending /exec).
+  Keep the quotes ' '. Save.
+
+STEP 2 - PUT IT ONLINE FREE (10 minutes) - choose ONE
+
+  A) Netlify (easiest)
+     1. Go to app.netlify.com and sign up free (use the office Google account).
+     2. Add new site > Deploy manually > drag the whole "PortEnergy_ERP_App" folder.
+     3. Site settings > Change site name > "portenergy-erp".
+        Your app link: https://portenergy-erp.netlify.app
+
+  B) GitHub Pages
+     1. github.com > sign up free > New repository "portenergy-erp" (Public).
+     2. Add file > Upload files > drag ALL files and the icons folder > Commit.
+     3. Settings > Pages > Branch: main / root > Save.
+        Your app link: https://<your-username>.github.io/portenergy-erp/
+
+STEP 3 - INSTALL ON EVERY PHONE
+  Android: open the app link in Chrome > tap "Install Port Energy app"
+           (or Chrome menu ⋮ > Install app / Add to Home screen).
+  iPhone : open the link in Safari > Share > Add to Home Screen.
+  The Port Energy logo icon appears. It opens full screen like any app.
+
+STEP 4 (OPTIONAL) - MAKE AN APK FILE TO SHARE ON WHATSAPP
+  1. Go to www.pwabuilder.com > paste your app link > Start.
+  2. Package for stores > Android > Generate > Download.
+  3. Inside the zip, the .apk file can be shared and installed
+     (phone will ask "Allow install from this source" - allow once).
+  Play Store publishing needs a Google Play developer account (one-time USD 25).
+
+IMPORTANT - SO NOTHING BREAKS LATER
+  - When you update the ERP code: Deploy > Manage deployments > pencil >
+    Version: New version > Deploy.  The link stays the same, phones update by themselves.
+  - Do NOT use "New deployment" (it creates a new link). If you ever do,
+    change config.js and upload again (Step 2).
+  - Users, PINs and all records are in the Google Sheet - reinstalling the app
+    or changing phones never loses data. Sign in again with mobile + PIN.
+  - Internet is needed to use the ERP.

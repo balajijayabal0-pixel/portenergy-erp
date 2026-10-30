@@ -33,7 +33,9 @@
   .motto span { color:#FF5FA8; }
   .spin { width:34px; height:34px; border-radius:50%; border:3px solid rgba(255,255,255,.2); border-top-color:var(--magenta); animation:r 0.9s linear infinite; }
   @keyframes r { to { transform:rotate(360deg); } }
-  .msg { font-size:14px; color:#C9D4FF; max-width:320px; line-height:1.5; }
+  .msg { font-size:15px; font-weight:700; color:#FFD1E6; max-width:320px; line-height:1.5; min-height:46px; }
+  .msg.q { animation:qin .5s ease both; }
+  @keyframes qin { from { opacity:0; transform:translateY(8px); } }
   .btn { border:0; border-radius:12px; padding:12px 22px; font-weight:bold; font-size:15px; cursor:pointer; color:#fff; background:linear-gradient(90deg,#E8127C,#6A2BB8); display:none; }
   .btn.show { display:inline-block; }
   .copy { position:absolute; bottom:14px; font-size:11px; color:#8F9BD0; }
@@ -61,7 +63,10 @@
     if (!/^https:\/\/script\.google\.com\/.+\/exec/.test(url)) return fail('Setup needed: paste the Web App URL in config.js.');
     if (!navigator.onLine) return fail('No internet connection. Connect to mobile data or Wi-Fi and tap Try again.');
     f.src = url;
-    var t = setTimeout(function () { if (!f.classList.contains('ready')) msg.textContent = 'Slow network… still loading.'; }, 9000);
+    var Q = ['Impossible can be possible.', 'Great work starts with one tap.', 'Every approval moves a project forward.', 'Safety first, quality always.', 'Small steps, big results.', 'Plan the work, then work the plan.', 'Your team is counting on you today.', 'Quality takes a moment - almost there.'], qi = Math.floor(Math.random() * Q.length);
+    msg.textContent = Q[qi]; msg.className = 'msg q';
+    var qt = setInterval(function () { if (f.classList.contains('ready') || retry.className.indexOf('show') > -1) return clearInterval(qt); qi = (qi + 1) % Q.length; msg.classList.remove('q'); void msg.offsetWidth; msg.textContent = Q[qi]; msg.classList.add('q'); }, 2200);
+    var t = setTimeout(function () { }, 9000);
     // keep our splash until the ERP itself says it is ready (one smooth screen, like a native app)
     f.onload = function () { clearTimeout(t); setTimeout(show, 6000); };
   }

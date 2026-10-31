@@ -1,5 +1,5 @@
 /* Port Energy ERP launcher - caches only this small launcher (logo, splash). ERP data always comes live from Google. */
-const CACHE = 'pe-launcher-v4';
+const CACHE = 'pe-launcher-v5';
 const FILES = ['./', './index.html', './config.js', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/logo-full.png'];
 // Cache each file separately, so one missing file does not stop the whole install
 self.addEventListener('install', e => {

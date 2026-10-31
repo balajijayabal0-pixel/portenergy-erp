@@ -21,8 +21,8 @@
 <script src="config.js"></script>
 <style>
   :root { --navy:#121B54; --magenta:#E8127C; }
-  html, body { margin:0; height:100%; background:var(--navy); font-family: Arial, Helvetica, sans-serif; overflow:hidden; }
-  #erp { position:fixed; inset:0; width:100%; height:100%; border:0; background:#121B54; opacity:0; transition:opacity .3s; }
+  html, body { margin:0; min-height:100%; background:var(--navy); font-family: Arial, Helvetica, sans-serif; overflow-x:hidden; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+  #erp { position:fixed; inset:0; width:100%; height:100%; border:0; background:#121B54; opacity:0; transition:opacity .3s; touch-action:pan-y; }
   #erp.ready { opacity:1; }
   #splash { position:fixed; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; color:#fff; text-align:center; padding:24px;
     background: radial-gradient(900px 600px at 10% 5%, #2A3FC4 0%, transparent 60%), radial-gradient(700px 500px at 95% 95%, #8A1060 0%, transparent 55%), linear-gradient(160deg,#0A1033,#121B54 50%,#0B0F2E); transition:opacity .3s; z-index:2; }

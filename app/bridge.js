@@ -60,7 +60,15 @@
         if (typeof name !== 'string' || name === 'then') return undefined;
         return function () {
           var args = Array.prototype.slice.call(arguments);
-          post(name, args).then(function (res) { if (ok) ok(res); }, function (e) { if (err) err(e); });
+          post(name, args).then(function (res) {
+            // the dashboard (dash.js) reuses the home data the app already loaded - no extra server calls
+            try {
+              var home = res && (name === 'getHome' ? res : res.home);
+              if (home && home.kpi) { window.PE_HOME = home; window.dispatchEvent(new CustomEvent('pe-home', { detail: home })); }
+              if (res && res.session) window.PE_SESSION = res.session;
+            } catch (x) { }
+            if (ok) ok(res);
+          }, function (e) { if (err) err(e); });
         };
       }
     });

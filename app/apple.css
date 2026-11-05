@@ -1,0 +1,262 @@
+/* © 2026 Port Energy Private Limited. All rights reserved. Proprietary and confidential. */
+/* =====================================================================
+   PORT ENERGY ERP - APPLE-STYLE DESIGN v1
+   Clean light surfaces, system font, translucent sidebar + large titles,
+   inset grouped lists, pill buttons. Accent colours from the Port Energy logo.
+   Applies to the signed-in app only; the login screen keeps its brand hero.
+   Loaded last. Delete this file (and its <link>) to go back.
+   ===================================================================== */
+:root {
+  --ap-bg: #F5F5F7;
+  --ap-card: #FFFFFF;
+  --ap-label: #1D1D1F;
+  --ap-label2: #6E6E73;
+  --ap-label3: #86868B;
+  --ap-sep: rgba(60, 60, 67, .13);
+  --ap-fill: rgba(118, 118, 128, .12);
+  --ap-fill2: rgba(118, 118, 128, .08);
+  --ap-blue: #0A6FD8;          /* logo blue, deepened so white text passes contrast */
+  --ap-blue-h: #085FBA;
+  --ap-pink: #F3026E;          /* logo pink: selection, counts, active */
+  --ap-teal: #01B7A0;          /* logo teal: success */
+  --ap-shadow: 0 1px 2px rgba(0, 0, 0, .04), 0 0 0 .5px rgba(0, 0, 0, .05);
+  --ap-shadow-lg: 0 12px 32px -12px rgba(0, 0, 0, .18), 0 0 0 .5px rgba(0, 0, 0, .05);
+  --ap-text: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI Variable Text", "Segoe UI", system-ui, Roboto, "Helvetica Neue", sans-serif;
+  --ap-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI Variable Display", "Segoe UI", system-ui, Roboto, "Helvetica Neue", sans-serif;
+  --sora: var(--ap-display);
+  --muted: var(--ap-label2);
+  --line: var(--ap-sep);
+  --mist: var(--ap-bg);
+}
+
+/* ---------- base ---------- */
+body { background: var(--ap-bg); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+.amb { display: none; }                                   /* calm background, no moving colour blobs */
+#app, #drawer, .modal, .pal, .aip, #toast, .menu, .pe-off { font-family: var(--ap-text); color: var(--ap-label); letter-spacing: -.003em; }
+#app h1, #app h2, #app h3, #drawer h2, #drawer h3, .modal h3, .kpi .v, .sec h4, .avatar, .empty b { font-family: var(--ap-display); }
+
+/* ---------- sidebar: translucent material ---------- */
+@media (min-width: 761px) {
+  .side {
+    background: rgba(246, 246, 248, .78) !important;
+    backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%);
+    border-right: 1px solid rgba(0, 0, 0, .07) !important; box-shadow: none !important;
+  }
+}
+.side .logo { padding: 20px 20px 10px; }
+.side .logo img { height: 50px; }
+.side .find { background: var(--ap-fill) !important; border: 0 !important; border-radius: 10px !important; color: var(--ap-label2) !important; font-weight: 500 !important; }
+.ngh { font-family: var(--ap-text); font-size: 11px; font-weight: 600; color: var(--ap-label3); letter-spacing: .04em; padding: 4px 10px; }
+.ng { margin-top: 12px; }
+.ni { color: var(--ap-label) !important; font-weight: 500 !important; font-size: 14px !important; border-radius: 8px !important; padding: 6px 10px !important; gap: 10px !important; }
+.ni svg { color: var(--ap-blue) !important; width: 18px; height: 18px; }
+.ni:hover { background: rgba(0, 0, 0, .05) !important; transform: none !important; }
+.ni.on { background: rgba(243, 2, 110, .11) !important; color: var(--ap-pink) !important; font-weight: 600 !important; }
+.ni.on::before { display: none !important; }
+.ni.on svg { color: var(--ap-pink) !important; }
+.ni .ct { background: var(--ap-pink); border-radius: 10px; font-weight: 600; }
+.ni .tc { color: var(--ap-label3); font-weight: 500; }
+.me { border-top: 1px solid var(--ap-sep) !important; }
+.avatar { border-radius: 50% !important; background: linear-gradient(135deg, #F3026E, #1B2F9E 60%, #0089F5) !important; font-weight: 600 !important; }
+.me b { font-weight: 600; }
+.me small { color: var(--ap-label2); }
+
+/* ---------- top bar: large title on a blurred material ---------- */
+.top {
+  background: rgba(245, 245, 247, .72) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important; -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  box-shadow: 0 .5px 0 rgba(0, 0, 0, .1) !important; padding-top: 16px !important; padding-bottom: 12px !important;
+}
+.top::after { display: none !important; }
+.top h1 { font-size: 28px !important; font-weight: 700 !important; letter-spacing: -.022em !important; line-height: 1.15; }
+.top .crumb { color: var(--ap-label2) !important; font-weight: 500 !important; font-size: 13px !important; }
+.topfind { background: var(--ap-fill) !important; border: 0 !important; border-radius: 10px !important; color: var(--ap-label2) !important; font-weight: 500 !important; box-shadow: none !important; }
+.topfind:hover { background: rgba(118, 118, 128, .18) !important; }
+kbd { font-family: var(--ap-text); font-weight: 500; border: 0; background: rgba(0, 0, 0, .06); color: var(--ap-label2); }
+.clk b { font-family: var(--ap-display); font-weight: 600; font-variant-numeric: tabular-nums; }
+.clk small { color: var(--ap-label2); }
+
+/* ---------- cards ---------- */
+#app .glass, #drawer .glass {
+  background: var(--ap-card) !important; border: 0 !important; border-radius: 16px !important; box-shadow: var(--ap-shadow) !important;
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+}
+.hello h2 { font-weight: 700 !important; letter-spacing: -.025em; }
+.hello p { color: var(--ap-label2) !important; }
+.panel h3 { font-size: 17px !important; font-weight: 600 !important; letter-spacing: -.01em; }
+
+/* KPI tiles: big numbers, quiet labels, a thin colour cue */
+.kpis { gap: 14px !important; }
+.kpi { padding: 18px 20px 20px !important; animation: none !important; }
+.kpi:hover { transform: translateY(-2px) !important; box-shadow: var(--ap-shadow-lg) !important; }
+.kpi .l { color: var(--ap-label2) !important; font-weight: 500 !important; font-size: 13px !important; }
+.kpi .v { font-size: 30px !important; font-weight: 700 !important; letter-spacing: -.028em !important; margin-top: 2px; }
+.kpi small { color: var(--ap-label2) !important; }
+.kpi .bar { top: 18px !important; bottom: auto !important; left: auto !important; right: 18px !important; width: 8px !important; height: 8px !important; border-radius: 50% !important; }
+
+/* inset grouped lists (iOS Settings style) */
+#app .list { gap: 0 !important; }
+#app .li {
+  background: transparent !important; border: 0 !important; border-radius: 0 !important; padding: 12px 6px !important;
+  box-shadow: inset 0 -.5px 0 var(--ap-sep); animation: none !important;
+}
+#app .li:last-child { box-shadow: none; }
+#app .li.click:hover { background: rgba(0, 0, 0, .035) !important; border-radius: 10px !important; transform: none !important; box-shadow: none; }
+#app .li .t b { font-weight: 600 !important; }
+#app .li .t p { color: var(--ap-label2) !important; }
+
+/* tables */
+.tablewrap { border-radius: 16px !important; }
+.tb th {
+  background: rgba(250, 250, 252, .92) !important; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  font-family: var(--ap-text); font-size: 12px !important; font-weight: 600 !important; color: var(--ap-label2) !important;
+  border-bottom: .5px solid var(--ap-sep) !important; padding: 11px 14px !important;
+}
+.tb td { border-bottom: .5px solid var(--ap-sep) !important; padding: 12px 14px !important; }
+.tb tr.click:hover td { background: rgba(10, 111, 216, .05) !important; }
+.tb tfoot td { font-weight: 600; }
+
+/* ---------- controls ---------- */
+#app .btn, #drawer .btn, .modal .btn, .pal .btn, .aip .btn {
+  font-family: var(--ap-text); font-weight: 600 !important; border-radius: 980px !important; letter-spacing: -.01em;
+  box-shadow: none !important; transition: background-color .2s, transform 90ms ease-out, opacity .2s !important;
+}
+#app .btn:hover, #drawer .btn:hover, .modal .btn:hover { transform: none !important; }
+.btn.primary { background: var(--ap-blue) !important; color: #fff !important; }
+.btn.primary:hover { background: var(--ap-blue-h) !important; }
+.btn.soft { background: var(--ap-fill) !important; border: 0 !important; color: var(--ap-blue) !important; }
+.btn.soft:hover { background: rgba(118, 118, 128, .18) !important; }
+.btn.danger { background: rgba(243, 2, 110, .09) !important; border: 0 !important; color: #D3065F !important; }
+.btn.danger:hover { background: rgba(243, 2, 110, .15) !important; }
+.btn.ghost { color: var(--ap-blue) !important; }
+.btn.pe-wa { background: rgba(37, 211, 102, .12) !important; color: #0F7A3E !important; }
+.btn .rip { display: none !important; }
+
+.in {
+  font-family: var(--ap-text); background: #fff !important; border: 1px solid rgba(60, 60, 67, .2) !important; border-radius: 10px !important;
+  transition: border-color .15s, box-shadow .15s !important;
+}
+.in:focus { border-color: var(--ap-blue) !important; box-shadow: 0 0 0 4px rgba(10, 111, 216, .18) !important; }
+label.f { font-weight: 500; color: var(--ap-label2); }
+
+.chip { border: 0 !important; background: var(--ap-fill) !important; color: var(--ap-label) !important; font-weight: 500 !important; }
+.chip:hover { background: rgba(118, 118, 128, .18) !important; }
+.chip.on { background: var(--ap-label) !important; color: #fff !important; }
+
+.badge { font-weight: 600 !important; font-family: var(--ap-text); }
+
+/* buttons on the dark home banner stay light */
+.hero2 .btn.soft, .hero2 .btn.ghost { background: rgba(255, 255, 255, .16) !important; color: #fff !important; }
+.hero2 .btn.soft:hover { background: rgba(255, 255, 255, .24) !important; }
+.hero2 kbd { background: rgba(255, 255, 255, .18); color: rgba(255, 255, 255, .85); }
+
+/* hidden offline banner must not cast a shadow at the top edge */
+.pe-off:not(.show) { box-shadow: none; visibility: hidden; transition: transform .38s var(--ease), visibility 0s .38s; }
+
+/* ---------- record drawer + dialogs ---------- */
+.drawer .pane { background: var(--ap-bg) !important; }
+.dh {
+  background: rgba(255, 255, 255, .8) !important; backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: .5px solid var(--ap-sep) !important;
+}
+.dh h2 { font-weight: 700; letter-spacing: -.02em; }
+.dh .sub { color: var(--ap-label2); }
+.sec { border: 0 !important; border-radius: 16px !important; box-shadow: var(--ap-shadow) !important; animation: none !important; }
+.sec h4 { font-size: 15px !important; font-weight: 600 !important; }
+.kv span { color: var(--ap-label2) !important; font-weight: 500 !important; }
+.kv b { font-weight: 500 !important; color: var(--ap-label) !important; }
+.modal .box, .pal .box { border-radius: 20px !important; background: #fff !important; box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .35), 0 0 0 .5px rgba(0, 0, 0, .06) !important; }
+.modal .box h3 { font-size: 20px; font-weight: 700; letter-spacing: -.02em; }
+.pal .q input { font-family: var(--ap-text); }
+.menu { border-radius: 14px !important; box-shadow: var(--ap-shadow-lg) !important; }
+.menu button { font-family: var(--ap-text); font-weight: 500; }
+#toast { border-radius: 14px !important; font-weight: 600; }
+
+/* ---------- phone ---------- */
+@media (max-width: 760px) {
+  .top h1 { font-size: 24px !important; }
+  .bnav button { font-family: var(--ap-text); font-weight: 500; }
+  .bnav button.on { color: var(--ap-pink) !important; }
+  #tbl.pe-cards .tb tr { border: 0 !important; border-radius: 16px !important; box-shadow: var(--ap-shadow) !important; }
+  #tbl.pe-cards .tb td::before { color: var(--ap-label2); font-weight: 500; }
+  #tbl.pe-cards .tb td.pe-first { font-family: var(--ap-display); font-weight: 600; }
+  .side { background: rgba(246, 246, 248, .96) !important; }
+}
+
+/* ---------- accessibility ---------- */
+@media (prefers-reduced-transparency: reduce) {
+  .side, .top, .dh, .tb th { background: #F5F5F7 !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+}
+@media (prefers-contrast: more) {
+  :root { --ap-sep: rgba(60, 60, 67, .35); --ap-label2: #4A4A4F; }
+  #app .glass, .sec { box-shadow: 0 0 0 1.5px #8E8E93 !important; }
+}
+
+/* =====================================================================
+   COMPACT DENSITY (v1.1) - more data on one screen, smaller chrome
+   ===================================================================== */
+#app { font-size: 13.5px; }
+.top { padding: 10px 24px 8px !important; gap: 10px !important; }
+.top h1 { font-size: 22px !important; }
+.top .crumb { font-size: 12px !important; }
+.topfind { padding: 7px 12px !important; min-width: 260px; font-size: 13px; }
+.clk b { font-size: 14px; } .clk small { font-size: 11px; }
+.content { padding: 10px 24px 48px !important; }
+.side { width: 240px !important; } :root { --side: 240px; }
+.side .logo { padding: 14px 16px 8px !important; } .side .logo img { height: 40px !important; }
+.side .find { margin: 0 12px !important; padding: 7px 10px !important; font-size: 13px; }
+.side nav { padding: 4px 10px 12px !important; }
+.ng { margin-top: 8px !important; }
+.ni { padding: 5px 9px !important; font-size: 13.5px !important; }
+.ni svg { width: 16px !important; height: 16px !important; }
+.me { padding: 10px 14px !important; } .avatar { width: 32px !important; height: 32px !important; font-size: 12px !important; }
+.me b { font-size: 13px; } .me small { font-size: 11.5px; }
+
+.hero2 { padding: 16px 20px !important; margin-bottom: 12px !important; border-radius: 16px !important; }
+.hero2 h2 { font-size: 20px !important; }
+.kpis { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important; gap: 10px !important; margin-bottom: 12px !important; }
+.kpi { padding: 12px 14px 13px !important; border-radius: 14px !important; }
+.kpi .l { font-size: 12px !important; }
+.kpi .v { font-size: 22px !important; }
+.kpi small { font-size: 11.5px !important; }
+.kpi .bar { top: 13px !important; right: 13px !important; width: 7px !important; height: 7px !important; }
+.panel { padding: 14px 16px !important; } .panel h3 { font-size: 15px !important; margin-bottom: 8px !important; }
+.grid2 { gap: 12px !important; margin-bottom: 12px !important; }
+.wsgrid { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)) !important; gap: 8px !important; }
+.wst { min-height: 64px !important; padding: 10px !important; border-radius: 12px !important; }
+.wst .ic { width: 28px !important; height: 28px !important; border-radius: 8px !important; }
+.wst b { font-size: 13px !important; } .wst small { font-size: 11px !important; }
+.qgrid { gap: 8px !important; }
+#app .li { padding: 8px 6px !important; }
+
+.lhead { margin: 2px 0 10px !important; gap: 10px !important; }
+.btn { padding: 8px 14px !important; font-size: 13.5px !important; }
+.btn.sm { padding: 5px 11px !important; font-size: 12.5px !important; }
+.btn.block { padding: 11px !important; }
+.in { padding: 8px 11px !important; }
+.chip { padding: 4px 11px !important; font-size: 12.5px !important; }
+.status-chips { gap: 6px !important; margin: 8px 0 !important; }
+.tb th { padding: 8px 12px !important; font-size: 11.5px !important; }
+.tb td { padding: 8px 12px !important; font-size: 13px; }
+.badge { padding: 2px 8px !important; font-size: 11px !important; }
+
+.dh { padding: 12px 20px !important; } .dh h2 { font-size: 18px; }
+.db { padding: 12px 18px 24px !important; }
+.db > .acts { gap: 6px !important; margin-bottom: 10px !important; }
+.sec { padding: 12px 14px !important; margin-bottom: 10px !important; border-radius: 14px !important; }
+.sec h4 { margin-bottom: 8px !important; font-size: 14px !important; }
+.kv { gap: 8px 16px !important; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)) !important; }
+.kv span { font-size: 11.5px; } .kv b { font-size: 13.5px; }
+.modal .box { padding: 18px !important; }
+
+@media (max-width: 760px) {
+  .side { width: min(86vw, 300px) !important; }
+  .top { padding: 8px 14px !important; } .top h1 { font-size: 20px !important; }
+  .content { padding: 8px 12px 92px !important; }
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 8px !important; }
+  .kpi { padding: 10px 12px !important; } .kpi .v { font-size: 19px !important; } .kpi .l { font-size: 11.5px !important; }
+  .hero2 { padding: 12px 14px !important; } .hero2 h2 { font-size: 17px !important; }
+  #tbl.pe-cards .tb tr { padding: 10px 12px !important; margin-bottom: 8px !important; gap: 2px 10px !important; }
+  #tbl.pe-cards .tb td { font-size: 12.5px !important; }
+  .bnav { padding: 4px !important; } .bnav button { font-size: 10.5px !important; padding: 6px 0 !important; }
+}

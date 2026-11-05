@@ -49,8 +49,17 @@
     tbl.classList.add('pe-cards');
   }
   var queued = false;
-  function soon() { if (queued) return; queued = true; requestAnimationFrame(function () { queued = false; cardify(); pill(); }); }
+  /* machine statuses get the right colour (green working, red breakdown / missing, amber repair) */
+  var TINT = { 'Working': 'b-ok', 'Idle': 'b-mute', 'Breakdown': 'b-bad', 'Missing': 'b-bad', 'Scrapped': 'b-mute', 'Under Repair': 'b-warn' };
+  function tint() {
+    Array.prototype.forEach.call(document.querySelectorAll('#content .badge.b-info, #drawer .badge.b-info, #content .chip'), function (b) {
+      var t = b.textContent.replace(/\s*\d+$/, '').trim();
+      if (TINT[t] && b.classList.contains('badge')) { b.classList.remove('b-info'); b.classList.add(TINT[t]); }
+    });
+  }
+  function soon() { if (queued) return; queued = true; requestAnimationFrame(function () { queued = false; cardify(); pill(); tint(); }); }
   if (content) new MutationObserver(soon).observe(content, { childList: true, subtree: true });
+  if ($('drawer')) new MutationObserver(soon).observe($('drawer'), { childList: true, subtree: true });
 
   /* ---------- 3. sliding pill under the active bottom-bar button ---------- */
   var bnav = $('bnav'), pillEl = null;

@@ -241,6 +241,11 @@
 /* welcome screen bar matches the rest */
 .wel-bar i { background: linear-gradient(90deg, #01B7A0, #0089F5, #F3026E) !important; animation: peSweep 1.15s cubic-bezier(.45, 0, .2, 1) infinite !important; }
 
+/* ---------- 8e. WhatsApp share button ---------- */
+.btn.pe-wa { color: #128C4A; background: rgba(37, 211, 102, .1); border-color: rgba(37, 211, 102, .35); }
+.btn.pe-wa:hover { background: rgba(37, 211, 102, .18); }
+.btn.pe-wa svg { color: #25D366; }
+
 /* ---------- 9. Accessibility: reduced motion / transparency / more contrast ---------- */
 @media (prefers-reduced-motion: reduce) {
   .modal .box, .pal .box, .menu, .drawer .pane, .side { transition: opacity .2s ease !important; }

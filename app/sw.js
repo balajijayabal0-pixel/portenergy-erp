@@ -6,7 +6,7 @@
  * Screens: open from the saved copy, then quietly fetch the newest copy for next time.
  * Change VERSION on each upload to clear old copies.
  */
-const VERSION = 'pe-app-v1';
+const VERSION = 'pe-app-v3';
 const SHELL = ['./', './index.html', './app.js', './bridge.js', './logo.js', './polish.css', './motion.js', './install.js',
   './manifest.webmanifest', '../config.js', '../icons/icon-192.png', '../icons/icon-512.png', '../icons/favicon.png'];
 

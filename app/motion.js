@@ -1,7 +1,6 @@
 /* © 2026 Port Energy Private Limited. All rights reserved. Proprietary and confidential. */
 /**
  * PORT ENERGY ERP - MOTION v1 (works with polish.css)
- *  - page change animation
  *  - phone: list rows shown as cards, sliding pill in the bottom bar
  *  - phone: swipe a record to the right to close it, swipe a pop-up sheet down to close it
  *    (follows the finger 1:1, uses the flick speed to decide, never jumps)
@@ -28,16 +27,7 @@
     };
   }
 
-  /* ---------- 1. page change animation ---------- */
   var content = $('content');
-  if (content) {
-    var tEnter;
-    new MutationObserver(function (list) {
-      if (!list.some(function (m) { return m.target === content && m.addedNodes.length; })) return;
-      content.classList.remove('pe-enter'); void content.offsetWidth; content.classList.add('pe-enter');
-      clearTimeout(tEnter); tEnter = setTimeout(function () { content.classList.remove('pe-enter'); }, 450);
-    }).observe(content, { childList: true });
-  }
 
   /* ---------- 2. list rows -> cards on phones ---------- */
   function cardify() {

@@ -40,9 +40,7 @@
 .tb tr.click:active td { background: rgba(0, 137, 245, .07); }
 .kpi:hover { transform: translateY(-3px); }          /* calmer than the old tilt */
 
-/* ---------- 4. Page change: soft rise, same path every time ---------- */
-#content.pe-enter > * { animation: peIn .34s var(--ease) both; }
-@keyframes peIn { from { opacity: 0; transform: translateY(10px); } }
+/* ---------- 4. Page change: uses the original "enter" animation (no second fade) ---------- */
 
 /* ---------- 5. Modal, search palette, AI panel, menu: enter AND exit ---------- */
 .modal, .pal {
@@ -196,13 +194,60 @@
 .pe-steps svg { vertical-align: -4px; color: var(--sky); }
 @media (display-mode: standalone) { .pe-inst, #peInstallM { display: none !important; } }
 
+/* ---------- 8d. Loading: start screen, top network bar, skeletons ---------- */
+#boot { background: radial-gradient(900px 600px at 50% 38%, #FFFFFF 0%, #F1F4FB 60%, #E9EEFA 100%); transition: opacity .4s var(--ease); }
+.pe-boot { display: flex; flex-direction: column; align-items: center; text-align: center; animation: peBootIn .5s var(--ease) both; }
+@keyframes peBootIn { from { opacity: 0; transform: translateY(8px) scale(.98); } }
+.pe-ring { position: relative; width: 112px; height: 112px; display: grid; place-items: center; }
+.pe-ring i {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: conic-gradient(from 0deg, rgba(1, 183, 160, 0) 0deg, #01B7A0 90deg, #0089F5 200deg, #F3026E 330deg, rgba(243, 2, 110, 0) 360deg);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
+          mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
+  animation: peRing 1.1s linear infinite;
+}
+@keyframes peRing { to { transform: rotate(360deg); } }
+#boot .pe-ring img { width: 64px; height: 64px; object-fit: contain; animation: peBreath 2.2s ease-in-out infinite !important; }
+@keyframes peBreath { 50% { transform: scale(.94); } }
+.pe-boot b { margin-top: 20px; font: 800 20px/1.2 var(--sora); letter-spacing: -.02em; color: var(--ink); }
+.pe-boot small { margin-top: 4px; font-weight: 700; font-size: 12.5px; color: var(--muted); }
+.pe-bar { margin-top: 18px; width: 140px; height: 3px; border-radius: 3px; background: rgba(18, 27, 84, .08); overflow: hidden; }
+.pe-bar i { display: block; height: 100%; width: 45%; border-radius: 3px; background: var(--brand-line); animation: peSweep 1.15s cubic-bezier(.45, 0, .2, 1) infinite; }
+@keyframes peSweep { from { transform: translateX(-110%); } to { transform: translateX(250%); } }
+
+/* thin brand bar at the very top while the server is working */
+.pe-net { position: fixed; left: 0; right: 0; top: 0; height: 3px; z-index: 250; pointer-events: none; opacity: 0; transition: opacity .3s ease .1s; overflow: hidden; }
+.pe-net.on { opacity: 1; transition-delay: .25s; }   /* only shows if the call takes longer than a blink */
+.pe-net i { position: absolute; top: 0; bottom: 0; left: 0; width: 40%; background: var(--brand-line); border-radius: 0 3px 3px 0; box-shadow: 0 0 10px rgba(243, 2, 110, .45); animation: peSweep 1.1s cubic-bezier(.45, 0, .2, 1) infinite; }
+
+/* skeletons: calm content-shaped blocks instead of the quote banner */
+.ldq { display: none !important; }
+.sk { background: #E9EEF8; border-radius: 10px; }
+.sk::after { background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .75), transparent) !important; animation-duration: 1.4s !important; animation-timing-function: cubic-bezier(.4, 0, .2, 1) !important; }
+.skl { height: 13px; margin: 12px 0; }
+.ldq + .skl { height: 18px; width: 38% !important; margin-bottom: 18px; }
+@media (max-width: 760px) {
+  #tbl .skl { height: 86px; width: 100% !important; border-radius: 18px; margin: 0 0 10px; background: #fff; box-shadow: 0 1px 2px rgba(18, 27, 84, .04), 0 10px 24px -18px rgba(18, 27, 84, .25); }
+  #tbl .ldq + .skl { height: 86px; }
+  #tbl .skl::after { background: linear-gradient(90deg, transparent, rgba(233, 238, 248, .9), transparent) !important; }
+  #tbl:has(.skl) { background: transparent; border: 0; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  #tbl:has(.skl) > div { padding: 0 !important; }
+}
+
+/* button spinner in brand colours */
+.btn.primary .spin { border-color: rgba(255, 255, 255, .35); border-top-color: #fff; }
+.spin { border-top-color: var(--magenta); }
+
+/* welcome screen bar matches the rest */
+.wel-bar i { background: linear-gradient(90deg, #01B7A0, #0089F5, #F3026E) !important; animation: peSweep 1.15s cubic-bezier(.45, 0, .2, 1) infinite !important; }
+
 /* ---------- 9. Accessibility: reduced motion / transparency / more contrast ---------- */
 @media (prefers-reduced-motion: reduce) {
-  #content.pe-enter > * { animation: peFade .2s ease both !important; }
-  @keyframes peFade { from { opacity: 0; } }
   .modal .box, .pal .box, .menu, .drawer .pane, .side { transition: opacity .2s ease !important; }
   .modal .box, .pal .box, .menu { transform: none !important; }
   .btn:active, .kpi.link:active, .wst:active, .chip:active, .bnav button:active { transform: none; }
+  .pe-ring i, .pe-bar i, .pe-net i { animation-duration: 2.4s !important; }
+  #boot .pe-ring img { animation: none !important; }
 }
 @media (prefers-reduced-transparency: reduce) {
   .bnav, .top, .glass, .side { background: #fff !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }

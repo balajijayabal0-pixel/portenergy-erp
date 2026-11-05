@@ -12,7 +12,20 @@
   var URL_ = window.ERP_URL || '';
   var TIMEOUT_MS = 120000;   // 2 minutes (AI chat, file uploads and downloads can be slow)
 
+  // top progress bar: on while any server call is running
+  var busy = 0;
+  function net(d) {
+    busy = Math.max(0, busy + d);
+    var el = document.getElementById('peNet');
+    if (el) el.classList.toggle('on', busy > 0);
+  }
+
   function post(fn, args) {
+    net(1);
+    return send(fn, args).then(function (r) { net(-1); return r; }, function (e) { net(-1); throw e; });
+  }
+
+  function send(fn, args) {
     if (!/^https:\/\/script\.google\.com\/.+\/exec$/.test(URL_)) return Promise.reject(new Error('Setup needed: ERP_URL in config.js'));
     if (!navigator.onLine) return Promise.reject(new Error('No internet connection. Please connect and try again.'));
     var ctl = window.AbortController ? new AbortController() : null;

@@ -1,0 +1,44 @@
+// Port Energy ERP - Android app (Trusted Web Activity: opens the ERP in Chrome's engine, full screen)
+plugins { id 'com.android.application' }
+
+def runNo = (System.getenv('GITHUB_RUN_NUMBER') ?: '1') as Integer
+
+android {
+    namespace 'in.portenergy.erp'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'in.portenergy.erp'
+        minSdk 21
+        targetSdk 34
+        versionCode runNo
+        versionName "1.0.${runNo}"
+    }
+
+    // Signing key is NOT stored in this public repo. GitHub Actions writes it from the
+    // repository secrets PE_KEYSTORE_BASE64 / PE_KEYSTORE_PASSWORD (see .github/workflows/build-apps.yml).
+    signingConfigs {
+        release {
+            storeFile file(System.getenv('PE_KEYSTORE_FILE') ?: 'release.keystore')
+            storePassword System.getenv('PE_KEYSTORE_PASSWORD')
+            keyAlias 'portenergy'
+            keyPassword System.getenv('PE_KEYSTORE_PASSWORD')
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.5.0'
+}

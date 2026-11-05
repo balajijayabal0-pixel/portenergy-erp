@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="appName">Port Energy ERP</string>
+    <string name="launcherName">Port Energy</string>
+    <string name="launchUrl">https://balajijayabal0-pixel.github.io/portenergy-erp/app/?source=android</string>
+    <string name="assetStatements" translatable="false">
+        [{ \"relation\": [\"delegate_permission/common.handle_all_urls\"],
+           \"target\": { \"namespace\": \"web\", \"site\": \"https://balajijayabal0-pixel.github.io\" } }]
+    </string>
+</resources>

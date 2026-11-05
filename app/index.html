@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Sora:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <title>Port Energy ERP</title>
 <meta name="theme-color" content="#0B1546">
 <meta name="mobile-web-app-capable" content="yes">
@@ -707,6 +707,7 @@ textarea[data-fit]{overflow-y:auto}
 <link rel="stylesheet" href="polish.css">
 <link rel="stylesheet" href="apple.css">
 <link rel="stylesheet" href="dash.css">
+<link rel="stylesheet" href="login.css">
 </head>
 <body>
 <div class="amb"><i></i><i></i><i></i></div>
@@ -715,32 +716,41 @@ textarea[data-fit]{overflow-y:auto}
 
 <!-- ============ LOGIN ============ -->
 <section id="login">
-  <div class="lx-bg" aria-hidden="true"><i class="a1"></i><i class="a2"></i><i class="a3"></i><div class="lx-grid"></div><div class="lx-stars"></div></div>
-  <header class="lx-top">
-    <span class="lx-logo"><img id="pitchLogo" alt="Port Energy Private Limited"></span>
-    <a class="lx-web" href="https://www.portenergy.in" target="_blank" rel="noopener">www.portenergy.in<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M7 17L17 7M8 7h9v9"/></svg></a>
+  <div class="lg-bg" aria-hidden="true">
+    <div class="lg-photo"><i class="lg-sweep"></i></div>
+    <svg class="lg-waves" viewBox="0 0 1600 900" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="lgW1" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#00D1FF" stop-opacity="0"/><stop offset=".35" stop-color="#00D1FF"/><stop offset=".7" stop-color="#2B6BFF"/><stop offset="1" stop-color="#F3026E" stop-opacity="0"/></linearGradient>
+        <linearGradient id="lgW2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7A3FF2" stop-opacity="0"/><stop offset=".5" stop-color="#F3026E"/><stop offset="1" stop-color="#FF5FA8" stop-opacity=".2"/></linearGradient>
+      </defs>
+      <g class="lg-w lg-w1"><path d="M-100 840 C 200 760, 420 900, 760 860 S 1300 760, 1700 820" stroke="url(#lgW1)" stroke-width="5" fill="none"/><path d="M-100 870 C 240 800, 480 930, 820 890 S 1320 800, 1700 860" stroke="url(#lgW1)" stroke-width="2" fill="none" opacity=".6"/></g>
+      <g class="lg-w lg-w2"><path d="M900 900 C 1100 820, 1300 860, 1700 700" stroke="url(#lgW2)" stroke-width="6" fill="none"/><path d="M960 920 C 1160 850, 1360 880, 1700 740" stroke="url(#lgW2)" stroke-width="2" fill="none" opacity=".6"/></g>
+      <g class="lg-w lg-w3"><path d="M1100 -20 C 1280 80, 1420 40, 1700 -10" stroke="url(#lgW1)" stroke-width="4" fill="none" opacity=".8"/></g>
+    </svg>
+    <i class="lg-glow g1"></i><i class="lg-glow g2"></i>
+  </div>
+
+  <header class="lg-top">
+    <span class="lg-logo"><img id="pitchLogo" alt="Port Energy Private Limited"></span>
+    <nav class="lg-svc" aria-label="What we do"><span>EPC</span><span>Pipelines</span><span>Fabrication</span><span>Painting &amp; Coating</span><span>Plant Maintenance</span></nav>
   </header>
-  <div class="lx-main">
-    <div class="hero">
-      <div class="eyebrow"><span class="pulse"></span>Our promise · Port Energy</div>
-      <h1 class="mottoX" aria-label="Impossible can be possible.">
-        <span class="w w1"><span class="strike">Impossible</span></span>
-        <span class="w w2">can be</span>
-        <span class="w w3">possible.</span>
-      </h1>
-      <div class="lx-rule"></div>
-      <p class="lead">Engineering that delivers, every single time. An ISO 9001:2015 certified team building pipelines, maintaining refineries and finishing painting and civil works &mdash; safely and on schedule.</p>
-      <div class="lx-stats">
-        <div><b>ISO 9001</b><span>2015 certified</span></div>
-        <div><b>HDPE &amp; MS</b><span>Pipeline projects</span></div>
-        <div><b>Refinery</b><span>Maintenance works</span></div>
-        <div><b>Civil</b><span>Painting &amp; structures</span></div>
-      </div>
+
+  <div class="lg-main">
+    <div class="lg-copy">
+      <div class="lg-eye">Enterprise Operations Platform</div>
+      <h1 class="lg-title">Port Energy ERP</h1>
+      <p class="lg-mods"><span>Projects</span><span>Procurement</span><span>Accounts</span><span>Administration</span></p>
+      <p class="lg-motto">Impossible can be possible.</p>
     </div>
-    <div class="glass auth">
-      <div class="orb" id="orb"><div class="ring r3"></div><div class="ring"></div><div class="ring r2"></div><div class="disc"></div><img id="orbLogo" alt=""></div>
-      <p class="lq" id="loginQuote"></p>
-<div id="stepPhone"></div>
+
+    <div class="lg-card auth">
+      <img class="lg-cardlogo" id="lgCardLogo" alt="Port Energy Private Limited">
+      <div class="orb" id="orb" aria-hidden="true"><img id="orbLogo" alt=""></div>
+      <p class="lq" id="loginQuote" hidden></p>
+      <div class="lg-wb">Welcome back</div>
+      <h2 class="lg-h">Sign In to Port Energy ERP</h2>
+      <p class="lg-sub">Access your projects, procurement, accounts and administration anytime, securely.</p>
+      <div id="stepPhone"></div>
       <div id="stepOtp" style="display:none">
         <h2>Enter OTP</h2>
         <p class="sub" id="otpInfo"></p>
@@ -748,10 +758,18 @@ textarea[data-fit]{overflow-y:auto}
         <button class="btn primary block" id="verifyBtn">Verify and sign in</button>
         <div class="authfoot"><button class="linkbtn" id="changeNo">Back</button><button class="linkbtn" id="resendBtn" disabled>Resend in 60s</button></div>
       </div>
-      <p class="lx-secure"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Secure sign-in · OTP / PIN · Port Energy staff only</p>
+      <p class="lx-secure"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Secure sign-in <i></i> OTP / PIN <i></i> Port Energy staff only</p>
     </div>
   </div>
-  <footer class="lx-foot"><span>Impossible can be possible.</span><br>© 2026 Port Energy Private Limited. All rights reserved. · Proprietary software for authorised Port Energy staff only.</footer>
+
+  <div class="lg-stats">
+    <div><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 10v4M11 10.5c0-.8.7-1 1.4-1s1.3.4 1.3 1-1 .9-1.5 1-1.3.4-1.3 1.2.6 1 1.3 1 1.4-.2 1.4-1"/><path d="M16.5 10a1.6 2 0 1 0 0 4 1.6 2 0 1 0 0-4"/></svg><b>ISO 9001</b><span>Certified</span></div>
+    <div><svg viewBox="0 0 24 24"><circle cx="8.5" cy="14.5" r="3.5"/><circle cx="15.5" cy="14.5" r="3.5"/><circle cx="12" cy="8.5" r="3.5"/></svg><b>HDPE &amp; MS</b><span>Pipeline Projects</span></div>
+    <div><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V11h4v10M9 21v-6h4v6M13 21V8h3v13M16 21v-9h3v9"/><path d="M14.5 8V4M7 11V8"/></svg><b>Refinery</b><span>Maintenance Works</span></div>
+    <div><svg viewBox="0 0 24 24"><path d="M3 18a9 9 0 0 1 18 0"/><path d="M2 18h20v2H2zM12 9V6M9 10V7.5M15 10V7.5"/></svg><b>Civil</b><span>Painting &amp; Structures</span></div>
+  </div>
+
+  <footer class="lg-foot"><span>&copy; 2026 Port Energy Private Limited. All Rights Reserved.</span><i></i><span>Enterprise Resource Platform (ERP) v5</span></footer>
 </section>
 
 <!-- ============ APP ============ -->
@@ -803,5 +821,6 @@ textarea[data-fit]{overflow-y:auto}
 <script src="install.js"></script>
 <script src="wa.js"></script>
 <script src="dash.js"></script>
+<script src="login.js"></script>
 </body>
 </html>

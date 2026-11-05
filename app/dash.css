@@ -256,38 +256,3 @@ body { background: var(--ap-bg); }
 @media (prefers-reduced-motion: reduce) {
   .dx-tr, .dx-seg, .dx-line, .dx-load i { animation: none !important; } .dx-line { stroke-dashoffset: 0; }
 }
-
-/* =====================================================================
-   LOGIN - navy + port artwork, compact hero, clean card
-   ===================================================================== */
-.lx-bg { background: radial-gradient(1000px 600px at 10% 0%, #1C2C8F 0%, transparent 60%), linear-gradient(180deg, #0B1546 0%, #0B1546 55%, #13206B 100%) !important; }
-.lx-bg > i, .lx-grid, .lx-stars { display: none !important; }
-.dx-lart { position: absolute; left: 0; right: 0; bottom: 0; height: 46vh; opacity: .95; }
-.dx-lart .dx-art { position: absolute; inset: 0; width: 100%; height: 100%; }
-.dx-lart::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, #0B1546 0%, rgba(11, 21, 70, 0) 45%); }
-#login { font-family: var(--ap-text); }
-#login .eyebrow { font: 700 11.5px var(--ap-text) !important; letter-spacing: .26em !important; }
-.mottoX { font-family: var(--ap-display) !important; font-size: clamp(34px, 5vw, 66px) !important; line-height: 1.02 !important; margin-top: 14px !important; }
-.lead { font-size: 15px !important; max-width: 500px !important; margin-top: 12px !important; color: #C9D3F5 !important; }
-.lx-stats { gap: 8px !important; margin-top: 18px !important; max-width: 560px !important; }
-.lx-stats div { padding: 10px 12px !important; border-radius: 12px !important; background: rgba(11, 21, 70, .55) !important; }
-.lx-stats b { font: 700 14px var(--ap-display) !important; } .lx-stats span { font-size: 11.5px !important; }
-.lx-main { grid-template-columns: 1.15fr .85fr !important; gap: clamp(20px, 4vw, 56px) !important; }
-#login .auth {
-  max-width: 400px !important; width: 100%; justify-self: end; padding: 22px 24px 18px !important; border-radius: 22px !important;
-  background: rgba(255, 255, 255, .97) !important; box-shadow: 0 30px 70px -24px rgba(0, 0, 0, .6) !important; font-family: var(--ap-text);
-}
-#login .auth h2 { font: 700 22px var(--ap-display) !important; letter-spacing: -.02em; }
-#login .orb { width: 70px !important; margin-bottom: 2px !important; }
-#login .lq { font-size: 12.5px !important; padding: 8px 10px !important; border-radius: 10px !important; }
-#login .auth .btn.primary { background: linear-gradient(120deg, #F3026E, #1B2F9E 70%, #0089F5) !important; border-radius: 12px !important; padding: 12px !important; font-weight: 700 !important; }
-#login .auth .in { border-radius: 12px !important; }
-#login .auth .chip, #login .auth [data-m] { border-radius: 999px !important; }
-.lx-foot { font-size: 11.5px !important; opacity: .8; }
-@media (max-width: 760px) {
-  .dx-lart { height: 30vh; opacity: .6; }
-  .lx-main { grid-template-columns: 1fr !important; }
-  #login .auth { justify-self: stretch; max-width: none !important; }
-  .mottoX { font-size: clamp(30px, 10vw, 44px) !important; }
-  .lead, .lx-stats { display: none !important; }
-}

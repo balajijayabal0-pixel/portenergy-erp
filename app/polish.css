@@ -1,0 +1,213 @@
+/* © 2026 Port Energy Private Limited. All rights reserved. Proprietary and confidential. */
+/* =====================================================================
+   PORT ENERGY ERP - DESIGN POLISH v1
+   Loaded after the original styles. Only refines: logo colours, type,
+   motion (no bounce on menus, matching enter/exit), mobile layout.
+   Remove this file + motion.js to get the original look back.
+   ===================================================================== */
+
+/* ---------- 1. Logo-matched colours + motion tokens ---------- */
+:root {
+  --magenta: #F3026E;            /* logo pink (measured from logo-full.png) */
+  --teal: #01B7A0;               /* logo teal */
+  --sky: #0089F5;                /* logo blue */
+  --pink: #F7479A;
+  --navy: #1B2F9E;
+  --ink: #121B54;
+  --grad: linear-gradient(120deg, #F3026E 0%, #B5309F 36%, #1B2F9E 70%, #0089F5 100%);
+  --brand-line: linear-gradient(90deg, #01B7A0, #0089F5 45%, #F3026E);
+  /* critically damped: settles fast, never overshoots (menus, sheets, pages) */
+  --ease: cubic-bezier(.2, .9, .24, 1);
+  --spring: cubic-bezier(.2, .9, .24, 1);
+  --ease-exit: cubic-bezier(.4, 0, .9, .5);
+  --sora: Sora, Manrope, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ---------- 2. Type: no serif fallback when Google Fonts is slow ---------- */
+.otp input, .avatar, .kpi .v, .empty b, .sec h4, .totals div:last-child { font-family: var(--sora); }
+.kpi .v { letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.tb td.num, .tb th.num, .totals { font-variant-numeric: tabular-nums; }
+.top h1 { letter-spacing: -.02em; }
+::selection { background: rgba(243, 2, 110, .16); }
+
+/* ---------- 3. Instant press feedback (on touch-down, not release) ---------- */
+.kpi.link, .wst, .chip, .bnav button, .side nav a, .side nav button, .tb tr.click, .pal .o, .menu button {
+  -webkit-user-select: none; user-select: none;
+}
+.btn:active { transform: scale(.97); transition: transform 90ms ease-out; }
+.kpi.link:active, .wst:active { transform: scale(.975); transition: transform 90ms ease-out; }
+.chip:active, .bnav button:active { transform: scale(.94); transition: transform 90ms ease-out; }
+.tb tr.click:active td { background: rgba(0, 137, 245, .07); }
+.kpi:hover { transform: translateY(-3px); }          /* calmer than the old tilt */
+
+/* ---------- 4. Page change: soft rise, same path every time ---------- */
+#content.pe-enter > * { animation: peIn .34s var(--ease) both; }
+@keyframes peIn { from { opacity: 0; transform: translateY(10px); } }
+
+/* ---------- 5. Modal, search palette, AI panel, menu: enter AND exit ---------- */
+.modal, .pal {
+  display: flex !important; visibility: hidden; opacity: 0; pointer-events: none; animation: none !important;
+  transition: opacity .2s var(--ease-exit), visibility 0s linear .2s;
+}
+.modal.open, .pal.open {
+  visibility: visible; opacity: 1; pointer-events: auto;
+  transition: opacity .26s var(--ease), visibility 0s;
+}
+.modal .box, .pal .box {
+  animation: none !important; transform: translateY(8px) scale(.97); opacity: .4;
+  transition: transform .2s var(--ease-exit), opacity .2s var(--ease-exit);
+}
+.modal.open .box, .pal.open .box {
+  transform: none; opacity: 1; transition: transform .38s var(--ease), opacity .26s var(--ease);
+}
+.menu { display: block !important; visibility: hidden; opacity: 0; transform: translateY(6px) scale(.97); transform-origin: bottom left;
+  pointer-events: none; animation: none !important; transition: opacity .16s var(--ease-exit), transform .16s var(--ease-exit), visibility 0s .16s; }
+.menu.open { visibility: visible; opacity: 1; transform: none; pointer-events: auto; transition: opacity .22s var(--ease), transform .3s var(--ease), visibility 0s; }
+
+/* side drawer + record drawer: same curve both ways */
+.drawer .pane { transition: transform .42s var(--ease); will-change: transform; }
+.drawer:not(.open) .pane { transition: transform .3s var(--ease-exit); }
+.drawer.open { transition: visibility 0s; }
+.drawer:not(.open) { transition: visibility 0s linear .3s; }
+.side { transition: transform .4s var(--ease); }
+
+/* ---------- 6. Toast: slides up from the bottom, back down the same way ---------- */
+#toast { transition: transform .32s var(--ease), opacity .24s var(--ease) !important; }
+
+/* ---------- 7. Brand line under the top bar + materials ---------- */
+.top { box-shadow: 0 1px 0 rgba(18, 27, 84, .06); }
+.top::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--brand-line); opacity: .55; }
+.glass { border-color: rgba(255, 255, 255, .85); }
+
+/* ---------- 8. Phone layout ---------- */
+@media (max-width: 760px) {
+  .top { gap: 10px; }
+  .top h1 { font-size: 19px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 52vw; }
+  .clk small, #clkQ { display: none; }
+  .clk b { font-size: 13px; }
+
+  /* bottom navigation: translucent material, sliding pill */
+  .side.open ~ .bnav { transform: translateY(calc(100% + 24px)); transition-timing-function: var(--ease-exit); }
+  .bnav {
+    transition: transform .38s var(--ease);
+    background: rgba(255, 255, 255, .86) !important; border: 1px solid rgba(255, 255, 255, .9) !important;
+    backdrop-filter: blur(22px) saturate(180%); -webkit-backdrop-filter: blur(22px) saturate(180%);
+    bottom: calc(10px + env(safe-area-inset-bottom)); border-radius: 22px; position: fixed;
+  }
+  .bnav button { position: relative; z-index: 1; background: none !important; transition: color .2s var(--ease); }
+  .bnav button.on { color: var(--magenta); }
+  .bnav .pe-pill {
+    position: absolute; z-index: 0; top: 7px; bottom: 7px; left: 0; border-radius: 14px;
+    background: linear-gradient(135deg, rgba(243, 2, 110, .10), rgba(0, 137, 245, .08));
+    box-shadow: inset 0 0 0 1px rgba(243, 2, 110, .12);
+    transition: transform .38s var(--ease), width .38s var(--ease); pointer-events: none;
+  }
+
+  /* list toolbar: tidy 2-column grid instead of wrapped pills */
+  .lhead .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .lhead .tools .search { grid-column: 1 / -1; }
+  .lhead .tools .btn { justify-content: center; }
+  .lhead .tools input[type=date] { min-width: 0; width: 100%; }
+  .status-chips { flex-wrap: nowrap; overflow-x: auto; margin: 12px -16px; padding: 2px 16px 6px; scrollbar-width: none; scroll-snap-type: x proximity; }
+  .status-chips::-webkit-scrollbar { display: none; }
+  .status-chips .chip { flex: none; scroll-snap-align: start; }
+
+  /* list table becomes cards (labels added by motion.js) */
+  #tbl.pe-cards { background: transparent; border: 0; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  #tbl.pe-cards .tablewrap { overflow: visible; border-radius: 0; max-height: none; }
+  #tbl.pe-cards .tb, #tbl.pe-cards .tb tbody, #tbl.pe-cards .tb tfoot { display: block; }
+  #tbl.pe-cards .tb thead { display: none; }
+  #tbl.pe-cards .tb tr {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: start;
+    margin: 0 0 10px; padding: 14px 16px; background: #fff; border-radius: 18px;
+    border: 1px solid #E8EDF8; box-shadow: 0 1px 2px rgba(18, 27, 84, .04), 0 10px 24px -18px rgba(18, 27, 84, .3);
+  }
+  #tbl.pe-cards .tb td {
+    display: flex; justify-content: space-between; gap: 12px; grid-column: 1 / -1;
+    padding: 0; border: 0; max-width: none; font-size: 13.5px; text-align: right; background: none !important;
+  }
+  #tbl.pe-cards .tb td::before { content: attr(data-label); color: var(--muted); font-weight: 600; text-align: left; flex: none; max-width: 45%; }
+  #tbl.pe-cards .tb td.num { font-weight: 800; color: var(--ink); }
+  #tbl.pe-cards .tb td.pe-first { grid-column: 1; grid-row: 1; display: block; text-align: left; font-weight: 800; font-size: 14px; color: var(--ink); margin-bottom: 4px; word-break: break-all; }
+  #tbl.pe-cards .tb td.pe-first::before, #tbl.pe-cards .tb td.pe-st::before { content: none; }
+  #tbl.pe-cards .tb td.pe-st { grid-column: 2; grid-row: 1; display: block; text-align: right; }
+  #tbl.pe-cards .tb tfoot tr { background: linear-gradient(135deg, #FFF4F9, #F1F7FF); border-color: #F5D9E8; }
+  #tbl.pe-cards .tb tfoot td { font-weight: 800; }
+
+  /* record drawer: a sheet that can be swiped away (motion.js) */
+  .drawer .pane { width: 100%; }
+  .drawer .pane::before {
+    content: ""; position: absolute; left: 0; top: 50%; width: 4px; height: 44px; margin-top: -22px; border-radius: 0 4px 4px 0;
+    background: rgba(18, 27, 84, .14); z-index: 5;
+  }
+
+  /* modal becomes a bottom sheet that rises from the bottom and leaves the same way */
+  .modal { align-items: flex-end; padding: 0; }
+  .modal .box {
+    width: 100%; max-height: 88vh; border-radius: 26px 26px 0 0; padding-top: 30px;
+    padding-bottom: calc(24px + env(safe-area-inset-bottom)); transform: translateY(100%); opacity: 1;
+    transition: transform .28s var(--ease-exit);
+  }
+  .modal.open .box { transform: translateY(0); transition: transform .44s var(--ease); }
+  .modal .box::before {
+    content: ""; position: absolute; top: 10px; left: 50%; width: 40px; height: 5px; margin-left: -20px;
+    border-radius: 5px; background: rgba(18, 27, 84, .18);
+  }
+  .modal .box { position: relative; }
+  .modal .box.pe-swipe { touch-action: none; }
+  .modal { transition: background-color .28s var(--ease), visibility 0s linear .3s; opacity: 1 !important; background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .modal.open { background: rgba(18, 27, 84, .38); transition: background-color .3s var(--ease), visibility 0s; }
+  .drawer .pane, .drawer .pane * { touch-action: pan-y pinch-zoom; }
+  .drawer .pane .tablewrap, .drawer .pane .tablewrap *, .drawer .pane [style*="overflow"], .drawer .pane [style*="overflow"] *,
+  .drawer .pane .lines, .drawer .pane .lines *, .drawer .pane input, .drawer .pane textarea, .drawer .pane select { touch-action: auto; }
+  .menu { transform-origin: bottom right; }
+}
+
+/* ---------- 8b. Pull to refresh + offline banner ---------- */
+.pe-ptr {
+  position: fixed; top: calc(62px + env(safe-area-inset-top)); left: 50%; z-index: 35; width: 40px; height: 40px; border-radius: 50%;
+  display: grid; place-items: center; background: #fff; color: var(--muted); opacity: 0; transform: translate(-50%, -40px);
+  box-shadow: 0 8px 20px -8px rgba(18, 27, 84, .35); pointer-events: none;
+  transition: transform .34s var(--ease), opacity .24s var(--ease), color .2s;
+}
+.pe-ptr.ready { color: var(--magenta); }
+.pe-ptr.spin svg { animation: peSpin .7s linear infinite; }
+@keyframes peSpin { to { transform: rotate(360deg); } }
+.pe-off {
+  position: fixed; left: 50%; top: calc(10px + env(safe-area-inset-top)); z-index: 140; transform: translate(-50%, -140%);
+  padding: 9px 16px; border-radius: 999px; background: #121B54; color: #fff; font-weight: 700; font-size: 13px;
+  box-shadow: 0 12px 28px -12px rgba(18, 27, 84, .6); transition: transform .38s var(--ease); max-width: calc(100% - 32px); text-align: center;
+}
+.pe-off.show { transform: translate(-50%, 0); }
+.pe-off.ok { background: linear-gradient(120deg, #0E9F6E, var(--teal)); }
+
+/* ---------- 8c. Install button + iPhone steps ---------- */
+.pe-inst {
+  margin: 14px auto 0; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+  padding: 11px 14px; border-radius: 14px; border: 1.5px dashed rgba(0, 137, 245, .45); background: rgba(0, 137, 245, .06);
+  color: var(--navy); font-weight: 800; font-size: 14px; cursor: pointer; transition: background .2s var(--ease), transform 90ms ease-out;
+}
+.pe-inst:hover { background: rgba(0, 137, 245, .11); }
+.pe-inst:active { transform: scale(.97); }
+#peInstallM { color: var(--navy); font-weight: 800; }
+.pe-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.pe-steps li { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; background: #F4F7FD; font-size: 14.5px; }
+.pe-steps .n { flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--grad); color: #fff; font-weight: 800; font-size: 13px; }
+.pe-steps svg { vertical-align: -4px; color: var(--sky); }
+@media (display-mode: standalone) { .pe-inst, #peInstallM { display: none !important; } }
+
+/* ---------- 9. Accessibility: reduced motion / transparency / more contrast ---------- */
+@media (prefers-reduced-motion: reduce) {
+  #content.pe-enter > * { animation: peFade .2s ease both !important; }
+  @keyframes peFade { from { opacity: 0; } }
+  .modal .box, .pal .box, .menu, .drawer .pane, .side { transition: opacity .2s ease !important; }
+  .modal .box, .pal .box, .menu { transform: none !important; }
+  .btn:active, .kpi.link:active, .wst:active, .chip:active, .bnav button:active { transform: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .bnav, .top, .glass, .side { background: #fff !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+}
+@media (prefers-contrast: more) {
+  .glass, .kpi, #tbl.pe-cards .tb tr { border: 1.5px solid #8A93B8 !important; }
+  .top::after { opacity: 1; }
+}

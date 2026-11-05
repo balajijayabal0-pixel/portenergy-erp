@@ -159,7 +159,7 @@ function hsnGuess(text) { var t = String(text || ''); for (var i = 0; i < HSN.le
 /* =====================================================================
    BOOT (instant from cache) + LOGIN
    ===================================================================== */
-['bootLogo', 'orbLogo'].forEach(function (i) { $(i).src = LOGO_MARK; });
+$('bootLogo').src = LOGO_FULL; $('orbLogo').src = LOGO_MARK;
 ['pitchLogo', 'sideLogo'].forEach(function (i) { $(i).src = LOGO_FULL; });
 $('welLogo').src = LOGO_MARK;
 /* ---------------- motivation: login quotes + welcome ---------------- */

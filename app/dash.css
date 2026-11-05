@@ -20,12 +20,11 @@
 body { background: var(--ap-bg); }
 
 /* ---------- sidebar: deep navy with the motto and pipeline art at the foot ---------- */
-@media (min-width: 761px) {
-  .side {
+/* applies on phone too (menu drawer), and beats the light fallbacks in apple.css / polish.css */
+html body .side {
     background: linear-gradient(180deg, #0B1546 0%, #101C5C 55%, #0B1546 100%) !important;
     backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border-right: 0 !important;
     box-shadow: 8px 0 30px -18px rgba(11, 21, 70, .6) !important;
-  }
 }
 .side { color: #DCE3FF; }
 .side .logo { background: #fff; margin: 0 0 6px; padding: 14px 16px !important; border-radius: 0 0 22px 0; box-shadow: 0 10px 24px -14px rgba(0, 0, 0, .5); }

@@ -1,0 +1,68 @@
+/* © 2026 Port Energy Private Limited. All rights reserved. Proprietary and confidential. */
+/* =====================================================================
+   PORT ENERGY ERP - LOADING v3 (calm)
+   Start screen = same navy as the sign-in page, full logo on a white tile,
+   one thin line that fills smoothly. No spinning rings, no ping-pong bars.
+   Loads after polish.css / dash.css and replaces their loading looks.
+   ===================================================================== */
+
+/* ---------- start screen ---------- */
+#boot {
+  background: radial-gradient(800px 560px at 50% 42%, #1A2A8C 0%, rgba(26, 42, 140, 0) 70%),
+              linear-gradient(160deg, #0B1650 0%, #0A1240 55%, #0B0F38 100%) !important;
+  transition: opacity .45s ease !important;
+}
+#boot .pe-boot { display: flex; flex-direction: column; align-items: center; gap: 0; animation: none !important; }
+#boot .pb-logo {
+  padding: 16px 24px; border-radius: 20px; background: #fff;
+  box-shadow: 0 30px 60px -28px rgba(0, 0, 0, .75), 0 0 0 1px rgba(255, 255, 255, .6);
+  opacity: 0; transform: translateY(10px) scale(.97); animation: pbIn .7s cubic-bezier(.2, .9, .24, 1) .05s forwards;
+}
+#boot .pb-logo img { display: block; height: 64px; width: auto; animation: none !important; }
+#boot .pe-bar {
+  margin: 28px 0 0; width: 168px; height: 3px; border-radius: 3px; background: rgba(255, 255, 255, .14); overflow: hidden;
+  opacity: 0; animation: pbFade .5s ease .35s forwards;
+}
+#boot .pe-bar i {
+  display: block; height: 100%; width: 100%; border-radius: 3px;
+  background: linear-gradient(90deg, #00C2FF, #7A5CFF, #F3026E);
+  transform-origin: left; transform: scaleX(0);
+  animation: pbFill 4s cubic-bezier(.12, .7, .25, 1) .4s forwards !important;
+}
+#boot small {
+  margin-top: 14px; font: italic 400 14px var(--lg-font, Poppins, system-ui, sans-serif); color: #C9D4FF; letter-spacing: .01em;
+  opacity: 0; animation: pbFade .6s ease .5s forwards;
+}
+@keyframes pbIn { to { opacity: 1; transform: none; } }
+@keyframes pbFade { to { opacity: 1; } }
+@keyframes pbFill { 0% { transform: scaleX(0); } 100% { transform: scaleX(.92); } }   /* fills, never jumps back */
+
+/* ---------- top line while the server works ---------- */
+.pe-net { height: 2.5px !important; background: transparent; }
+.pe-net i {
+  width: 100% !important; box-shadow: none !important; border-radius: 0 !important;
+  background: linear-gradient(90deg, #00C2FF, #7A5CFF, #F3026E) !important;
+  transform-origin: left; transform: scaleX(0); animation: none !important;
+}
+.pe-net.on i { animation: pbFill 6s cubic-bezier(.12, .7, .25, 1) forwards !important; }
+
+/* ---------- daily welcome screen: same calm line ---------- */
+.wel-bar i {
+  display: block; height: 100%; width: 100% !important;
+  background: linear-gradient(90deg, #00C2FF, #7A5CFF, #F3026E) !important;
+  transform-origin: left; transform: scaleX(0); animation: pbFill 4s cubic-bezier(.12, .7, .25, 1) forwards !important;
+}
+
+/* ---------- placeholders while a list loads: soft fade, no shiny sweep ---------- */
+.sk { background: #E6EBF5 !important; animation: pbPulse 1.6s ease-in-out infinite; }
+.sk::after { display: none !important; }
+@media (max-width: 760px) { #tbl .skl { background: #fff !important; } }
+@keyframes pbPulse { 50% { opacity: .55; } }
+
+@media (prefers-reduced-motion: reduce) {
+  #boot .pb-logo, #boot .pe-bar, #boot small { animation: none !important; opacity: 1; transform: none; }
+  #boot .pe-bar i, .pe-net.on i, .wel-bar i { animation: none !important; transform: scaleX(.6); }
+  .sk { animation: none; }
+}
+/* one loader at a time: no top line while the start screen is showing */
+#boot:not([style*="none"]) ~ .pe-net { display: none !important; }

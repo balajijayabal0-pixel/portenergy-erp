@@ -6,8 +6,8 @@
  * Screens: open from the saved copy, then quietly fetch the newest copy for next time.
  * Change VERSION on each upload to clear old copies.
  */
-const VERSION = 'pe-app-v11';
-const SHELL = ['./', './index.html', './app.js', './bridge.js', './logo.js', './polish.css', './apple.css', './dash.css', './motion.js', './install.js', './wa.js', './dash.js', './login.css', './login.js', './login-hero.jpg', './loading.css', './fx.css', './refine.css', './fx.js',
+const VERSION = 'pe-app-v12';
+const SHELL = ['./', './index.html', './app.js', './bridge.js', './logo.js', './polish.css', './apple.css', './dash.css', './motion.js', './install.js', './wa.js', './dash.js', './login.css', './login.js', './login-hero.jpg', './loading.css', './fx.css', './refine.css', './pro.css', './pro.js', './reports.js', './print.js', './books.js', './fx.js',
   './manifest.webmanifest', '../config.js', '../icons/icon-192.png', '../icons/icon-512.png', '../icons/favicon.png'];
 
 self.addEventListener('install', function (e) {
@@ -47,7 +47,8 @@ self.addEventListener('fetch', function (e) {
     return c.match(req).then(function (hit) {
       const net = fetch(req).then(function (r) { if (r && r.ok) c.put(req, r.clone()); return r; });
       if (hit) { e.waitUntil(net.catch(function () { return null; })); return hit; }
-      return net;
+      // new version stamp not cached yet: take it from the internet; offline -> any saved copy of the same file
+      return net.catch(function () { return c.match(req, { ignoreSearch: true }).then(function (h) { return h || Response.error(); }); });
     });
   }));
 });

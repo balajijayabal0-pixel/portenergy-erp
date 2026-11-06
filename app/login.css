@@ -165,3 +165,113 @@
   .lg-photo, .lg-sweep, .lg-w, #login .lg-card::before, #login .btn.primary::before { animation: none !important; }
   .lg-top, .lg-eye, .lg-title, .lg-mods, .lg-motto, #login .lg-card, .lg-stats, .lg-eye::after, .lg-motto::after { animation-duration: .01s !important; animation-delay: 0s !important; }
 }
+
+/* =====================================================================
+   SIGN-IN v4: "who are you" first, then PIN or OTP. One screen, no scroll.
+   ===================================================================== */
+.lgx-step { animation: lgUp .35s both; }
+.lgx-in { position: relative; }
+.lgx-in input { width: 100%; padding: 14px 14px 14px 44px; border: 1.5px solid #D5DCEF; border-radius: 14px; font: 500 16px var(--lg-font); color: var(--lg-ink); background: #fff; outline: none; transition: border-color .2s, box-shadow .2s; }
+.lgx-in input:focus { border-color: var(--lg-blue); box-shadow: 0 0 0 4px rgba(30, 91, 255, .12); }
+.lgx-ic { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #7A86B0; display: flex; }
+.lgx-hint { margin: 10px 0 0; text-align: center; font: 400 12.5px var(--lg-font); color: #6B76A0; }
+.lgx-peek { display: flex; align-items: center; gap: 12px; max-height: 0; opacity: 0; overflow: hidden; margin: 0; padding: 0 12px; border-radius: 14px; background: #F3F6FF; border: 1px solid transparent; transition: max-height .35s, opacity .3s, margin .3s, padding .3s; }
+.lgx-peek.show { max-height: 80px; opacity: 1; margin: 10px 0 2px; padding: 10px 12px; border-color: #DCE4FA; }
+.lgx-peek.bad { background: #FDECEF; border-color: #F7C6D0; color: #A3133A; }
+.lgx-peek div { flex: 1; min-width: 0; display: grid; }
+.lgx-peek b { font: 600 14.5px var(--lg-font); color: var(--lg-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lgx-peek.bad b { color: #A3133A; }
+.lgx-peek small { font: 400 12px var(--lg-font); color: #5C6894; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lgx-peek > i { color: #12A37F; display: flex; }
+.lgx-av { flex: none; width: 64px; height: 64px; border-radius: 50%; overflow: hidden; display: grid; place-items: center; background: linear-gradient(135deg, #1E5BFF, #F3026E); color: #fff; box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(30, 91, 255, .35), 0 12px 24px -10px rgba(13, 26, 79, .55); animation: lgxPop .5s cubic-bezier(.2, 1.4, .4, 1) both; }
+.lgx-av.sm { width: 40px; height: 40px; box-shadow: 0 0 0 2px #fff, 0 0 0 3px rgba(30, 91, 255, .3); }
+.lgx-av img { width: 100%; height: 100%; object-fit: cover; }
+.lgx-av b { font: 700 22px var(--lg-font); }
+.lgx-av.sm b { font-size: 15px; }
+@keyframes lgxPop { from { transform: scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
+.lgx-me { display: flex; align-items: center; gap: 14px; padding: 4px 0 14px; border-bottom: 1px solid #E6EAF5; margin-bottom: 14px; }
+.lgx-mt { flex: 1; min-width: 0; display: grid; }
+.lgx-mt small { font: 500 11.5px var(--lg-font); letter-spacing: .14em; text-transform: uppercase; color: #6B76A0; }
+.lgx-mt b { font: 700 19px/1.25 var(--lg-font); color: var(--lg-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lgx-mt span { font: 400 12.5px var(--lg-font); color: #5C6894; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lgx-chg { flex: none; font-size: 12.5px !important; }
+.lgx-seg { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 14px; background: #EEF2FB; margin-bottom: 12px; }
+.lgx-seg button { display: flex; align-items: center; justify-content: center; gap: 7px; border: 0; border-radius: 11px; padding: 10px 8px; background: transparent; color: #4A5682; font: 600 13.5px var(--lg-font); cursor: pointer; transition: background .2s, color .2s, box-shadow .2s; }
+.lgx-seg button.on { background: #fff; color: var(--lg-ink); box-shadow: 0 6px 16px -8px rgba(13, 26, 79, .45); }
+.lgx-pin { text-align: center; font-size: 22px !important; letter-spacing: 12px; padding: 13px !important; }
+.lgx-note, .lgx-warn { margin: 0 0 12px; font: 400 13px/1.5 var(--lg-font); color: #49557F; }
+.lgx-warn { padding: 10px 12px; border-radius: 12px; background: #FFF6E5; color: #8A5300; }
+.lgx-row { display: flex; justify-content: center; }
+#login .lgx-step .btn.primary { margin-top: 12px; }
+#login.lg-who .lg-wb, #login.lg-who .lg-h, #login.lg-who .lg-sub { display: none; }
+.shake { animation: lgxShake .4s; }
+@keyframes lgxShake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+
+/* one screen on every device: trim decoration when space is short */
+@media (max-width: 900px) {
+  #login { height: 100dvh; overflow-y: auto; overflow-x: hidden; grid-template-rows: auto 1fr auto !important; }
+  .lg-bg { overflow: hidden; }
+  .lg-stats, .lg-copy .lg-mods, .lg-copy .lg-motto { display: none !important; }
+  #login .lg-sub { display: none; }
+  .lg-foot { font-size: 10.5px; }
+}
+@media (max-width: 900px) and (max-height: 760px) {
+  .lg-copy { display: none !important; }
+  .lg-main { padding-top: 10px !important; }
+}
+@media (min-width: 901px) {
+  #login { height: 100dvh; overflow: hidden; }
+}
+@media (min-width: 901px) and (max-height: 820px) {
+  .lg-stats { display: none !important; }
+  .lg-cardlogo { height: 46px !important; margin-bottom: 10px !important; }
+  .lg-sub { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .lgx-step, .lgx-av, .shake { animation: none !important; } }
+
+/* =====================================================================
+   SIGN-IN CARD: Port Energy navy glass (not white)
+   ===================================================================== */
+#login .lg-card {
+  background: linear-gradient(160deg, rgba(27, 42, 140, .78) 0%, rgba(13, 22, 82, .86) 55%, rgba(48, 14, 92, .86) 100%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.3); backdrop-filter: blur(18px) saturate(1.3);
+  color: #EEF2FF !important;
+  box-shadow: 0 40px 90px -30px rgba(0, 0, 0, .8), inset 0 0 0 1px rgba(140, 170, 255, .28), inset 0 1px 0 rgba(255, 255, 255, .18) !important;
+}
+#login .lg-card::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: radial-gradient(420px 220px at 100% 0%, rgba(0, 194, 255, .16), transparent 70%), radial-gradient(380px 240px at 0% 100%, rgba(243, 2, 110, .16), transparent 70%); }
+#login .lg-card > * { position: relative; z-index: 1; }
+.lg-cardlogo { background: #fff; padding: 6px 12px; border-radius: 12px; box-sizing: content-box; }
+#login .lg-wb { color: #8FD8FF; }
+#login .lg-h { color: #fff !important; }
+#login .lg-sub, #login .note, #login .lgx-hint { color: #B9C3EE !important; }
+#login label.f { color: #DCE3FF !important; }
+.lgx-in input, #login .in { background: rgba(255, 255, 255, .07) !important; border: 1.5px solid rgba(160, 185, 255, .32) !important; color: #fff !important; }
+.lgx-in input::placeholder, #login .in::placeholder { color: rgba(220, 228, 255, .45); }
+.lgx-in input:focus, #login .in:focus { border-color: #00C2FF !important; box-shadow: 0 0 0 4px rgba(0, 194, 255, .18) !important; background: rgba(255, 255, 255, .1) !important; }
+.lgx-ic { color: #8FD8FF; }
+.lgx-peek { background: rgba(255, 255, 255, .07); }
+.lgx-peek.show { border-color: rgba(143, 216, 255, .3); }
+.lgx-peek b, .lgx-mt b { color: #fff; }
+.lgx-peek small, .lgx-mt span { color: #B9C3EE; }
+.lgx-peek > i { color: #3DF0C4; }
+.lgx-peek.bad { background: rgba(243, 2, 110, .16); border-color: rgba(255, 120, 170, .45); }
+.lgx-peek.bad b, .lgx-peek.bad small { color: #FFC2D9; }
+.lgx-mt small { color: #8FD8FF; }
+.lgx-me { border-bottom-color: rgba(160, 185, 255, .2); }
+.lgx-av { box-shadow: 0 0 0 3px rgba(13, 22, 82, .9), 0 0 0 5px #00C2FF, 0 0 24px 4px rgba(0, 194, 255, .45); }
+.lgx-av.sm { box-shadow: 0 0 0 2px rgba(13, 22, 82, .9), 0 0 0 3px #00C2FF; }
+.lgx-seg { background: rgba(0, 0, 0, .22); box-shadow: inset 0 0 0 1px rgba(160, 185, 255, .2); }
+.lgx-seg button { color: #C4CDF2; }
+.lgx-seg button.on { background: linear-gradient(135deg, #1E5BFF, #7A3CF0); color: #fff; box-shadow: 0 8px 18px -8px rgba(30, 91, 255, .9); }
+.lgx-note { color: #C4CDF2 !important; } .lgx-note b { color: #fff; }
+.lgx-warn { background: rgba(255, 180, 60, .14) !important; color: #FFD58A !important; }
+#login .linkbtn, .lgx-chg { color: #8FD8FF !important; }
+.lg-forgot { color: #8FD8FF; }
+.lg-fp { background: rgba(255, 255, 255, .08); border-color: rgba(160, 185, 255, .28); color: #DCE3FF; }
+.lg-fp .go { background: #00C2FF; color: #0A1240; } .lg-fp .no { background: rgba(255, 255, 255, .14); color: #fff; }
+.lg-fp.ok { background: rgba(61, 240, 196, .14); border-color: rgba(61, 240, 196, .4); color: #BDFBEA; }
+.lg-fp.bad { background: rgba(243, 2, 110, .16); border-color: rgba(255, 120, 170, .45); color: #FFC2D9; }
+#login .lx-secure, #login .lx-secure svg { color: #AEB9E8 !important; }
+#login .lx-secure i { background: #6F7BB0; }
+#login .otp input { background: rgba(255, 255, 255, .08); border-color: rgba(160, 185, 255, .35); color: #fff; }
+#login #stepOtp h2 { color: #fff; } #login #otpInfo { color: #C4CDF2; display: block !important; } #login #otpInfo b { color: #fff; }

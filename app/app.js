@@ -210,36 +210,100 @@ function start() {
   host.addEventListener('pointerleave', function () { el.style.transform = ''; });
 })();
 
-var L = { mode: store.get('pe_loginmode') || 'mobile', id: '' };
-function showLogin() { $('app').style.display = 'none'; $('login').style.display = 'grid'; $('loginQuote').textContent = pickQ(LQ, 'pe_lq'); renderLoginStep(); }
+var L = { id: '', who: null, how: store.get('pe_loginhow') || '' };
+function showLogin() { $('app').style.display = 'none'; $('login').style.display = 'grid'; $('loginQuote').textContent = pickQ(LQ, 'pe_lq'); L.who = null; renderLoginStep(); }
+function idOk(v) { return /^[6-9]\d{9}$/.test(v) || /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v); }
+function lkCache(id, w) { var k = 'pe_lk_' + String(id).toLowerCase(); if (w) { try { store.set(k, JSON.stringify(w)); } catch (e) { } return w; } try { return JSON.parse(store.get(k) || 'null'); } catch (e) { return null; } }
+function avHtml(w, cls) { return '<span class="' + (cls || 'lgx-av') + '">' + (w && w.photo ? '<img src="' + w.photo + '" alt="">' : '<b>' + esc(initials(w ? w.name : '')) + '</b>') + '</span>'; }
+/* Step 1 - who are you? (mobile or email). As soon as a full number is typed the person's photo and name appear. */
 function renderLoginStep() {
-  var box = $('stepPhone'), m = L.mode;
-  box.innerHTML = '<h2>Sign in</h2><div class="chips" style="margin:14px 0 18px" role="tablist">' +
-    [['mobile', 'Mobile OTP'], ['email', 'Email OTP'], ['pin', 'PIN']].map(function (x) { return '<button class="chip' + (m === x[0] ? ' on' : '') + '" data-m="' + x[0] + '" role="tab">' + x[1] + '</button>'; }).join('') + '</div>' +
-    (m === 'email'
-      ? '<p class="sub">Enter your registered email. We will send a one-time password to it.</p><label class="f" for="lid">Email</label><input class="in" id="lid" type="email" autocomplete="email" placeholder="name@portenergy.in" style="padding:15px;font-size:16px">'
-      : '<p class="sub">' + (m === 'pin' ? 'Enter your mobile number and PIN.' : 'Enter your registered mobile number. The OTP goes to your registered email.') + '</p><label class="f" for="lid">Mobile number</label><div class="phone"><span>+91</span><input id="lid" inputmode="numeric" maxlength="10" autocomplete="tel-national" placeholder="98765 43210"></div>') +
-    (m === 'pin' ? '<label class="f" for="lpin" style="margin-top:14px">PIN</label><input class="in" id="lpin" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password" placeholder="4 to 6 digits" style="padding:15px;font-size:18px;letter-spacing:6px">' : '') +
-    '<button class="btn primary block" id="goBtn">' + (m === 'pin' ? 'Sign in' : 'Send OTP') + '</button>' +
-    (m === 'pin' ? '<p class="note" style="margin-top:10px">No PIN yet? Sign in once with OTP and set it from your profile menu, or ask admin to set one.</p>' : '');
+  var box = $('stepPhone'); $('login').classList.remove('lg-who');
+  var saved = store.get('pe_lastid') || store.get('pe_lastid_m') || '';
+  box.innerHTML = '<div class="lgx-step">' +
+    '<label class="f" for="lid">Mobile number or email</label>' +
+    '<div class="lgx-in"><span class="lgx-ic">' + icon('users', 17) + '</span><input id="lid" autocomplete="username" inputmode="email" placeholder="98765 43210 or name@portenergy.in" value="' + esc(saved) + '"></div>' +
+    '<div class="lgx-peek" id="lgPeek"></div>' +
+    '<button class="btn primary block" id="goBtn">Continue</button>' +
+    '<p class="lgx-hint">We will show your profile, then you choose PIN or OTP.</p></div>';
   $('stepPhone').style.display = 'block'; $('stepOtp').style.display = 'none';
-  box.querySelectorAll('[data-m]').forEach(function (b) { b.onclick = function () { L.mode = b.dataset.m; store.set('pe_loginmode', L.mode); renderLoginStep(); }; });
-  var lid = $('lid'), saved = store.get('pe_lastid_' + (m === 'email' ? 'e' : 'm')); if (saved) lid.value = saved;
-  if (m !== 'email') lid.addEventListener('input', function () { this.value = this.value.replace(/\D/g, '').slice(0, 10); });
-  lid.addEventListener('keydown', function (e) { if (e.key === 'Enter') { if (m === 'pin') $('lpin').focus(); else go(); } });
-  if ($('lpin')) $('lpin').addEventListener('keydown', function (e) { if (e.key === 'Enter') go(); });
-  $('goBtn').onclick = go;
-  setTimeout(function () { (lid.value && $('lpin') ? $('lpin') : lid).focus(); }, 200);
-  function go() {
-    var id = lid.value.trim();
-    if (m === 'email' ? !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(id) : !/^[6-9]\d{9}$/.test(id)) { toast(m === 'email' ? 'Enter a valid email.' : 'Enter a valid 10-digit mobile number.', true); lid.focus(); return; }
-    store.set('pe_lastid_' + (m === 'email' ? 'e' : 'm'), id); L.id = id;
-    if (m === 'pin') {
-      var pin = $('lpin').value;
-      if (!/^\d{4,6}$/.test(pin)) { toast('Enter your 4 to 6 digit PIN.', true); $('lpin').focus(); return; }
-      busy($('goBtn'), true, 'Signing in'); welcome(store.get('pe_name_' + id) || '', true);
-      call('loginPin', id, pin).then(loggedIn).catch(function (e) { cancelWelcome(); busy($('goBtn'), false); fail(e); $('lpin').value = ''; $('lpin').focus(); });
-    } else sendOtp($('goBtn'));
+  var lid = $('lid'), seq = 0;
+  var peek = debounce(function () {
+    var v = lid.value.trim().replace(/\s/g, ''); if (/^\d+$/.test(v)) v = v.slice(-10);
+    var pk = $('lgPeek'); if (!pk) return;
+    if (!idOk(v)) { pk.innerHTML = ''; pk.className = 'lgx-peek'; return; }
+    var c = lkCache(v); if (c) showPeek(c);
+    var my = ++seq;
+    call('loginLookup', v).then(function (w) { if (my !== seq) return; lkCache(v, w); showPeek(w); })
+      .catch(function (e) { if (my !== seq) return; if (/not registered|inactive|valid/i.test(e.message || '')) { pk.className = 'lgx-peek bad show'; pk.innerHTML = '<span>' + icon('warn', 16) + '</span><div><b>Not registered</b><small>' + esc(e.message) + '</small></div>'; } else if (!c) { pk.innerHTML = ''; pk.className = 'lgx-peek'; } });
+  }, 260);
+  function showPeek(w) { var pk = $('lgPeek'); if (!pk) return; pk.className = 'lgx-peek show'; pk.innerHTML = avHtml(w, 'lgx-av sm') + '<div><b>' + esc(w.name) + '</b><small>' + esc([w.designation, w.dept].filter(String).join(' · ')) + '</small></div><i>' + icon('check', 16) + '</i>'; }
+  lid.addEventListener('input', peek);
+  lid.addEventListener('keydown', function (e) { if (e.key === 'Enter') next(); });
+  $('goBtn').onclick = next;
+  if (saved) peek();
+  setTimeout(function () { if (window.innerWidth > 760 || !saved) lid.focus(); }, 200);
+  function next() {
+    var v = lid.value.trim().replace(/\s/g, ''); if (/^\+?91\d{10}$/.test(v)) v = v.slice(-10);
+    if (!idOk(v)) { toast('Enter your registered 10-digit mobile number or email.', true); lid.focus(); return; }
+    store.set('pe_lastid', v); if (/^\d+$/.test(v)) store.set('pe_lastid_m', v); L.id = v;
+    var c = lkCache(v);
+    busy($('goBtn'), true, 'Checking');
+    call('loginLookup', v).then(function (w) { lkCache(v, w); L.who = w; renderVerify(); })
+      .catch(function (e) {
+        busy($('goBtn'), false);
+        if (/Unknown request/i.test(e.message || '')) { L.who = c || { name: store.get('pe_name_' + v) || '', hasPin: true, hasEmail: true }; renderVerify(); return; }
+        fail(e); lid.focus();
+      });
+  }
+}
+/* Step 2 - photo + name, then choose PIN or OTP */
+function renderVerify() {
+  var w = L.who || {}, box = $('stepPhone'); $('login').classList.add('lg-who');
+  var how = L.how && (L.how === 'pin' ? w.hasPin !== false : w.hasEmail !== false) ? L.how : (w.hasPin !== false ? 'pin' : 'otp');
+  box.innerHTML = '<div class="lgx-step">' +
+    '<div class="lgx-me">' + avHtml(w) + '<div class="lgx-mt"><small>' + greet() + '</small><b>' + esc(w.name || L.id) + '</b><span>' + esc([w.designation, w.dept].filter(String).join(' · ')) + '</span></div>' +
+    '<button class="linkbtn lgx-chg" id="lgChg" type="button">Not you?</button></div>' +
+    '<div class="lgx-seg" role="tablist"><button data-h="pin" role="tab"' + (how === 'pin' ? ' class="on"' : '') + '>' + icon('lock', 15) + 'Use my PIN</button><button data-h="otp" role="tab"' + (how === 'otp' ? ' class="on"' : '') + '>' + icon('mail', 15) + 'Send OTP</button></div>' +
+    '<div id="lgHow"></div></div>';
+  $('stepPhone').style.display = 'block'; $('stepOtp').style.display = 'none';
+  $('lgChg').onclick = function () { L.who = null; renderLoginStep(); };
+  box.querySelectorAll('[data-h]').forEach(function (b) { b.onclick = function () { L.how = b.dataset.h; store.set('pe_loginhow', L.how); box.querySelectorAll('[data-h]').forEach(function (x) { x.classList.toggle('on', x === b); }); drawHow(b.dataset.h); }; });
+  drawHow(how);
+  function drawHow(h) {
+    var el = $('lgHow');
+    if (h === 'pin') {
+      el.innerHTML = (w.hasPin === false ? '<p class="lgx-warn">No PIN is set for this account yet. Use OTP once, then set a PIN from your profile menu.</p>' : '') +
+        '<label class="f" for="lpin">PIN</label><input class="in lgx-pin" id="lpin" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password" placeholder="• • • •">' +
+        '<button class="btn primary block" id="goBtn">Sign in</button>' +
+        '<div class="lgx-row"><button type="button" class="lg-forgot" id="lgForgot">' + icon('lock', 14) + 'Forgot PIN?</button></div><div id="lgFp"></div>';
+      var pin = $('lpin');
+      pin.addEventListener('input', function () { pin.value = pin.value.replace(/\D/g, '').slice(0, 6); });
+      pin.addEventListener('keydown', function (e) { if (e.key === 'Enter') doPin(); });
+      $('goBtn').onclick = doPin; $('lgForgot').onclick = forgot;
+      setTimeout(function () { pin.focus(); }, 120);
+    } else {
+      el.innerHTML = (w.hasEmail === false ? '<p class="lgx-warn">No email is registered for this account. Please use your PIN, or ask the Super Admin to add your email.</p>' :
+        '<p class="lgx-note">A 6-digit OTP will be sent to <b>' + esc(w.email || 'your registered email') + '</b>. It is valid for 5 minutes.</p>') +
+        '<button class="btn primary block" id="goBtn"' + (w.hasEmail === false ? ' disabled' : '') + '>Send OTP</button>';
+      $('goBtn').onclick = function () { sendOtp($('goBtn')); };
+    }
+  }
+  function doPin() {
+    var pin = $('lpin').value;
+    if (!/^\d{4,6}$/.test(pin)) { toast('Enter your 4 to 6 digit PIN.', true); $('lpin').focus(); return; }
+    busy($('goBtn'), true, 'Signing in'); welcome(w.name || store.get('pe_name_' + L.id) || '', true);
+    call('loginPin', L.id, pin).then(loggedIn).catch(function (e) { cancelWelcome(); busy($('goBtn'), false); fail(e); var b = $('lpin'); b.value = ''; b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake'); b.focus(); });
+  }
+  function forgot() {
+    var fp = $('lgFp');
+    if (!/^[6-9]\d{9}$/.test(L.id)) { fp.innerHTML = '<div class="lg-fp bad"><b>Use your mobile number</b>PIN reset works with the registered mobile number. Tap "Not you?" and enter your mobile number.</div>'; return; }
+    fp.innerHTML = '<div class="lg-fp"><b>Ask the Super Admin to reset your PIN?</b>They get an email and reset it from Users &amp; Access. Your PIN is never sent by email.<div class="lg-fpa"><button type="button" class="go">Send request</button><button type="button" class="no">Cancel</button></div></div>';
+    fp.querySelector('.no').onclick = function () { fp.innerHTML = ''; };
+    fp.querySelector('.go').onclick = function () {
+      var b = this; b.disabled = true; b.textContent = 'Sending...';
+      call('forgotPin', L.id).then(function (r) { fp.innerHTML = '<div class="lg-fp ok"><b>Request sent</b>' + esc((r && r.msg) || 'Your admin will reset your PIN soon.') + '</div>'; })
+        .catch(function (e) { fp.innerHTML = '<div class="lg-fp bad"><b>Could not send</b>' + esc(e.message) + '</div>'; });
+    };
   }
 }
 var otpTimer;
@@ -253,7 +317,7 @@ function sendOtp(btn) {
   }).catch(function (e) { busy(btn, false); fail(e); });
 }
 $('resendBtn').onclick = function () { sendOtp($('resendBtn')); };
-$('changeNo').onclick = function () { clearInterval(otpTimer); renderLoginStep(); };
+$('changeNo').onclick = function () { clearInterval(otpTimer); if (L.who) renderVerify(); else renderLoginStep(); };
 $('verifyBtn').onclick = verify;
 function countdown(s) {
   var b = $('resendBtn'); clearInterval(otpTimer); b.disabled = true; b.textContent = 'Resend in ' + s + 's';
@@ -287,7 +351,7 @@ function verify() {
       b.querySelectorAll('input').forEach(function (i) { i.value = ''; }); b.querySelector('input').focus();
     });
 }
-function loggedIn(r) { S.token = r.token; store.set('pe_token', r.token); try { store.set('pe_name_' + L.id, r.session.user.name); } catch (e) { } applyBoot(r, true); var w = $('welcome'); if (w) w.classList.remove('pend'); welcome(r.session && r.session.user ? r.session.user.name : ''); }
+function loggedIn(r) { S.token = r.token; store.set('pe_token', r.token); try { store.set('pe_name_' + L.id, r.session.user.name); } catch (e) { } $('login').classList.remove('lg-who'); applyBoot(r, true); var w = $('welcome'); if (w) w.classList.remove('pend'); welcome(r.session && r.session.user ? r.session.user.name : ''); }
 function signOut(silent) {
   if (!silent && S.token) call('logout', S.token).catch(function () { });
   store.del('pe_token'); store.del('pe_boot'); S.token = null; S.sess = null; S.cache = {};
@@ -298,7 +362,7 @@ function signOut(silent) {
 /* =====================================================================
    SHELL
    ===================================================================== */
-var GROUPS = ['Workspace', 'Communication', 'Procurement', 'Accounts', 'Office Admin', 'Administration', 'System'];
+var GROUPS = ['Workspace', 'Communication', 'Procurement', 'Accounts', 'Materials', 'Office Admin', 'Administration', 'System'];
 function applyBoot(b, first) {
   S.sess = b.session; S.opts = b.options || {}; S.home = b.home;
   try { store.set('pe_boot', JSON.stringify({ session: b.session, options: b.options, home: b.home })); } catch (e) { }
@@ -341,6 +405,7 @@ function buildNav() {
     markNav();
   }).catch(function () { });
   markNav();
+  if (window.PE_NAV) try { PE_NAV(); } catch (x) { }
 }
 /* Super Admin: control the automatic daily report mail */
 function mailCfgPage(v) {
@@ -430,6 +495,8 @@ function go(r) {
  if (r.v === 'dsheets') return deptPage(v);
     if (r.v === 'mysheets') return mySheetsPage(v);
     if (r.v === 'mailcfg') return mailCfgPage(v);
+    if (window.PE_VIEWS && PE_VIEWS[r.v]) return PE_VIEWS[r.v](v, r);
+    if (r.v === 'list' && !ent(r.k) && window.PE_LOCKED) return PE_LOCKED(v, r.k);
     if (r.v === 'list') return list(v, r.k, r.s);
   };
   if (document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) { var vt = document.startViewTransition(run); [vt.ready, vt.finished, vt.updateCallbackDone].forEach(function (p) { if (p && p.catch) p.catch(function () { }); }); } else run();
@@ -464,8 +531,9 @@ function pinModal() {
       .catch(function (e) { busy(b, false); fail(e); });
   };
 }
+var SHORTCUTS = [['Ctrl + K  or  /', 'Search anything / run a T-code'], ['Alt + N', 'New record in the current list'], ['Ctrl + S', 'Save the open form'], ['Ctrl + Enter', 'Save & submit (PO / PR) or post (GRN)'], ['Alt + P', 'Print the open record'], ['Alt + H', 'Go to Home'], ['Alt + A', 'Go to Approvals'], ['Alt + R', 'Open Reports'], ['Alt + G', 'Open Help & user guide'], ['Alt + I', 'Open the AI assistant'], ['Esc', 'Close panel / dialog'], ['?', 'Show this list']];
 function keysModal() {
-  var k = [['Ctrl + K  or  /', 'Search anything / run a T-code'], ['Alt + N', 'New record in the current list'], ['Ctrl + S', 'Save the open form'], ['Ctrl + Enter', 'Save & submit (PO / PR) or post (GRN)'], ['Esc', 'Close panel / dialog'], ['?', 'This help']];
+  var k = SHORTCUTS;
   modal('<h3>Keyboard shortcuts</h3><table class="tb" style="margin-top:10px">' + k.map(function (x) { return '<tr><td style="width:46%"><kbd>' + esc(x[0]) + '</kbd></td><td>' + esc(x[1]) + '</td></tr>'; }).join('') + '</table>' +
     '<h3 style="margin-top:18px">T-codes</h3><table class="tb" style="margin-top:8px">' + CMDS().map(function (c) { return '<tr><td style="width:30%"><kbd>' + c.code + '</kbd></td><td>' + esc(c.label) + '</td></tr>'; }).join('') + '</table><div class="mfoot"><button class="btn primary" data-close>Close</button></div>');
 }
@@ -555,13 +623,22 @@ document.addEventListener('keydown', function (e) {
   if (!S.sess) return;
   var typing = /INPUT|TEXTAREA|SELECT/.test((e.target.tagName || '')) || e.target.isContentEditable;
   if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) { e.preventDefault(); openPal(); return; }
-  if (e.key === 'Escape') { if ($('pal').classList.contains('open')) closePal(); else if ($('modal').classList.contains('open')) closeModal(); else if (DD.el) closeDD(); else closeDrawer(); return; }
+  if (e.key === 'Escape') { if (DD.el) closeDD(); else if (layerOpen()) closeTop(); return; }
   if (F && $('drawer').classList.contains('open') && (e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) { e.preventDefault(); if ($('fSave')) $('fSave').click(); return; }
   if (F && $('drawer').classList.contains('open') && (e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); ($('fSubmit') || $('fSave')).click(); return; }
   if (typing) return;
   if (e.key === '/') { e.preventDefault(); openPal(); }
   if (e.key === '?') keysModal();
-  if (e.altKey && (e.key === 'n' || e.key === 'N')) { e.preventDefault(); if (S.route.v === 'list' && ent(S.route.k) && ent(S.route.k).canCreate) openForm(S.route.k); else if (ent('po') && ent('po').canCreate) openForm('po'); }
+  if (e.altKey && !e.ctrlKey && !e.metaKey) {
+    var kc = e.code || '';
+    if (kc === 'KeyH') { e.preventDefault(); go({ v: 'home' }); return; }
+    if (kc === 'KeyA') { e.preventDefault(); go({ v: 'inbox' }); return; }
+    if (kc === 'KeyR') { e.preventDefault(); go({ v: 'reports' }); return; }
+    if (kc === 'KeyG') { e.preventDefault(); go({ v: 'help' }); return; }
+    if (kc === 'KeyI') { e.preventDefault(); openAI(); return; }
+    if (kc === 'KeyP' && $('drawer').classList.contains('open')) { var pb = $('pane').querySelector('[data-print]'); if (pb) { e.preventDefault(); pb.click(); } return; }
+  }
+  if (e.altKey && (e.code === 'KeyN' || e.key === 'n' || e.key === 'N')) { e.preventDefault(); if (S.route.v === 'list' && ent(S.route.k) && ent(S.route.k).canCreate) openForm(S.route.k); else if (ent('po') && ent('po').canCreate) openForm('po'); }
 });
 
 /* =====================================================================
@@ -746,7 +823,7 @@ function list(v, key, presetStatus) {
   v.innerHTML = '<div class="lhead"><p>' + esc(e.all ? 'All records' : (e.self ? 'Your records and your team' : 'Your department')) + '</p>' +
     '<div class="tools"><div class="search">' + icon('search', 16) + '<input id="q" placeholder="Filter this list" value="' + esc(st.q) + '"></div>' +
     (e.dateField ? '<input type="date" class="in" id="from" value="' + st.from + '" title="From"><input type="date" class="in" id="to" value="' + st.to + '" title="To">' : '') +
-    extra + '<button class="btn soft" id="csvBtn">' + icon('down', 16) + 'Export</button>' +
+    extra + ((!window.PE_CANDL || window.PE_CANDL()) ? '<button class="btn soft" id="csvBtn">' + icon('down', 16) + 'Export</button>' : '') +
     (e.canCreate ? '<button class="btn primary" id="newBtn" title="Alt+N">' + icon('plus', 16) + 'New</button>' : '') + '</div></div>' +
     '<div class="chips status-chips" id="chips"></div><div class="glass" id="tbl"></div>';
   if (S.cache[key]) draw(); else skeleton($('tbl'), 8);
@@ -798,7 +875,7 @@ function list(v, key, presetStatus) {
   if ($('newBtn')) $('newBtn').onclick = function () { openForm(key); };
   if ($('ledBtn')) $('ledBtn').onclick = function () { go({ v: 'ledger' }); };
   if ($('regBtn')) $('regBtn').onclick = function () { printRegister(filtered()); };
-  $('csvBtn').onclick = function () { exportCsv(e, filtered()); };
+  if ($('csvBtn')) $('csvBtn').onclick = function () { exportCsv(e, filtered()); };
   S.reloadList = load;
   load();
 }
@@ -1074,6 +1151,7 @@ function openForm(key, rec, preset) {
   if ($('addLn')) $('addLn').onclick = function () { F.lines.push(blankLine(e)); renderLines(); var t = $('ln').querySelectorAll('tbody tr'); var last = t[t.length - 1]; if (last) { var i = last.querySelector('input,select'); if (i) i.focus(); } };
   if ($('copyOld')) $('copyOld').onclick = copyOldModal;
   setTimeout(function () { var first = $('fg').querySelector('input:not([disabled]),select:not([disabled])'); if (first && window.innerWidth > 960) first.focus(); }, 350);
+  if (window.PE_FORM_OPEN) try { PE_FORM_OPEN(key, F, isNew, setField); } catch (x) { }
 }
 function blankLine(e) { var o = {}; e.lines.cols.forEach(function (c) { o[c.k] = c.def != null ? c.def : ''; }); return o; }
 function inputHtml(f, val, locked, attr) {
@@ -1370,6 +1448,7 @@ function saveForm(btn, then) {
   var other = $('fSubmit') && btn !== $('fSubmit') ? $('fSubmit') : $('fSave'); if (other) other.disabled = true;
   var key = F.key;
   call('saveRecord', S.token, key, data).then(function (res) {
+    if (res && res.offline) { if (then && window.PE_QUEUE_THEN) window.PE_QUEUE_THEN(res.qid, then); closeDrawer(); toast('No internet - saved on this device. It uploads automatically when you are online.'); return; }
     var done = function (msg) { closeDrawer(); toast(msg); S.cache[key] = null; if (S.reloadList && S.route.k === key) S.reloadList(); refreshOpts(); openDetail(key, res.id); if (S.route.v === 'home') refreshBoot(); };
     if (then) return call('doAction', S.token, key, res.id, then, {}).then(function () { done(res.id + (then === 'post' ? ' posted.' : ' submitted.')); }).catch(function (x) { done(res.id + ' saved as draft. ' + x.message); });
     done(res.id + ' saved.');
@@ -1553,7 +1632,11 @@ function letterhead() {
 function sheet(lh, body, opt) {
   opt = opt || {};
   var co = S.sess.config.companies[0], land = !!opt.landscape, wm = S.sess.config.watermark;
-  var head = lh.head ? '<img src="' + lh.head + '" style="display:block;margin:0 auto;' + (land ? 'height:30mm' : 'width:100%') + '">' : '<div style="padding:10mm 18mm 4mm;border-bottom:3px solid #1B2F9E;font:800 20pt Arial;color:#1B2F9E">' + esc(co.name.toUpperCase()) + '</div>';
+  var logo = window.LOGO_FULL ? '<img src="' + window.LOGO_FULL + '" style="height:17mm;width:auto;display:block">' : '';
+  var head = lh.head ? '<img src="' + lh.head + '" style="display:block;margin:0 auto;' + (land ? 'height:30mm' : 'width:100%') + '">' :
+    '<div style="display:flex;align-items:center;justify-content:space-between;gap:8mm;padding:7mm ' + (land ? 12 : 18) + 'mm 3mm;border-bottom:2.2pt solid #0B1546;position:relative">' + logo +
+    '<div style="text-align:right;font:8.5pt Arial;color:#333;line-height:1.45"><div style="font:800 13pt Arial;color:#0B1546;letter-spacing:.4px">' + esc(co.name.toUpperCase()) + '</div>' + esc(co.address || '') + (co.gstin ? '<br>GSTIN: ' + esc(co.gstin) : '') + (co.phone || co.email ? '<br>' + esc([co.phone ? 'Ph: ' + co.phone : '', co.email || '', co.web || ''].filter(String).join(' · ')) : '') + '</div>' +
+    '<i style="position:absolute;left:' + (land ? 12 : 18) + 'mm;bottom:-2.2pt;width:38mm;height:2.2pt;background:#E8127C"></i></div>';
   var foot = lh.foot ? '<img src="' + lh.foot + '" style="display:block;margin:0 auto;' + (land ? 'height:15mm' : 'width:100%') + '">' : '<div style="text-align:center;font:8.5pt Arial;padding:4mm 0;border-top:1px solid #1B2F9E">' + esc(co.address) + '</div>';
   var hh = land ? 34 : 38, fh = land ? 18 : 21;
   return '<!doctype html><html><head><meta charset="utf-8"><title>' + esc(opt.title || 'Print') + '</title><style>' +
@@ -1564,7 +1647,7 @@ function sheet(lh, body, opt) {
     'table.pg{width:100%;border-collapse:collapse;position:relative;z-index:1}table.pg>thead td{height:' + hh + 'mm}table.pg>tfoot td{height:' + fh + 'mm}.c{padding:0 ' + (land ? 12 : 18) + 'mm}' +
     'table.t{width:100%;border-collapse:collapse;margin:6px 0}table.t th,table.t td{border:1px solid #000;padding:5px 6px;vertical-align:top}table.t th{font-weight:bold;text-align:center;background:rgba(242,244,250,.9)}' +
     '.r{text-align:right}.ct{text-align:center}.b{font-weight:bold}.u{text-decoration:underline}h4{margin:12px 0 4px;font-size:10.5pt}p{margin:4px 0}.pb{page-break-before:always}.win{background:#E3F7EF;font-weight:bold}' +
-    'tr{page-break-inside:avoid}</style></head><body><div class="hd">' + head + '</div><div class="ft">' + foot + '</div>' + (wm ? '<div class="wm">' + esc(wm) + '</div><div class="wm2">' + esc(wm) + ' · printed ' + fdate(today()) + ' by ' + esc(S.sess.user.name) + ' · © 2026 Port Energy Private Limited</div>' : '') +
+    'tr{page-break-inside:avoid}' + (window.PE_PRINT_CSS || '') + '</style></head><body><div class="hd">' + head + '</div><div class="ft">' + foot + '</div>' + (wm ? '<div class="wm">' + esc(wm) + '</div><div class="wm2">' + esc(wm) + ' · printed ' + fdate(today()) + ' by ' + esc(S.sess.user.name) + ' · © 2026 Port Energy Private Limited</div>' : '') +
     '<table class="pg"><thead><tr><td></td></tr></thead><tfoot><tr><td></td></tr></tfoot><tbody><tr><td><div class="c">' + body + '</div></td></tr></tbody></table></body></html>';
 }
 function printHtml(body, opt) {
@@ -1581,7 +1664,7 @@ function printHtml(body, opt) {
     setTimeout(function () { if (left > 0) { left = 0; go2(); } }, 4000);
   });
 }
-function printRecord(e, r, x) { if (e.key === 'po') return printPO(r, x || {}); if (e.key === 'quotes') return printQuotes(r); if (e.key === 'approvals') return printIOA(r); if (e.key === 'notices') return printCircular(r); if (e.key === 'decisions') return printDecision(r); printGeneric(e, r); }
+function printRecord(e, r, x) { if (window.PE_PRINT && window.PE_PRINT(e, r, x || {})) return; if (e.key === 'po') return printPO(r, x || {}); if (e.key === 'quotes') return printQuotes(r); if (e.key === 'approvals') return printIOA(r); if (e.key === 'notices') return printCircular(r); if (e.key === 'decisions') return printDecision(r); printGeneric(e, r); }
 function printPO(r, x) {
   var v = x.vendor || {}, co = S.sess.config.companies[0];
   var rows = (r.lines || []).map(function (l, i) { var rate = r2(num(l.rate) * (1 - num(l.disc) / 100)); return '<tr><td class="ct">' + (i + 1) + '.</td><td>' + nl(l.item + (l.desc ? ' - ' + l.desc : '')) + '</td><td class="ct">' + esc(l.uom) + '</td><td class="ct">' + esc(l.qty) + '</td><td class="r">' + rate.toFixed(2) + '</td><td class="r">' + num(l.amount).toFixed(2) + '</td></tr>'; }).join('');
@@ -1827,5 +1910,10 @@ if (HB.on) google.script.history.setChangeHandler(function (e) {
   if (JSON.stringify(r) === JSON.stringify(S.route)) return;
   HB.skip = true; try { go(r); } finally { HB.skip = false; }
 });
+window.PE = { S: S, $: $, esc: esc, icon: icon, call: call, toast: toast, busy: busy, fail: fail, store: store, go: function (r) { go(r); }, setTitle: setTitle, skeleton: skeleton,
+  modal: function (h) { modal(h); }, closeModal: closeModal, closeSide: closeSide, ent: ent, inr: inr, inrShort: inrShort, num: num, r2: r2, fdate: fdate, ddot: ddot, today: today, initials: initials,
+  markNav: markNav, openForm: openForm, openDetail: openDetail, printHtml: printHtml, words: words, nl: nl, openAI: function () { openAI(); }, closeAI: closeAI, keysModal: keysModal, SHORTCUTS: SHORTCUTS,
+  CMDS: CMDS, badge: badge, debounce: debounce, refreshBoot: refreshBoot, fval: fval, colDef: colDef, greet: greet, aiSendText: function (q) { return aiSend(q); }, AI: AI, buildNav: buildNav, findOpt: findOpt, userDes: userDes,
+  printPO: printPO, printQuotes: printQuotes, printIOA: printIOA, printCircular: printCircular, printDecision: printDecision, printGeneric: printGeneric };
 start();
 })();

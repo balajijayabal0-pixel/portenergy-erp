@@ -6,7 +6,7 @@
  * Screens: open from the saved copy, then quietly fetch the newest copy for next time.
  * Change VERSION on each upload to clear old copies.
  */
-const VERSION = 'pe-app-v10';
+const VERSION = 'pe-app-v11';
 const SHELL = ['./', './index.html', './app.js', './bridge.js', './logo.js', './polish.css', './apple.css', './dash.css', './motion.js', './install.js', './wa.js', './dash.js', './login.css', './login.js', './login-hero.jpg', './loading.css', './fx.css', './refine.css', './fx.js',
   './manifest.webmanifest', '../config.js', '../icons/icon-192.png', '../icons/icon-512.png', '../icons/favicon.png'];
 

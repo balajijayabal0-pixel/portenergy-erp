@@ -88,3 +88,6 @@
 #hMine .li .badge { margin-left: auto; }
 .pe-with b, .pe-with em { flex: none; }
 #hMine .pe-with small { display: none; }                 /* the chain right below already shows the role */
+/* never let a long line push the status badge off the screen */
+.grid2 > *, .dx-row > *, .dx-tail > * { min-width: 0; }
+.li { min-width: 0; } .li .badge, .li .btn { flex: none; }

@@ -1,0 +1,72 @@
+# © 2026 Port Energy Private Limited
+# Builds the Port Energy ERP apps on GitHub's servers and publishes them on the Releases page:
+#   Android  -> PortEnergyERP-<n>.apk          (install on phones, share on WhatsApp)
+#   Windows  -> PortEnergyERP-Setup-1.0.<n>.exe (install on laptops / desktops)
+# Runs automatically when android/ or desktop/ changes, or by hand: Actions > Build apps > Run workflow.
+name: Build apps
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['android/**', 'desktop/**', '.github/workflows/build-apps.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '17' }
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: '8.9' }
+      - name: Write signing key from secrets
+        env:
+          PE_KEYSTORE_BASE64: ${{ secrets.PE_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$PE_KEYSTORE_BASE64" ]; then echo "::error::Add the PE_KEYSTORE_BASE64 and PE_KEYSTORE_PASSWORD repository secrets first"; exit 1; fi
+          echo "$PE_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.keystore"
+      - name: Build signed APK
+        env:
+          PE_KEYSTORE_FILE: ${{ runner.temp }}/release.keystore
+          PE_KEYSTORE_PASSWORD: ${{ secrets.PE_KEYSTORE_PASSWORD }}
+        run: gradle -p android assembleRelease --no-daemon --stacktrace
+      - name: Name the APK
+        run: cp android/app/build/outputs/apk/release/app-release.apk "PortEnergyERP-${{ github.run_number }}.apk"
+      - uses: actions/upload-artifact@v4
+        with: { name: android-apk, path: 'PortEnergyERP-*.apk' }
+
+  windows:
+    runs-on: windows-latest
+    defaults:
+      run: { working-directory: desktop }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - run: npm ci --no-audit --no-fund
+      - run: npm version "1.0.${{ github.run_number }}" --no-git-tag-version
+      - name: Build Windows installer
+        run: npx electron-builder --win nsis --x64 --publish never
+      - uses: actions/upload-artifact@v4
+        with: { name: windows-setup, path: 'desktop/dist/PortEnergyERP-Setup-*.exe' }
+
+  release:
+    needs: [android, windows]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { path: out, merge-multiple: true }
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: app-v${{ github.run_number }}
+          name: Port Energy ERP apps - build ${{ github.run_number }}
+          make_latest: true
+          body: |
+            **Android:** download the .apk on the phone and open it (allow "Install unknown apps" once).
+            **Windows:** download the Setup .exe and run it (if SmartScreen shows, click More info > Run anyway).
+            Both open the same Port Energy ERP. Data stays in the company Google Sheet.
+          files: out/*

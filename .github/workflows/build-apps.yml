@@ -26,9 +26,11 @@ jobs:
       - name: Write signing key from secrets
         env:
           PE_KEYSTORE_BASE64: ${{ secrets.PE_KEYSTORE_BASE64 }}
+          PE_KEYSTORE_PASSWORD: ${{ secrets.PE_KEYSTORE_PASSWORD }}
         run: |
           if [ -z "$PE_KEYSTORE_BASE64" ]; then echo "::error::Add the PE_KEYSTORE_BASE64 and PE_KEYSTORE_PASSWORD repository secrets first"; exit 1; fi
-          echo "$PE_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.keystore"
+          printf %s "$PE_KEYSTORE_BASE64" | tr -d ' \r\n\t' | base64 -d > "$RUNNER_TEMP/release.keystore" || { echo "::error::PE_KEYSTORE_BASE64 is not valid. Paste the full text of PE_KEYSTORE_BASE64.txt again."; exit 1; }
+          keytool -list -keystore "$RUNNER_TEMP/release.keystore" -storepass "$PE_KEYSTORE_PASSWORD" > /dev/null || { echo "::error::PE_KEYSTORE_PASSWORD does not open the key. Check the password in README-KEEP-PRIVATE.txt."; exit 1; }
       - name: Build signed APK
         env:
           PE_KEYSTORE_FILE: ${{ runner.temp }}/release.keystore

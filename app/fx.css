@@ -1,0 +1,108 @@
+/* © 2026 Port Energy Private Limited. All rights reserved. Proprietary and confidential. */
+/* =====================================================================
+   PORT ENERGY ERP - MOTION v4 "ENERGY FLOW"
+   1. Start screen: four glowing pipelines draw in and pump energy into
+      the logo, then the screen opens like an iris into the app.
+   2. Page change: the old page sinks back and blurs away, the new one
+      rises in (View Transitions; plain fade where not supported).
+   3. Cards, KPIs, panels and rows cascade in, one after another.
+   4. Touch ripple in brand colours, 3D tilt on KPI cards (mouse only),
+      menu items slide in one by one on the phone.
+   Everything turns off for "reduce motion".
+   ===================================================================== */
+@property --pe-hole { syntax: "<length>"; inherits: false; initial-value: 0px; }
+
+:root { --fx-spring: cubic-bezier(.2, .9, .24, 1); --fx-out: cubic-bezier(.4, 0, 1, 1); }
+
+/* ---------- 1. start screen ---------- */
+#boot {
+  display: grid; place-items: center; overflow: hidden;
+  -webkit-mask: radial-gradient(circle at 50% 50%, transparent var(--pe-hole), #000 calc(var(--pe-hole) + 1px));
+          mask: radial-gradient(circle at 50% 50%, transparent var(--pe-hole), #000 calc(var(--pe-hole) + 1px));
+}
+.pb-flow { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.pb-pipe, .pb-pulse { vector-effect: non-scaling-stroke; }
+.pb-pipe { fill: none; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 100; stroke-dashoffset: 100; opacity: .55;
+  animation: pbDraw 1s var(--fx-spring) forwards; }
+.pb-pipe.p2 { animation-delay: .08s; } .pb-pipe.p3 { animation-delay: .16s; } .pb-pipe.p4 { animation-delay: .24s; }
+@keyframes pbDraw { to { stroke-dashoffset: 0; } }
+.pb-pulse { fill: none; stroke-width: 5; stroke-linecap: round; stroke-dasharray: 7 93; stroke-dashoffset: 107; opacity: 0;
+  animation: pbPump 1.7s cubic-bezier(.55, 0, .45, 1) infinite; }
+.pb-pulse.p1 { stroke: #7FE3FF; filter: drop-shadow(0 0 6px #00C2FF); animation-delay: .9s; }
+.pb-pulse.p2 { stroke: #FF7AB6; filter: drop-shadow(0 0 6px #F3026E); animation-delay: 1.1s; }
+.pb-pulse.p3 { stroke: #B9A8FF; filter: drop-shadow(0 0 6px #7A5CFF); animation-delay: 1.3s; }
+.pb-pulse.p4 { stroke: #8FC2FF; filter: drop-shadow(0 0 6px #2F8BFF); animation-delay: 1.5s; }
+@keyframes pbPump { 0% { stroke-dashoffset: 107; opacity: 0; } 12% { opacity: 1; } 88% { opacity: 1; } 100% { stroke-dashoffset: 7; opacity: 0; } }
+
+#boot .pe-boot { position: relative; z-index: 1; padding-top: 64px; }
+#boot .pb-logo {
+  position: relative; overflow: hidden; opacity: 0; transform: scale(.6); filter: blur(14px);
+  animation: pbLogo 1s var(--fx-spring) .45s forwards, pbBeat 1.7s ease-in-out 2.1s infinite !important;
+}
+@keyframes pbLogo { 60% { opacity: 1; transform: scale(1.045); filter: blur(0); } to { opacity: 1; transform: scale(1); filter: blur(0); } }
+@keyframes pbBeat {   /* the logo "receives" each energy pulse */
+  0%, 100% { box-shadow: 0 30px 60px -28px rgba(0, 0, 0, .75), 0 0 0 1px rgba(255, 255, 255, .6), 0 0 0 0 rgba(0, 194, 255, 0); }
+  45% { box-shadow: 0 30px 60px -28px rgba(0, 0, 0, .75), 0 0 0 1px rgba(255, 255, 255, .6), 0 0 46px 6px rgba(0, 194, 255, .35); }
+}
+.pb-sheen { position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, .95) 50%, transparent 65%);
+  mix-blend-mode: soft-light; transform: translateX(-120%); animation: pbSheen 2.6s ease-in-out 1.3s infinite; }
+@keyframes pbSheen { 0% { transform: translateX(-120%); } 45%, 100% { transform: translateX(120%); } }
+#boot .pb-motto { display: flex; gap: .32em; font-style: normal; text-transform: uppercase; letter-spacing: .28em; font-size: 11.5px; font-weight: 500; opacity: 1; animation: none; }
+#boot .pb-motto span { opacity: 0; filter: blur(6px); transform: translateY(6px); animation: pbWord .7s var(--fx-spring) forwards; }
+#boot .pb-motto span:nth-child(1) { animation-delay: 1s; } #boot .pb-motto span:nth-child(2) { animation-delay: 1.12s; }
+#boot .pb-motto span:nth-child(3) { animation-delay: 1.24s; } #boot .pb-motto span:nth-child(4) { animation-delay: 1.36s; color: #FF8CC1; }
+@keyframes pbWord { to { opacity: 1; filter: blur(0); transform: none; } }
+
+/* exit: hideBoot() sets opacity 0; we keep it visible and open an iris from the centre instead */
+#boot[style*="opacity: 0"] { opacity: 1 !important; --pe-hole: 150vmax; transition: --pe-hole .44s cubic-bezier(.7, 0, .2, 1) !important; pointer-events: none; }
+#boot[style*="opacity: 0"] .pe-boot { transform: scale(1.18); opacity: 0; transition: transform .44s var(--fx-out), opacity .3s ease; }
+
+/* ---------- 2. page change ---------- */
+@supports (view-transition-name: a) {
+  #content { view-transition-name: pe-page; }
+  .view { animation: none !important; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+  ::view-transition-group(pe-page) { animation-duration: .5s; animation-timing-function: var(--fx-spring); }
+  ::view-transition-old(pe-page) { animation: fxPageOut .26s var(--fx-out) both; }
+  ::view-transition-new(pe-page) { animation: fxPageIn .55s var(--fx-spring) .06s both; }
+}
+@keyframes fxPageOut { to { opacity: 0; transform: scale(.965) translateY(-10px); filter: blur(8px); } }
+@keyframes fxPageIn { from { opacity: 0; transform: translateY(26px) scale(1.012); filter: blur(10px); } }
+
+/* ---------- 3. cascade ---------- */
+.fx-in { animation: fxRise .62s var(--fx-spring) both !important; animation-delay: calc(var(--fx-d, 0) * 55ms) !important; }
+.fx-in.fx-row { animation-name: fxRow !important; animation-duration: .45s !important; animation-delay: calc(var(--fx-d, 0) * 28ms) !important; }
+@keyframes fxRise { from { opacity: 0; transform: translateY(22px) scale(.975); filter: blur(6px); } 70% { filter: blur(0); } to { opacity: 1; transform: none; filter: none; } }
+@keyframes fxRow { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: none; } }
+
+/* ---------- 4. touch ripple ---------- */
+.fx-rw { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; pointer-events: none; z-index: 0; }
+.fx-rip { position: absolute; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, rgba(0, 194, 255, .38) 0%, rgba(122, 92, 255, .26) 45%, rgba(243, 2, 110, 0) 72%);
+  transform: scale(0); opacity: 1; animation: fxRip .65s cubic-bezier(.2, .8, .3, 1) forwards; }
+.btn.primary .fx-rip, .ni.on .fx-rip { background: radial-gradient(circle, rgba(255, 255, 255, .55) 0%, rgba(255, 255, 255, 0) 70%); }
+@keyframes fxRip { to { transform: scale(var(--fx-s, 30)); opacity: 0; } }
+
+/* 3D tilt on KPI cards and workflow steps (mouse / trackpad only) */
+@media (hover: hover) and (pointer: fine) {
+  .fx-tilt { transform: perspective(900px) rotateX(var(--fx-rx, 0deg)) rotateY(var(--fx-ry, 0deg)) translateY(var(--fx-ty, 0px)); transition: transform .5s var(--fx-spring), box-shadow .3s; will-change: transform; }
+  .fx-tilt.fx-hot { transition: transform .12s linear, box-shadow .3s; --fx-ty: -3px; }
+}
+
+/* ---------- 5. phone menu: items slide in one by one ---------- */
+@media (max-width: 760px) {
+  .side.open nav > * { animation: fxSide .5s var(--fx-spring) both; animation-delay: calc(var(--fx-i, 0) * 22ms + 60ms); }
+  .side.open .logo, .side.open .find { animation: fxSide .5s var(--fx-spring) both; }
+}
+@keyframes fxSide { from { opacity: 0; transform: translateX(-26px); } }
+
+/* ---------- reduce motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .pb-pipe { animation: none; stroke-dashoffset: 0; } .pb-pulse, .pb-sheen { display: none; }
+  #boot .pb-logo, #boot .pb-motto span { animation: none !important; opacity: 1; transform: none; filter: none; }
+  #boot[style*="opacity: 0"] { opacity: 0 !important; transition: opacity .2s ease !important; --pe-hole: 0px; }
+  ::view-transition-old(pe-page), ::view-transition-new(pe-page) { animation: none; }
+  .fx-in, .side.open nav > *, .side.open .logo, .side.open .find { animation: none !important; }
+  .fx-rip { display: none; } .fx-tilt { transform: none !important; }
+}

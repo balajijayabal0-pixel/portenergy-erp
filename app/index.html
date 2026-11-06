@@ -709,10 +709,33 @@ textarea[data-fit]{overflow-y:auto}
 <link rel="stylesheet" href="dash.css">
 <link rel="stylesheet" href="login.css">
 <link rel="stylesheet" href="loading.css">
+<link rel="stylesheet" href="fx.css">
 </head>
 <body>
 <div class="amb"><i></i><i></i><i></i></div>
-<div id="boot" role="status" aria-label="Loading Port Energy ERP"><div class="pe-boot"><div class="pb-logo"><img alt="Port Energy" id="bootLogo"></div><div class="pe-bar"><i></i></div><small>Impossible can be possible.</small></div></div>
+<div id="boot" role="status" aria-label="Loading Port Energy ERP">
+  <svg class="pb-flow" viewBox="0 0 1200 800" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="pbG1" x1="0" x2="1"><stop offset="0" stop-color="#00C2FF" stop-opacity="0"/><stop offset="1" stop-color="#00C2FF"/></linearGradient>
+      <linearGradient id="pbG2" x1="1" x2="0"><stop offset="0" stop-color="#F3026E" stop-opacity="0"/><stop offset="1" stop-color="#F3026E"/></linearGradient>
+      <linearGradient id="pbG3" x1="0" x2="1"><stop offset="0" stop-color="#7A5CFF" stop-opacity="0"/><stop offset="1" stop-color="#7A5CFF"/></linearGradient>
+      <linearGradient id="pbG4" x1="1" x2="0"><stop offset="0" stop-color="#1E5BFF" stop-opacity="0"/><stop offset="1" stop-color="#2F8BFF"/></linearGradient>
+    </defs>
+    <g class="pb-pipes">
+      <path class="pb-pipe p1" pathLength="100" stroke="url(#pbG1)" d="M-60 660 C 260 660 330 400 600 400"/>
+      <path class="pb-pipe p2" pathLength="100" stroke="url(#pbG2)" d="M1260 140 C 940 140 870 400 600 400"/>
+      <path class="pb-pipe p3" pathLength="100" stroke="url(#pbG3)" d="M-60 110 C 300 110 380 400 600 400"/>
+      <path class="pb-pipe p4" pathLength="100" stroke="url(#pbG4)" d="M1260 700 C 910 700 820 400 600 400"/>
+    </g>
+    <g class="pb-pulses">
+      <path class="pb-pulse p1" pathLength="100" d="M-60 660 C 260 660 330 400 600 400"/>
+      <path class="pb-pulse p2" pathLength="100" d="M1260 140 C 940 140 870 400 600 400"/>
+      <path class="pb-pulse p3" pathLength="100" d="M-60 110 C 300 110 380 400 600 400"/>
+      <path class="pb-pulse p4" pathLength="100" d="M1260 700 C 910 700 820 400 600 400"/>
+    </g>
+  </svg>
+  <div class="pe-boot"><div class="pb-logo"><img alt="Port Energy" id="bootLogo"><i class="pb-sheen"></i></div><div class="pe-bar"><i></i></div><small class="pb-motto"><span>Impossible</span> <span>can</span> <span>be</span> <span>possible.</span></small></div>
+</div>
 <div class="pe-net" id="peNet" aria-hidden="true"><i></i></div>
 
 <!-- ============ LOGIN ============ -->
@@ -823,5 +846,6 @@ textarea[data-fit]{overflow-y:auto}
 <script src="wa.js"></script>
 <script src="dash.js"></script>
 <script src="login.js"></script>
+<script src="fx.js"></script>
 </body>
 </html>

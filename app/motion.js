@@ -221,9 +221,9 @@
   /* ---------- 7. offline banner ---------- */
   var off = document.createElement('div');
   off.className = 'pe-off'; off.setAttribute('role', 'status');
-  off.textContent = 'You are offline - changes will not save';
+  off.textContent = 'You are offline - entries will upload when back online';
   document.body.appendChild(off);
-  function net() { off.classList.toggle('show', !navigator.onLine); if (navigator.onLine && off.dataset.was === '1') { off.textContent = 'Back online'; off.classList.add('show', 'ok'); setTimeout(function () { off.classList.remove('show', 'ok'); off.textContent = 'You are offline - changes will not save'; }, 1800); } off.dataset.was = navigator.onLine ? '0' : '1'; }
+  function net() { off.classList.toggle('show', !navigator.onLine); if (navigator.onLine && off.dataset.was === '1') { off.textContent = 'Back online'; off.classList.add('show', 'ok'); setTimeout(function () { off.classList.remove('show', 'ok'); off.textContent = 'You are offline - entries will upload when back online'; }, 1800); } off.dataset.was = navigator.onLine ? '0' : '1'; }
   window.addEventListener('online', net); window.addEventListener('offline', net); net();
 
   window.addEventListener('resize', function () { var t = $('tbl') && $('tbl').querySelector('table.tb'); if (t) { delete t.dataset.peDone; cardify(); } });

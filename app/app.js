@@ -184,7 +184,7 @@ function welcome(name, pending) {
   $('welHi').textContent = greet() + (nm ? ', ' + nm : '') + '!';
   if (!w.classList.contains('show')) { $('welQ').textContent = pickQ(WQ, 'pe_wq'); $('welDay').textContent = new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' }); }
   w.classList.toggle('pend', !!pending); w.classList.add('show'); clearTimeout(welT);
-  if (!pending) { store.set('pe_wday', dayKey()); welT = setTimeout(hideWelcome, 1400); }
+  if (!pending) { store.set('pe_wday', dayKey()); welT = setTimeout(hideWelcome, 500); }
 }
 function hideWelcome() { clearTimeout(welT); var w = $('welcome'); if (w && !w.classList.contains('pend')) w.classList.remove('show'); }
 function cancelWelcome() { clearTimeout(welT); var w = $('welcome'); if (w) { w.classList.remove('pend'); w.classList.remove('show'); } }
@@ -247,6 +247,7 @@ function renderLoginStep() {
     if (!idOk(v)) { toast('Enter your registered 10-digit mobile number or email.', true); lid.focus(); return; }
     store.set('pe_lastid', v); if (/^\d+$/.test(v)) store.set('pe_lastid_m', v); L.id = v;
     var c = lkCache(v);
+    if (c && c.name) { L.who = c; renderVerify(); call('loginLookup', v).then(function (w) { lkCache(v, w); }).catch(function () { }); return; }
     busy($('goBtn'), true, 'Checking');
     call('loginLookup', v).then(function (w) { lkCache(v, w); L.who = w; renderVerify(); })
       .catch(function (e) {
@@ -364,6 +365,7 @@ function signOut(silent) {
    ===================================================================== */
 var GROUPS = ['Workspace', 'Communication', 'Procurement', 'Accounts', 'Materials', 'Office Admin', 'Administration', 'System'];
 function applyBoot(b, first) {
+  try { store.set('pe_uid', String(b.session.user.name || '').replace(/\W+/g, '_')); } catch (x) { }
   S.sess = b.session; S.opts = b.options || {}; S.home = b.home;
   try { store.set('pe_boot', JSON.stringify({ session: b.session, options: b.options, home: b.home })); } catch (e) { }
   $('login').style.display = 'none'; $('app').style.display = 'block';
@@ -371,9 +373,35 @@ function applyBoot(b, first) {
   $('uName').textContent = u.name; $('uRole').textContent = (u.designation || u.role) + (u.dept ? ' · ' + u.dept : ''); $('av').textContent = initials(u.name);
   buildNav();
   if (b.home) setInboxCount(b.home.inbox.length);
-  if (first) go({ v: 'home' });
+  if (first) { go({ v: 'home' }); prefetchAll(); }
   else if (S.route.v === 'home') renderHome(document.querySelector('#content .view'), b.home, true);
 }
+/* FAST MODE: one background call fills this device with every list the person can open,
+   so tapping any module shows data at once (it still refreshes itself from the server) */
+var pfT = null;
+function prefetchAll() {
+  clearTimeout(pfT);
+  pfT = setTimeout(function () {
+    if (!S.sess || !navigator.onLine) return;
+    var keys = S.sess.entities.map(function (e) { return e.key; });
+    call('prefetch', S.token, keys).then(function (d) {
+      if (!d || !d.lists) return;
+      Object.keys(d.lists).forEach(function (k) { var r = d.lists[k]; if (!r || !r.rows) return; if (window.PE_CACHE_PUT) PE_CACHE_PUT('listRecords', [S.token, k], r); if (!S.cache[k]) { S.cache[k] = r.rows; S.total[k] = r.total; } });
+      if (d.inbox && window.PE_CACHE_PUT) PE_CACHE_PUT('getInbox', [S.token], d.inbox);
+    }).catch(function () { });
+  }, 1200);
+}
+window.addEventListener('pe-fresh', function (ev) {
+  var d = ev.detail || {}, a = d.args || [];
+  if (!S.sess) return;
+  try {
+    if (d.fn === 'listRecords') { var k = a[1]; S.cache[k] = d.res.rows; S.total[k] = d.res.total; if (S.route.v === 'list' && S.route.k === k && S.redrawList) S.redrawList(); }
+    else if (d.fn === 'getHome') { S.home = d.res; if (S.route.v === 'home') renderHome(document.querySelector('#content .view'), d.res, true); }
+    else if (d.fn === 'getInbox') { setInboxCount(d.res.length); if (S.route.v === 'inbox' && !$('drawer').classList.contains('open')) go({ v: 'inbox' }); }
+    else if (d.fn === 'getRecord') { if (S.openRec && S.openRec.key === a[1] && S.openRec.id === a[2] && $('drawer').classList.contains('open') && !F) renderDetail(ent(a[1]), d.res); }
+    else if (d.fn === 'getOptions') { S.opts = d.res; }
+  } catch (x) { }
+});
 function refreshBoot() { S.bootAt = Date.now(); return call('bootstrap', S.token).then(function (b) { applyBoot(b, false); }).catch(function () { }); }
 var refreshOpts = debounce(function () { call('getOptions', S.token).then(function (o) { S.opts = o; try { var c = JSON.parse(store.get('pe_boot') || '{}'); c.options = o; store.set('pe_boot', JSON.stringify(c)); } catch (e) { } }).catch(function () { }); }, 800);
 
@@ -876,7 +904,7 @@ function list(v, key, presetStatus) {
   if ($('ledBtn')) $('ledBtn').onclick = function () { go({ v: 'ledger' }); };
   if ($('regBtn')) $('regBtn').onclick = function () { printRegister(filtered()); };
   if ($('csvBtn')) $('csvBtn').onclick = function () { exportCsv(e, filtered()); };
-  S.reloadList = load;
+  S.reloadList = load; S.redrawList = function () { if ($('tbl')) draw(); };
   load();
 }
 function exportCsv(e, rows) {
@@ -979,8 +1007,10 @@ function openDetail(key, id) {
   var e = ent(key); if (!e) return toast('No access to this module.', true);
   openDrawer('<div class="dh"><div><h2>' + esc(e.single) + '</h2><div class="sub">' + esc(id) + '</div></div><button class="x" data-x>×</button></div><div class="dbody"><div class="db" id="dbody"></div></div>', key === 'quotes');
   $('pane').querySelector('[data-x]').onclick = closeDrawer;
-  skeleton($('dbody'), 9);
-  call('getRecord', S.token, key, id).then(function (res) { renderDetail(e, res); }).catch(function (x) { $('dbody').innerHTML = '<div class="empty"><b>Could not open</b>' + esc(x.message) + '</div>'; });
+  S.openRec = { key: key, id: id };
+  var row = (S.cache[key] || []).filter(function (x) { return x.id === id; })[0];
+  if (row) { renderDetail(e, { rec: row, actions: [], canEdit: false, canDelete: false, extra: {} }); $('pane').classList.add('pe-pv'); } else skeleton($('dbody'), 9);
+  call('getRecord', S.token, key, id).then(function (res) { if (!S.openRec || S.openRec.id !== id) return; $('pane').classList.remove('pe-pv'); renderDetail(e, res); }).catch(function (x) { $('dbody').innerHTML = '<div class="empty"><b>Could not open</b>' + esc(x.message) + '</div>'; });
 }
 function renderDetail(e, res) {
   var r = res.rec, x = res.extra || {};

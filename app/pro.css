@@ -247,3 +247,7 @@
   .pb-runner { left: 40%; }
 }
 .rp-logo { display: block; height: 46px; width: auto; margin-bottom: 10px; }
+
+/* detail opened instantly from the list while the full record loads */
+.pe-pv .acts { position: relative; pointer-events: none; opacity: .45; }
+.pe-pv .acts::after { content: "Loading latest…"; position: absolute; right: 0; top: -22px; font-size: 11.5px; font-weight: 600; color: #1E5BFF; }

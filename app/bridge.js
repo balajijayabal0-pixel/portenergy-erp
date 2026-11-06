@@ -59,7 +59,7 @@
        uploaded automatically, in order, when the internet returns
      ================================================================ */
   function offErr() { var e = new Error('No internet connection. Showing saved data where available.'); e.offline = true; return e; }
-  var READS = { bootstrap: 1, getHome: 1, getInbox: 1, getOptions: 1, listRecords: 1, getRecord: 1, getLetterhead: 1, myPhoto: 1, myReports: 1, myDeptSheets: 1, getAgeing: 1, vendorLedger: 1 };
+  var READS = { bootstrap: 1, prefetch: 0, getHome: 1, getInbox: 1, getOptions: 1, listRecords: 1, getRecord: 1, getLetterhead: 1, myPhoto: 1, myReports: 1, myDeptSheets: 1, getAgeing: 1, vendorLedger: 1 };
   var WRITES = { saveRecord: 1, doAction: 1, ackNotice: 1 };
   var dbp = null;
   function db() {
@@ -74,7 +74,9 @@
   }
   function tx(store, mode, fn) { return db().then(function (d) { return new Promise(function (ok, bad) { var t = d.transaction(store, mode), s = t.objectStore(store), res = fn(s); t.oncomplete = function () { ok(res && res.result !== undefined ? res.result : res); }; t.onerror = function () { bad(t.error); }; }); }); }
   function isTok(a) { return typeof a === 'string' && /^[0-9a-f-]{30,40}$/i.test(a); }
-  function ckey(fn, args) { return fn + '|' + JSON.stringify(isTok(args[0]) ? args.slice(1) : args); }
+  function uid() { try { return localStorage.getItem('pe_uid') || ''; } catch (x) { return ''; } }
+  /* cache key is per signed-in person, so two people on one phone never see each other's data */
+  function ckey(fn, args) { return uid() + '|' + fn + '|' + JSON.stringify(isTok(args[0]) ? args.slice(1) : args); }
   function cachePut(fn, args, res) { if (!READS[fn]) return; try { tx('kv', 'readwrite', function (s) { return s.put({ at: Date.now(), v: res }, ckey(fn, args)); }).catch(function () { }); } catch (x) { } }
   function cacheGet(fn, args) { return tx('kv', 'readonly', function (s) { return s.get(ckey(fn, args)); }).then(function () { return null; }).catch(function () { return null; }); }
   function cacheGet2(fn, args) { return db().then(function (d) { return new Promise(function (ok) { var q = d.transaction('kv').objectStore('kv').get(ckey(fn, args)); q.onsuccess = function () { ok(q.result || null); }; q.onerror = function () { ok(null); }; }); }).catch(function () { return null; }); }
@@ -125,7 +127,30 @@
   setTimeout(function () { if (!navigator.onLine) offState(); else sync(); }, 2500);
 
   /* wraps send(): cache reads, serve them offline, queue writes offline */
+  /* FAST MODE (stale-while-revalidate): a screen opened before shows instantly from this device,
+     the server is asked in the background, and the screen refreshes itself if anything changed */
+  var SWR = { getHome: 1, getInbox: 1, getOptions: 1, listRecords: 1, getRecord: 1, getLetterhead: 1, myPhoto: 1, myReports: 1, myDeptSheets: 1, getAgeing: 1, vendorLedger: 1 };
+  var inflight = {};
+  function fresh(fn, args, oldV) {
+    var k = ckey(fn, args); if (inflight[k]) return;
+    inflight[k] = 1; net(1);
+    send(fn, args).then(function (res) {
+      cachePut(fn, args, res);
+      var changed = false; try { changed = JSON.stringify(res) !== JSON.stringify(oldV); } catch (x) { changed = true; }
+      if (changed) try { window.dispatchEvent(new CustomEvent('pe-fresh', { detail: { fn: fn, args: args, res: res } })); } catch (x) { }
+    }, function () { }).then(function () { delete inflight[k]; net(-1); });
+  }
+  window.PE_CACHE_PUT = function (fn, args, res) { cachePut(fn, args, res); };
   function smart(fn, args) {
+    if (SWR[fn] && uid()) {
+      return cacheGet2(fn, args).then(function (c) {
+        if (c && c.v != null) { if (navigator.onLine) fresh(fn, args, c.v); else offState(); return c.v; }
+        return network(fn, args);
+      });
+    }
+    return network(fn, args);
+  }
+  function network(fn, args) {
     return send(fn, args).then(function (res) { cachePut(fn, args, res); return res; }, function (e) {
       if (!e || !e.offline) throw e;
       if (READS[fn]) return cacheGet2(fn, args).then(function (c) { offState(); if (c) return c.v; throw new Error('You are offline and this screen was not opened before on this device.'); });

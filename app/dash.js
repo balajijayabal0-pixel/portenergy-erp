@@ -187,6 +187,13 @@
     var ib = $('hInbox'); if (ib) wrap.querySelector('.dx-slot-inbox').appendChild(ib.closest('.glass'));
     ['poChart', 'topV', 'tips'].forEach(function (id) { var el = $(id); if (el && el.closest('.glass')) el.closest('.glass').classList.add('dx-hide'); });
     Array.prototype.forEach.call(c.querySelectorAll('.grid2'), function (g) { if (!g.querySelector('.glass:not(.dx-hide)')) g.classList.add('dx-hide'); });
+    // panels left alone in a half-empty row (my requests, quick actions, ageing, low stock) share one balanced block
+    var tail = document.createElement('div'); tail.className = 'dx-tail'; var anchor = null;
+    Array.prototype.forEach.call(c.querySelectorAll('.view > .grid2:not(.dx-hide)'), function (g) {
+      var live = g.querySelectorAll(':scope > .glass:not(.dx-hide)');
+      if (live.length === 1) { if (!anchor) anchor = g; tail.appendChild(live[0]); g.classList.add('dx-hide'); }
+    });
+    if (anchor && tail.children.length) anchor.parentNode.insertBefore(tail, anchor);
     // actions
     wrap.querySelectorAll('[data-al]').forEach(function (b) { b.onclick = function () { var f = al.fns[+b.dataset.al]; if (f) f(); }; });
     wrap.querySelectorAll('[data-nav]').forEach(function (b) { b.onclick = function () { nav(b.dataset.nav); }; });

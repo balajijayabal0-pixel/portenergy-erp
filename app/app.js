@@ -324,7 +324,7 @@ function buildNav() {
     if (g === 'Administration') extra = '<button class="ni" data-v="org">' + icon('org') + 'Organisation chart</button>';
     if (g === 'System' && S.sess.user.admin) extra = '<button class="ni" data-v="health">' + icon('pulse') + 'ERP Health<span class="tc" id="hsBadge"></span></button><button class="ni" data-v="sys">' + icon('server') + 'System admin</button><button class="ni" data-v="dsheets">' + icon('ledger') + 'Department sheets</button><button class="ni" data-v="mailcfg">' + icon('clock') + 'Daily report mail</button>';
     if (!items.length && !extra) return;
-    var closed = store.get('pe_ng_' + g) === '1';
+    var ngSaved = store.get('pe_ng_' + g), closed = ngSaved ? ngSaved === '1' : (window.innerWidth <= 1024 && g !== 'Workspace');
     h += '<div class="ng' + (closed ? ' closed' : '') + '" data-g="' + esc(g) + '"><button class="ngh">' + esc(g.toUpperCase()) + icon('chev', 14) + '</button><div class="items"><div>' +
       items.map(function (e) { return '<button class="ni" data-k="' + e.key + '">' + icon(e.icon) + esc(e.title) + (TCODE[e.key] ? '<span class="tc">' + TCODE[e.key] + '</span>' : '') + '</button>'; }).join('') + extra + '</div></div></div>';
   });
@@ -411,6 +411,7 @@ function markNav() {
   document.querySelectorAll('#nav .ni,#bnav button').forEach(function (b) {
     var on = S.route.v === 'list' ? b.dataset.k === S.route.k : (b.dataset.v === S.route.v);
     b.classList.toggle('on', !!on);
+    if (on) { var ng = b.closest('.ng.closed'); if (ng) ng.classList.remove('closed'); }
   });
 }
 function setInboxCount(n) { var c = $('inboxCt'); if (!c) return; c.style.display = n ? '' : 'none'; c.textContent = n; }
@@ -606,7 +607,7 @@ function renderHome(v, h, silent) {
   $('hInbox').innerHTML = h.inbox.length ? h.inbox.slice(0, 6).map(inboxRow).join('') + (h.inbox.length > 6 ? '<button class="btn ghost sm" id="allInbox">See all ' + h.inbox.length + '</button>' : '') : '<div class="empty"><b>All clear</b>Nothing is waiting for you.</div>';
   bindInbox($('hInbox'), function () { refreshBoot(); });
   if ($('allInbox')) $('allInbox').onclick = function () { go({ v: 'inbox' }); };
-  $('hMine').innerHTML = h.mine.length ? h.mine.map(function (m) { return '<div class="li click" data-k="' + m.key + '" data-id="' + esc(m.id) + '" style="flex-wrap:wrap"><div class="t"><b>' + esc(m.title) + '</b> <small class="note">' + esc(m.id) + '</small><p>' + esc(fdate(m.date)) + (m.text ? ' · ' + esc(m.text) : '') + (m.amount ? ' · ' + inr(m.amount) : '') + (m.waiting ? ' · <b style="color:var(--magenta)">waiting for ' + esc(m.waiting) + '</b>' : '') + '</p></div>' + badge(m.status) + (m.path && m.path.length ? '<div style="flex-basis:100%">' + pathHtml(m.path, true) + '</div>' : '') + '</div>'; }).join('') : '<div class="empty"><b>No requests yet</b>Purchase requests and expense claims you raise appear here.</div>';
+  $('hMine').innerHTML = h.mine.length ? h.mine.map(function (m) { return '<div class="li click" data-k="' + m.key + '" data-id="' + esc(m.id) + '" style="flex-wrap:wrap"><div class="t"><b>' + esc(m.title) + '</b> <small class="note">' + esc(m.id) + '</small><p>' + esc(fdate(m.date)) + (m.text ? ' · ' + esc(m.text) : '') + (m.amount ? ' · ' + inr(m.amount) : '') + '</p></div>' + (m.waiting ? withPill(m.waiting, m.date) : '') + badge(m.status) + (m.path && m.path.length ? '<div style="flex-basis:100%">' + pathHtml(m.path, true) + '</div>' : '') + '</div>'; }).join('') : '<div class="empty"><b>No requests yet</b>Purchase requests and expense claims you raise appear here.</div>';
   $('hMine').querySelectorAll('[data-id]').forEach(function (r) { r.onclick = function () { openDetail(r.dataset.k, r.dataset.id); }; });
   if ($('poChart')) { var d = k.poChart, mx = Math.max.apply(null, d.map(function (x) { return x.v; }).concat([1])); $('poChart').innerHTML = d.map(function (x, i) { return '<div class="col"><div class="b" style="height:' + Math.max(2, x.v / mx * 100) + '%;animation-delay:' + i * 70 + 'ms"><em>' + (x.v ? inrShort(x.v).replace('₹ ', '') : '0') + '</em></div><small>' + x.label + '</small></div>'; }).join(''); }
   if ($('ageBars')) { var a = k.ageing, tot = a.b30 + a.b60 + a.b90 + a.b90p || 1; $('ageBars').innerHTML = [['0-30 days', a.b30], ['31-60 days', a.b60], ['61-90 days', a.b90], ['Over 90 days', a.b90p]].map(function (x, i) { return '<div class="hbar"><span>' + x[0] + '</span><div><i style="width:' + (x[1] / tot * 100) + '%;animation-delay:' + i * 80 + 'ms"></i></div><b>' + inrShort(x[1]) + '</b></div>'; }).join(''); $('toAge').onclick = function () { go({ v: 'ageing' }); }; }
@@ -681,6 +682,13 @@ function kpis(k) {
 /* =====================================================================
    APPROVAL CHANNEL STEPPER (names of every approver, live status)
    ===================================================================== */
+/* "With R Karthick · 3d" - who holds the request now and for how long (age counted from the request date) */
+function withPill(who, d) {
+  var nm = String(who || ''), role = '', m = nm.match(/^(.*?)\s*\((.*)\)\s*$/); if (m) { nm = m[1]; role = m[2]; }
+  var age = '';
+  if (/^\d{4}-\d{2}-\d{2}$/.test(d || '')) { var n = Math.floor((Date.now() - new Date(d + 'T00:00:00').getTime()) / 864e5); if (n >= 0) age = n === 0 ? 'raised today' : 'raised ' + n + 'd ago'; }
+  return '<span class="pe-with" title="' + esc(who) + '"><i></i>With <b>' + esc(nm) + '</b>' + (role ? '<small>' + esc(role) + '</small>' : '') + (age ? '<em>' + age + '</em>' : '') + '</span>';
+}
 function pathHtml(path, compact) {
   if (!path || !path.length) return '';
   var seenCur = false;
@@ -698,7 +706,7 @@ function pathHtml(path, compact) {
    APPROVALS INBOX
    ===================================================================== */
 function inboxRow(i) {
-  return '<div class="li click" data-k="' + i.key + '" data-id="' + esc(i.id) + '"><span class="avatar" style="width:34px;height:34px;font-size:11px">' + initials(i.who) + '</span><div class="t"><b>' + esc(i.title) + '</b> <small class="note">' + esc(i.id) + '</small><p>' + esc(i.who) + (i.dept ? ' · ' + esc(i.dept) : '') + (i.step ? ' · <b style="color:var(--magenta)">you approve as ' + esc(i.step) + '</b>' : '') + (i.text ? ' · ' + esc(i.text) : '') + (i.amount ? ' · <b>' + inr(i.amount) + '</b>' : '') + '</p></div>' +
+  return '<div class="li click" data-k="' + i.key + '" data-id="' + esc(i.id) + '"><span class="avatar" style="width:34px;height:34px;font-size:11px">' + initials(i.who) + '</span><div class="t"><b>' + esc(i.title) + '</b> <small class="note">' + esc(i.id) + '</small><p>' + esc(i.who) + (i.dept ? ' · ' + esc(i.dept) : '') + (i.step ? ' · <b class="pe-as">as ' + esc(i.step) + '</b>' : '') + (i.text ? ' · ' + esc(i.text) : '') + (i.amount ? ' · <b>' + inr(i.amount) + '</b>' : '') + '</p></div>' +
     badge(i.status) + (!i.needRemark && !i.hasInput ? ' <button class="btn primary sm" data-act="' + i.action + '">' + esc(i.actionLabel) + '</button>' : ' <button class="btn soft sm">Review</button>') + '</div>';
 }
 function bindInbox(el, after) {

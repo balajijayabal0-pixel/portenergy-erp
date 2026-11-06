@@ -1,0 +1,90 @@
+/* © 2026 Port Energy Private Limited. All rights reserved. Proprietary and confidential. */
+/* =====================================================================
+   PORT ENERGY ERP - ENTERPRISE FINISH (v1)
+   Less decoration, tighter density, clearer status. Brand colours stay.
+   Loads last, after dash.css / fx.css.
+   ===================================================================== */
+
+/* ---------- hero: shorter, calmer, one search only ---------- */
+.dx-hero { min-height: 0 !important; padding: 16px 22px 18px !important; }
+.dx-art { width: 58% !important; opacity: .55; filter: saturate(.75); }
+.dx-hero::after { background: linear-gradient(90deg, #0B1546 30%, rgba(11, 21, 70, .7) 55%, rgba(11, 21, 70, .25) 100%) !important; }
+.dx-hero h2 { font-size: clamp(20px, 2.1vw, 26px) !important; margin: 6px 0 4px !important; text-shadow: none !important; }
+.dx-find { display: none !important; }                 /* top bar (desktop) and bottom bar (phone) already search */
+.dx-motto {                                             /* sits on the info line instead of floating in the corner */
+  position: static !important; display: inline-block !important; margin-top: 10px; padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, .14); font: 600 10.5px/1 var(--ap-text) !important; letter-spacing: .22em !important;
+  color: rgba(255, 255, 255, .55) !important;
+}
+.dx-motto b { color: rgba(255, 140, 193, .85) !important; }
+
+/* ---------- KPI cards: restrained, aligned, scannable ---------- */
+.kpi[data-dx]::after { display: none !important; }    /* no pastel blobs */
+.kpi[data-dx] { padding: 12px 14px !important; column-gap: 11px !important; grid-template-columns: 34px 1fr !important; border-radius: 14px !important;
+  box-shadow: 0 1px 2px rgba(15, 27, 76, .05), 0 0 0 1px rgba(15, 27, 76, .06) !important; }
+.kpi[data-dx] .dx-ki { width: 34px !important; height: 34px !important; border-radius: 10px !important; box-shadow: none !important; }
+.kpi[data-dx="pink"] .dx-ki   { background: #FDE7F1 !important; color: #D4025F !important; }
+.kpi[data-dx="blue"] .dx-ki   { background: #E3F0FF !important; color: #0066D6 !important; }
+.kpi[data-dx="violet"] .dx-ki { background: #EFE7FF !important; color: #6430E0 !important; }
+.kpi[data-dx="teal"] .dx-ki   { background: #DDF7F2 !important; color: #018A78 !important; }
+.kpi[data-dx="navy"] .dx-ki   { background: #E5E8F8 !important; color: #1B2F9E !important; }
+.kpi[data-dx="red"] .dx-ki    { background: #FDE6EA !important; color: #C8183E !important; }
+.kpi[data-dx="amber"] .dx-ki  { background: #FFF1D9 !important; color: #B86300 !important; }
+.kpi[data-dx="green"] .dx-ki  { background: #DFF6EA !important; color: #0B8A55 !important; }
+.kpi[data-dx] .l { font-size: 11px !important; font-weight: 600 !important; letter-spacing: .04em; text-transform: uppercase; color: #5B6690 !important; line-height: 1.3 !important; }
+.kpi[data-dx] .v { font-size: 22px !important; font-weight: 700 !important; margin-top: 2px !important; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+.kpi[data-dx] .s, .kpi[data-dx] small { font-size: 11.5px !important; color: #6A7395 !important; }
+.dx-slot-kpi .kpis { gap: 10px !important; }
+
+/* ---------- panels: tighter headers ---------- */
+#dx .glass, .view > .glass, .dx-tail > .glass { border-radius: 14px !important; }
+.dx-p h3, .panel h3 { font-size: 14.5px !important; margin-bottom: 10px !important; }
+
+/* ---------- bottom of home: no lonely half-width cards ---------- */
+.dx-tail { columns: 3 320px; column-gap: 12px; margin: 0 0 12px; }
+.dx-tail > .glass { break-inside: avoid; display: block; width: 100%; margin: 0 0 12px !important; }
+.dx-tail .qgrid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 8px !important; }
+.dx-tail .qa { padding: 10px !important; }
+
+/* ---------- approvals & my requests: one dense, scannable list ---------- */
+#ibx, #hInbox, #hMine { gap: 0 !important; }
+#ibx .li, #hInbox .li, #hMine .li {
+  border-radius: 0 !important; border: 0 !important; border-bottom: 1px solid #EDF0F7 !important; background: transparent !important;
+  padding: 9px 4px !important; gap: 10px !important; animation: none; transform: none !important;
+}
+#ibx .li:last-child, #hInbox .li:last-child, #hMine .li:last-child { border-bottom: 0 !important; }
+#ibx .li.click:hover, #hInbox .li.click:hover, #hMine .li.click:hover { background: #F5F8FF !important; }
+#ibx .li .t b, #hInbox .li .t b, #hMine .li .t b { font-size: 13.5px; }
+#ibx .li .t p, #hInbox .li .t p, #hMine .li .t p { font-size: 12px; margin-top: 1px; }
+#ibx .li .avatar, #hInbox .li .avatar { width: 30px !important; height: 30px !important; }
+#ibx { padding: 6px 14px !important; }
+.pe-as { color: #3A4677; font-weight: 600; }
+/* who holds it now: a calm pill, not a pink sentence */
+.pe-with { display: inline-flex; align-items: center; gap: 5px; max-width: 46%; padding: 3px 9px 3px 7px; border-radius: 999px; background: #F1F3FA;
+  border: 1px solid #E2E6F2; font-size: 11.5px; color: #4A5582; white-space: nowrap; overflow: hidden; }
+.pe-with i { flex: none; width: 7px; height: 7px; border-radius: 50%; background: #F3026E; box-shadow: 0 0 0 3px rgba(243, 2, 110, .15); }
+.pe-with b { color: #0D1A4F; font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+.pe-with small { color: #7A84A8; overflow: hidden; text-overflow: ellipsis; }
+.pe-with small::before { content: "·"; margin-right: 4px; }
+.pe-with em { font-style: normal; color: #7A84A8; } .pe-with em::before { content: "·"; margin-right: 4px; }
+#hMine .apath.mini { margin: 4px 0 0; }
+#hMine .apath.mini .ap { padding: 2px 12px 2px 0 !important; }
+
+@media (max-width: 760px) {
+  .dx-hero { padding: 13px 14px 14px !important; }
+  .dx-art { width: 100% !important; opacity: .3; }
+  .kpi[data-dx] { grid-template-columns: 30px 1fr !important; padding: 10px 11px !important; }
+  .kpi[data-dx] .dx-ki { width: 30px !important; height: 30px !important; }
+  .kpi[data-dx] .v { font-size: 18px !important; }
+  .pe-with { max-width: 100%; order: 3; }
+  .pe-with small { display: none; }
+  #ibx { padding: 2px 10px !important; }
+  .dx-motto { display: none !important; }
+}
+/* my requests: title on its own line, then who-has-it + status, then the chain */
+#hMine .li { flex-wrap: wrap; row-gap: 6px !important; }
+#hMine .li .t { flex: 1 1 100% !important; }
+#hMine .pe-with { max-width: 100%; }
+#hMine .li .badge { margin-left: auto; }
+.pe-with b, .pe-with em { flex: none; }
+#hMine .pe-with small { display: none; }                 /* the chain right below already shows the role */

@@ -319,3 +319,43 @@ html.pe-dark .top .pe-dn i { left: 25px; }
   .top .pe-dn { width: 44px; height: 26px; } .top .pe-dn i { width: 20px; height: 20px; } html.pe-dark .top .pe-dn i { left: 21px; }
 }
 @media (max-width: 380px) { .top #refreshBtn { display: none !important; } }
+
+/* ===================== PEPL INTELLIGENCE ===================== */
+.aibtn { display: inline-flex !important; align-items: center; gap: 7px; font-weight: 700 !important; letter-spacing: .01em; }
+.ai-mini { width: 14px; height: 14px; border-radius: 50%; background: conic-gradient(from 0deg, #00B49C, #0084F0, #F0006C, #FFC21A, #00B49C); animation: lgxSpin 2.4s linear infinite; box-shadow: 0 0 10px rgba(255, 255, 255, .7); }
+.aip { background: radial-gradient(600px 400px at 100% 0%, rgba(240, 0, 108, .1), transparent 60%), radial-gradient(600px 420px at 0% 100%, rgba(0, 132, 240, .12), transparent 60%), #F5F7FC !important; }
+.aih { background: linear-gradient(115deg, #0084F0 0%, #2F6BEA 45%, #F0006C 100%) !important; padding-top: max(12px, env(safe-area-inset-top)) !important; padding-bottom: 12px !important; gap: 12px !important; }
+.aih .aiti b { font: 800 17px var(--ap-display, system-ui); letter-spacing: -.01em; } .aih .aiti small { opacity: .9; }
+.ai-orb { position: relative; flex: none; width: 36px; height: 36px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, #BFE6FF 25%, #0084F0 60%, #3A1270); box-shadow: 0 0 18px rgba(255, 255, 255, .5); }
+.ai-orb i { position: absolute; inset: -4px; border-radius: 50%; border: 2px solid transparent; border-top-color: rgba(255, 255, 255, .9); animation: lgxSpin 1.8s linear infinite; }
+.ai-orb i:nth-child(2) { inset: -8px; border-top-color: transparent; border-right-color: #FFC1DC; animation-duration: 2.6s; animation-direction: reverse; }
+.ai-orb i:nth-child(3) { inset: 6px; border: 0; background: radial-gradient(circle, rgba(255, 255, 255, .8), transparent 60%); animation: lgxAura 1.6s ease-in-out infinite alternate; }
+.ai-orb.big { width: 84px; height: 84px; margin: 0 auto 12px; box-shadow: 0 18px 40px -12px rgba(0, 132, 240, .6), 0 0 40px rgba(240, 0, 108, .25); }
+.ai-orb.big i { inset: -8px; border-width: 3px; } .ai-orb.big i:nth-child(2) { inset: -16px; }
+.aiwel h3 { font: 800 24px var(--ap-display, system-ui) !important; background: linear-gradient(90deg, #0084F0, #F0006C); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.aisug { display: grid !important; grid-template-columns: 1fr 1fr; gap: 8px !important; }
+.aisug .chip { display: block; padding: 11px 12px !important; border-radius: 14px !important; background: #fff !important; border: 1px solid #E3E9F6 !important; box-shadow: 0 8px 18px -14px rgba(0, 40, 120, .5); font-size: 12.5px !important; line-height: 1.35; color: #13204F !important; transition: transform .15s, border-color .2s; white-space: normal !important; height: auto !important; }
+.aisug .chip:hover { transform: translateY(-2px); border-color: #F0006C !important; }
+.aib.ai { border-radius: 18px 18px 18px 6px !important; background: #fff !important; box-shadow: 0 10px 24px -18px rgba(0, 40, 120, .6) !important; }
+.aib.me { background: linear-gradient(120deg, #0084F0, #F0006C) !important; }
+.aif { align-items: flex-end; gap: 6px !important; padding: 10px 10px max(10px, env(safe-area-inset-bottom)) !important; background: rgba(255, 255, 255, .92) !important; backdrop-filter: blur(10px); border-top: 1px solid #E8EEF8; }
+.aif textarea { border-radius: 20px !important; border: 1.5px solid #DCE4F3 !important; background: #F8FAFE !important; }
+.aif textarea:focus { border-color: #0084F0 !important; box-shadow: 0 0 0 4px rgba(0, 132, 240, .12) !important; }
+#aiGo { border-radius: 50% !important; width: 44px; height: 44px; padding: 0 !important; }
+.ai-mic { flex: none; width: 42px; height: 42px; padding: 0 !important; border-radius: 50% !important; display: grid !important; place-items: center; color: #F0006C !important; background: #FFEAF4 !important; position: relative; }
+.ai-mic.rec { color: #fff !important; background: #F0006C !important; }
+.ai-mic.rec::after { content: ""; position: absolute; inset: -5px; border-radius: 50%; border: 2px solid #F0006C; animation: lgxPulse 1.2s ease-out infinite; }
+.ch-mic { width: 40px; height: 40px; }
+html.pe-dark .aip { background: #141821 !important; } html.pe-dark .aisug .chip, html.pe-dark .aib.ai { background: #1E2433 !important; color: #D5DAE4 !important; border-color: rgba(190, 200, 225, .12) !important; }
+html.pe-dark .aif { background: rgba(26, 31, 43, .95) !important; border-color: rgba(190, 200, 225, .1); } html.pe-dark .aih { background: linear-gradient(115deg, #24406E, #5A2A4C) !important; }
+html.pe-dark .ai-mic { background: rgba(240, 0, 108, .15) !important; }
+/* auto-correct chip */
+.sp-chip { position: fixed; z-index: 400; display: flex; align-items: center; gap: 10px; padding: 6px 6px 6px 12px; border-radius: 999px; background: #13204F; color: #fff; font-size: 12.5px; box-shadow: 0 10px 24px -10px rgba(0, 0, 0, .5); opacity: 0; transform: translateY(6px); pointer-events: none; transition: opacity .2s, transform .2s; }
+.sp-chip.on { opacity: 1; transform: none; pointer-events: auto; }
+.sp-chip s { opacity: .65; } .sp-chip b { color: #7FE3CB; }
+.sp-chip button { border: 0; border-radius: 999px; padding: 4px 10px; background: rgba(255, 255, 255, .16); color: #fff; font-weight: 700; font-size: 12px; cursor: pointer; }
+.aih { flex-wrap: nowrap; } .aih .aiti { flex: 1; min-width: 0; } .aih .aiti small { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.aih .vc-btn, .aih #aiNew { flex: none; white-space: nowrap; color: #fff !important; background: rgba(255, 255, 255, .18) !important; border: 1px solid rgba(255, 255, 255, .35) !important; border-radius: 999px !important; padding: 6px 11px !important; font-size: 12px !important; }
+@media (max-width: 600px) { .aih .aiti small { display: none; } .aih .ai-orb { width: 30px; height: 30px; } .aih .vc-btn { padding: 6px 9px !important; } }
+
+.aih #aiX { color: #fff !important; font-size: 26px !important; opacity: 1 !important; }

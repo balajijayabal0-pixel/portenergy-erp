@@ -348,7 +348,7 @@
     if (VC) return;
     var lang = P().store.get('pe_vlang') || 'en-IN';
     var el = document.createElement('div'); el.className = 'vc'; el.innerHTML =
-      '<div class="vc-in"><div class="vc-top"><b>Port Energy AI</b><small>Voice call · Gemini</small></div>' +
+      '<div class="vc-in"><div class="vc-top"><b>PEPL Intelligence</b><small>Voice call</small></div>' +
       '<div class="vc-orb" id="vcOrb"><i></i><i></i><i></i><span>' + ic('megaphone', 34) + '</span></div>' +
       '<div class="vc-st" id="vcSt">Connecting…</div><div class="vc-tx" id="vcTx"></div>' +
       '<div class="vc-lang"><button data-l="en-IN"' + (lang === 'en-IN' ? ' class="on"' : '') + '>English</button><button data-l="ta-IN"' + (lang === 'ta-IN' ? ' class="on"' : '') + '>தமிழ்</button></div>' +
@@ -392,7 +392,7 @@
   /* microphone button in the AI panel */
   function addMic() {
     var h = document.querySelector('#aip .aih'); if (!h || h.querySelector('.vc-btn')) return;
-    var b = document.createElement('button'); b.className = 'btn soft sm vc-btn'; b.type = 'button'; b.innerHTML = '&#127908; Voice call'; b.onclick = voiceCall;
+    var b = document.createElement('button'); b.className = 'btn soft sm vc-btn'; b.type = 'button'; b.innerHTML = '&#127908; Call'; b.onclick = voiceCall;
     h.insertBefore(b, $('aiNew'));
   }
   document.addEventListener('DOMContentLoaded', addMic); setTimeout(addMic, 800);

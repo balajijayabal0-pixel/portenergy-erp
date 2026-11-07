@@ -5,7 +5,7 @@
   'use strict';
   var P = function () { return window.PE; }, $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
-  var MULTI = { tasks: 'assignedTo' };
+  var MULTI = { tasks: { k: 'assignedTo', mode: 'clone' }, leaves: { k: 'approvers', mode: 'csv' }, expenses: { k: 'approvers', mode: 'csv' } };
   var COL = ['#0084F0', '#F0006C', '#00B49C', '#6F42C1', '#E8590C', '#0CA678', '#C2255C', '#1C7ED6'];
   function col(n) { var h = 7; String(n).split('').forEach(function (c) { h = (h * 37 + c.charCodeAt(0)) >>> 0; }); return COL[h % COL.length]; }
 
@@ -17,17 +17,17 @@
     pane.classList.add('pe-form');
     var dh = pane.querySelector('.dh'), e = F.e;
     if (dh && !dh.querySelector('.dh-ic')) dh.insertAdjacentHTML('afterbegin', '<span class="dh-ic">' + P().icon(e.icon || 'box', 22) + '</span>');
-    if (MULTI[key] && isNew) multiPick(F, MULTI[key], setField);
+    var mm = MULTI[key]; if (mm && (isNew || mm.mode === 'csv')) multiPick(F, mm.k, setField, mm.mode);
   };
 
   /* ---------- pick several people (one task is created for each) ---------- */
-  function multiPick(F, k, setField) {
+  function multiPick(F, k, setField, mode) {
     var inp = $('pane').querySelector('.fgrid [data-k="' + k + '"]'); if (!inp) return;
     var box = inp.closest('.fgrid > div'); if (!box) return;
     var users = ((P().S.opts && P().S.opts.users) || []).map(function (u) { return { n: u.v, d: u.des || u.dept || '' }; });
     var me = P().S.sess && P().S.sess.user ? P().S.sess.user.name : '';
-    var sel = F.rec[k] ? [F.rec[k]] : [];
-    F.multi = { k: k, names: sel };
+    var sel = F.rec[k] ? String(F.rec[k]).split(/\s*,\s*/).filter(String) : [];
+    if (mode === 'clone') F.multi = { k: k, names: sel };
     box.classList.add('mp-on');
     box.insertAdjacentHTML('beforeend', '<div class="mp" id="mp"><div class="mp-chips" id="mpC"></div><div class="mp-in"><input id="mpQ" placeholder="Type a name to add…" autocomplete="off"><button type="button" class="mp-team" id="mpTeam">+ My team</button></div><div class="mp-list" id="mpL"></div></div>');
     function draw() {
@@ -37,9 +37,9 @@
       var list = users.filter(function (u) { return sel.indexOf(u.n) < 0 && (!q || u.n.toLowerCase().indexOf(q) > -1 || u.d.toLowerCase().indexOf(q) > -1); }).slice(0, q ? 12 : 8);
       $('mpL').innerHTML = list.map(function (u) { return '<button type="button" class="mp-o" data-n="' + esc(u.n) + '"><i style="background:' + col(u.n) + '">' + esc(P().initials(u.n)) + '</i><span><b>' + esc(u.n) + (u.n === me ? ' (me)' : '') + '</b><small>' + esc(u.d) + '</small></span><em>+</em></button>'; }).join('');
       $('mpL').querySelectorAll('[data-n]').forEach(function (b) { b.onclick = function () { sel.push(b.dataset.n); $('mpQ').value = ''; sync(); $('mpQ').focus(); }; });
-      var hint = $('pane').querySelector('[data-hint="' + k + '"]'); if (hint) hint.textContent = sel.length > 1 ? 'A separate task will be created for each of the ' + sel.length + ' people.' : 'Pick one or more people.';
+      var hint = $('pane').querySelector('[data-hint="' + k + '"]'); if (hint) hint.textContent = mode === 'csv' ? (sel.length ? 'Approval goes to ' + sel.join(' → ') + ', then the Managing Director gives the final approval.' : 'Optional. Leave empty to follow your normal reporting channel. The Managing Director always gives the final approval.') : (sel.length > 1 ? 'A separate task will be created for each of the ' + sel.length + ' people.' : 'Pick one or more people.');
     }
-    function sync() { F.multi.names = sel.slice(); setField(k, sel[0] || ''); draw(); }
+    function sync() { if (mode === 'clone') { F.multi.names = sel.slice(); setField(k, sel[0] || ''); } else setField(k, sel.join(', ')); draw(); }
     $('mpQ').oninput = draw;
     $('mpTeam').onclick = function () { var t = (P().S.sess && P().S.sess.user && P().S.sess.user.team) || []; t.forEach(function (n) { if (sel.indexOf(n) < 0) sel.push(n); }); if (!t.length) P().toast('No team members found for you.'); sync(); };
     draw();
@@ -65,6 +65,31 @@
   applyTheme();
   window.addEventListener('storage', function (e) { if (e.key === 'pe_lgmode') applyTheme(); });
   document.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('#lgMode')) setTimeout(applyTheme, 30); }, true);
+
+  /* ---------- mail settings: send each mail type only to chosen people ---------- */
+  window.PE_MAILTO = function (el) {
+    el.innerHTML = '<h3 style="margin:0 0 4px">Who receives each mail</h3><p class="note">Leave a mail type on <b>Usual people</b>, or pick exact people - then only they get that mail.</p><div class="note">Loading…</div>';
+    P().call('mailToGet', P().S.token).then(function (d) { drawTo(el, d); }).catch(function (e) { el.innerHTML = '<p class="note">Could not load recipients: ' + esc(e.message) + '</p>'; });
+  };
+  function drawTo(el, d) {
+    var map = JSON.parse(JSON.stringify(d.map || {}));
+    function row(k) {
+      var list = map[k] || [];
+      return '<div class="mt-row" data-k="' + k + '"><div class="mt-h"><b>' + esc(k === 'Digest' ? 'Daily report' : k) + '</b><small>' + esc(d.kinds[k]) + '</small></div>' +
+        '<div class="mt-chips">' + (list.length ? list.map(function (n) { return '<span class="mp-chip"><i style="background:' + col(n) + '">' + esc(P().initials(n)) + '</i>' + esc(n) + '<button type="button" data-rm="' + esc(n) + '">×</button></span>'; }).join('') : '<span class="mt-any">Usual people</span>') +
+        '<select class="in mt-add"><option value="">+ Add person</option>' + d.people.filter(function (p) { return list.indexOf(p.n) < 0; }).map(function (p) { return '<option value="' + esc(p.n) + '">' + esc(p.n) + ' - ' + esc(p.e) + '</option>'; }).join('') + '</select>' +
+        (list.length ? '<button type="button" class="linkbtn mt-clr">Back to usual</button>' : '') + '</div></div>';
+    }
+    el.innerHTML = '<h3 style="margin:0 0 4px">Who receives each mail</h3><p class="note">Leave a mail type on <b>Usual people</b>, or pick exact people - then <b>only they</b> get that mail. Login OTP and PIN reset always go to the person signing in.</p>' +
+      Object.keys(d.kinds).map(row).join('') + '<div class="mfoot" style="justify-content:flex-start"><button class="btn primary" id="mtSave">Save recipients</button></div>';
+    el.querySelectorAll('.mt-row').forEach(function (r) {
+      var k = r.dataset.k;
+      r.querySelector('.mt-add').onchange = function () { if (!this.value) return; (map[k] = map[k] || []).push(this.value); drawTo(el, { map: map, kinds: d.kinds, people: d.people }); };
+      r.querySelectorAll('[data-rm]').forEach(function (b) { b.onclick = function () { map[k] = (map[k] || []).filter(function (x) { return x !== b.dataset.rm; }); drawTo(el, { map: map, kinds: d.kinds, people: d.people }); }; });
+      var c = r.querySelector('.mt-clr'); if (c) c.onclick = function () { delete map[k]; drawTo(el, { map: map, kinds: d.kinds, people: d.people }); };
+    });
+    $('mtSave').onclick = function () { var b = this; P().busy(b, true); P().call('mailToSave', P().S.token, map).then(function (r) { drawTo(el, r); P().toast('Mail recipients saved.'); }).catch(function (e) { P().busy(b, false); P().fail(e); }); };
+  }
 
   /* ---------- MD's message ---------- */
   var MD = { name: 'R. Karthick', role: 'Managing Director', quote: 'Impossible can be possible.', sub: 'Every pipeline we lay, every challenge we face - we deliver.' };

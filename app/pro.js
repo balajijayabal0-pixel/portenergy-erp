@@ -174,6 +174,8 @@
       }).join('') + '</div>' +
       '<div class="pe-mail-safe">' + ic('shield', 16) + '<span><b>Always sent:</b> login OTP and Forgot PIN requests. These are needed to sign in, so they are never blocked.</span></div>' +
       '<div class="mfoot" style="justify-content:flex-start"><button class="btn primary" id="msSave">Save settings</button><button class="btn soft" id="msOff">Stop all mails now</button></div></div>';
+    v.insertAdjacentHTML('beforeend', '<div class="glass panel pe-mail" id="msTo" style="margin-top:14px"></div>');
+    if (window.PE_MAILTO) window.PE_MAILTO($('msTo'));
     $('msAll').onchange = function () { $('msList').classList.toggle('off', !this.checked); $('msAllT').textContent = this.checked ? 'ON' : 'OFF'; };
     function save(btn, all) {
       var o = { all: all == null ? $('msAll').checked : all };

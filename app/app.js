@@ -1115,6 +1115,7 @@ function renderDetail(e, res) {
   if (P2.querySelector('[data-edit]')) P2.querySelector('[data-edit]').onclick = function () { openForm(e.key, r); };
   P2.querySelectorAll('[data-mk]').forEach(function (b) { b.onclick = function () { makeFrom(b.dataset.mk, e.key, r); }; });
   P2.querySelectorAll('[data-rel]').forEach(function (b) { b.onclick = function () { openDetail(b.dataset.rel, b.dataset.id); }; });
+  if (S.openRec && S.openRec.id === r.id) { S.openRec.r = r; S.openRec.x = x; }
   P2.querySelector('[data-print]').onclick = function () { printRecord(e, r, x); };
   if (P2.querySelector('[data-ackme]')) P2.querySelector('[data-ackme]').onclick = function () { var b = this; busy(b, true, ''); call('ackNotice', S.token, r.id).then(function () { toast('Acknowledged. Thank you.'); openDetail(e.key, r.id); refreshBoot(); }).catch(function (z) { busy(b, false); fail(z); }); };
   if (P2.querySelector('[data-led]')) P2.querySelector('[data-led]').onclick = function () { go({ v: 'ledger', vendor: r.name }); };
@@ -1767,7 +1768,7 @@ function printHtml(body, opt) {
     var old = document.querySelector('iframe.pf'); if (old) old.remove();
     var f = document.createElement('iframe'); f.className = 'pf'; document.body.appendChild(f);
     var d = f.contentWindow.document; d.open(); d.write(html); d.close();
-    var go2 = function () { fitOnePage(f, opt); if (opt && opt.noPrint) return opt.noPrint(f); try { f.contentWindow.focus(); f.contentWindow.print(); } catch (e) { toast('Printing is blocked here. Allow pop-ups or use Export.', true); } };
+    var go2 = function () { fitOnePage(f, opt); if (window.__peCapture) { var cb = window.__peCapture; window.__peCapture = null; return cb(f); } try { f.contentWindow.focus(); f.contentWindow.print(); } catch (e) { toast('Printing is blocked here. Allow pop-ups or use Export.', true); } };
     var imgs = d.images, left = imgs.length; if (!left) return setTimeout(go2, 150);
     var once = function () { if (--left <= 0) setTimeout(go2, 150); };
     Array.prototype.forEach.call(imgs, function (i) { if (i.complete) once(); else { i.onload = once; i.onerror = once; } });

@@ -429,3 +429,5 @@ html.pe-dark .rb-chips span, html.pe-dark .rb-cols span { background: #1A1F2B; b
   .dx-wx-row > .dx-port { grid-column: 1; grid-row: 1; } .dx-wx-row > .dx-donut { grid-column: 2; grid-row: 1; }
   .dx-wx-row > .dx-alerts { grid-column: 1 / span 2; grid-row: 2; }
 }
+/* phone menu: no big motto box at the bottom */
+@media (max-width: 900px) { html body .side nav::after { display: none !important; content: none !important; } }

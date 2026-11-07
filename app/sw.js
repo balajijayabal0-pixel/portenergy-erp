@@ -6,8 +6,8 @@
  * Screens: open from the saved copy, then quietly fetch the newest copy for next time.
  * Change VERSION on each upload to clear old copies.
  */
-const VERSION = 'pe-app-v28';
-const SHELL = ['./', './index.html', './app.js', './bridge.js', './logo.js', './polish.css', './apple.css', './dash.css', './motion.js', './install.js', './wa.js', './dash.js', './login.css', './login.js', './loading.css', './fx.css', './refine.css', './pro.css', './brand.css', './dark.css', './img/heli.webp', './img/bg-day.webp', './img/bg-night.webp', './pro.js', './reports.js', './print.js', './books.js', './chat.js', './loginfx.js', './ui2.js', './spell.js', './fx.js',
+const VERSION = 'pe-app-v29';
+const SHELL = ['./', './index.html', './app.js', './bridge.js', './logo.js', './polish.css', './apple.css', './dash.css', './motion.js', './install.js', './wa.js', './dash.js', './login.css', './login.js', './loading.css', './fx.css', './refine.css', './pro.css', './brand.css', './dark.css', './img/heli.webp', './img/bg-day.webp', './img/bg-night.webp', './pro.js', './reports.js', './print.js', './books.js', './chat.js', './loginfx.js', './ui2.js', './spell.js', './wx.js', './fx.js',
   './manifest.webmanifest', '../config.js', '../icons/icon-192.png', '../icons/icon-512.png', '../icons/favicon.png'];
 
 self.addEventListener('install', function (e) {

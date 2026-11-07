@@ -52,3 +52,35 @@ html body .top::before { content: ""; position: absolute; left: 0; right: 0; bot
 ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #0084F0, #F0006C) !important; border-radius: 8px; }
 ::selection { background: rgba(240, 0, 108, .22); }
 @media (prefers-reduced-motion: reduce) { html body .top::before { animation: none; } }
+
+/* ===== chosen: PINK + WHITE + BLUE (logo magenta #F0006C, blue #0084F0 on white) ===== */
+html body .side { background: #FFFFFF !important; box-shadow: 6px 0 28px -16px rgba(0, 60, 140, .35) !important; border-right: 1px solid #E6ECF7 !important; }
+html body .side::after { background: linear-gradient(180deg, #0084F0, #F0006C); opacity: 1; width: 3px; }
+.side, .side .ni { color: #13204F !important; }
+.side .ni svg { color: #0084F0 !important; }
+.side .ng .ngh, .side .ngh { color: #F0006C !important; }
+.side .logo { box-shadow: none !important; }
+.side .find { background: #F2F6FD !important; color: #4A5680 !important; border: 1px solid #E2E9F6 !important; }
+.side .find kbd, .side .ni .tc { background: #E8EFFB !important; color: #0060C0 !important; }
+.ni:hover { background: #FFF0F6 !important; color: #C8005A !important; }
+.ni:hover svg { color: #F0006C !important; }
+.ni.on { background: linear-gradient(95deg, #0084F0 0%, #F0006C 100%) !important; color: #fff !important; box-shadow: 0 10px 22px -10px rgba(240, 0, 108, .6) !important; }
+.ni.on svg { color: #fff !important; }
+.side .me { background: #F6F8FD !important; border-top: 1px solid #E6ECF7 !important; }
+.side .me b { color: #13204F !important; } .side .me small { color: #5D6894 !important; }
+.side nav::after { color: #fff !important; background: linear-gradient(135deg, #0084F0, #F0006C) !important; }
+html body .top { background: linear-gradient(100deg, #0084F0 0%, #3D6FE8 45%, #F0006C 100%) !important; }
+html body .top::before { background: linear-gradient(90deg, #FFFFFF, #FFC1DC, #FFFFFF); background-size: 200% 100%; opacity: .7; }
+.top .crumb { color: rgba(255, 255, 255, .88) !important; }
+.top .btn.soft { background: rgba(255, 255, 255, .18) !important; border-color: rgba(255, 255, 255, .3) !important; }
+.top .aibtn { background: #FFFFFF !important; color: #F0006C !important; }
+.dx-hero { background: linear-gradient(120deg, #0084F0 0%, #3D6FE8 50%, #F0006C 100%) !important; }
+.dx-hero::after { background: linear-gradient(90deg, rgba(0, 110, 220, .92) 18%, rgba(0, 110, 220, .45) 45%, rgba(0, 110, 220, 0) 75%) !important; }
+.dx-hero::before { background: #fff !important; opacity: .5; }
+.btn.primary { background: linear-gradient(100deg, #0084F0 0%, #F0006C 100%) !important; background-size: 160% 100% !important; box-shadow: 0 10px 22px -12px rgba(240, 0, 108, .6) !important; }
+.chip.on, .chips .chip.on { background: #F0006C !important; border-color: #F0006C !important; }
+.bnav button.on { background: linear-gradient(135deg, #0084F0, #F0006C) !important; box-shadow: 0 8px 18px -8px rgba(240, 0, 108, .7); }
+.kpi[data-dx]::before { background: linear-gradient(90deg, #0084F0, #F0006C); }
+.panel > h3::after { background: linear-gradient(90deg, #0084F0, #F0006C); }
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #0084F0, #F0006C) !important; }
+body { background: radial-gradient(900px 500px at 100% 0%, rgba(240, 0, 108, .06), transparent 60%), radial-gradient(800px 520px at 0% 100%, rgba(0, 132, 240, .07), transparent 60%), #F7F9FD !important; }

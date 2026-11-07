@@ -17,9 +17,9 @@
 <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://script.google.com">
 <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
-<script src="../config.js?v=202611061330"></script>
-<script src="bridge.js?v=202611061330"></script>
-<script src="logo.js?v=202611061330"></script>
+<script src="../config.js?v=202611071900"></script>
+<script src="bridge.js?v=202611071900"></script>
+<script src="logo.js?v=202611071900"></script>
 <style>
 :root{
   --ink:#121B54; --navy:#1B2F9E; --sky:#1E90F5; --teal:#12B39A; --magenta:#E8127C; --pink:#F0569C;
@@ -704,14 +704,14 @@ textarea[data-fit]{overflow-y:auto}
  .tb td,.tb th{padding-top:8px!important;padding-bottom:8px!important}
 }
 </style>
-<link rel="stylesheet" href="polish.css?v=202611061330">
-<link rel="stylesheet" href="apple.css?v=202611061330">
-<link rel="stylesheet" href="dash.css?v=202611061330">
-<link rel="stylesheet" href="login.css?v=202611061330">
-<link rel="stylesheet" href="loading.css?v=202611061330">
-<link rel="stylesheet" href="fx.css?v=202611061330">
-<link rel="stylesheet" href="refine.css?v=202611061330">
-<link rel="stylesheet" href="pro.css?v=202611061330">
+<link rel="stylesheet" href="polish.css?v=202611071900">
+<link rel="stylesheet" href="apple.css?v=202611071900">
+<link rel="stylesheet" href="dash.css?v=202611071900">
+<link rel="stylesheet" href="login.css?v=202611071900">
+<link rel="stylesheet" href="loading.css?v=202611071900">
+<link rel="stylesheet" href="fx.css?v=202611071900">
+<link rel="stylesheet" href="refine.css?v=202611071900">
+<link rel="stylesheet" href="pro.css?v=202611071900">
 </head>
 <body>
 <div class="amb"><i></i><i></i><i></i></div>
@@ -746,7 +746,128 @@ textarea[data-fit]{overflow-y:auto}
 <!-- ============ LOGIN ============ -->
 <section id="login">
   <div class="lg-bg" aria-hidden="true">
-    <div class="lg-photo"><i class="lg-sweep"></i></div>
+    <svg class="lg-scene" viewBox="0 0 1600 420" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <defs>
+        <pattern id="scWin" width="16" height="20" patternUnits="userSpaceOnUse"><rect x="4" y="5" width="7" height="9" rx="1" fill="#6F86FF" opacity=".35"/></pattern>
+        <linearGradient id="scGround" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#15207A"/><stop offset="1" stop-color="#070B2E"/></linearGradient>
+        <linearGradient id="scTank" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2A3DA8"/><stop offset=".45" stop-color="#4C63D8"/><stop offset="1" stop-color="#1E2C86"/></linearGradient>
+        <radialGradient id="scSun"><stop offset="0" stop-color="#FFD36B"/><stop offset=".45" stop-color="#FF9F43" stop-opacity=".55"/><stop offset="1" stop-color="#F3026E" stop-opacity="0"/></radialGradient>
+        <radialGradient id="scWeld"><stop offset="0" stop-color="#fff"/><stop offset=".3" stop-color="#7FE7FF"/><stop offset="1" stop-color="#00C2FF" stop-opacity="0"/></radialGradient>
+        <clipPath id="scHoistClip"><rect x="0" y="80" width="1600" height="340"/></clipPath>
+      </defs>
+      <!-- sun + clouds -->
+      <circle class="sc-sun" cx="1470" cy="120" r="90" fill="url(#scSun)"/>
+      <g class="sc-cloud c1" fill="#8FA3FF" opacity=".16"><ellipse cx="200" cy="60" rx="70" ry="16"/><ellipse cx="240" cy="48" rx="40" ry="16"/></g>
+      <g class="sc-cloud c2" fill="#8FA3FF" opacity=".12"><ellipse cx="760" cy="40" rx="90" ry="18"/><ellipse cx="800" cy="28" rx="46" ry="16"/></g>
+      <!-- far city -->
+      <g fill="#18237A" opacity=".85">
+        <rect x="20" y="200" width="70" height="140"/><rect x="100" y="165" width="60" height="175"/><rect x="170" y="230" width="80" height="110"/>
+        <rect x="1180" y="190" width="70" height="150"/><rect x="1262" y="150" width="62" height="190"/><rect x="1334" y="220" width="88" height="120"/><rect x="1432" y="178" width="62" height="162"/><rect x="1504" y="236" width="96" height="104"/>
+      </g>
+      <g fill="url(#scWin)"><rect x="20" y="200" width="70" height="140"/><rect x="100" y="165" width="60" height="175"/><rect x="1262" y="150" width="62" height="190"/><rect x="1432" y="178" width="62" height="162"/></g>
+      <g fill="#FFD36B"><rect class="sc-blink b1" x="120" y="190" width="7" height="9" rx="1"/><rect class="sc-blink b2" x="1280" y="215" width="7" height="9" rx="1"/><rect class="sc-blink b3" x="56" y="245" width="7" height="9" rx="1"/><rect class="sc-blink b2" x="1450" y="230" width="7" height="9" rx="1"/></g>
+      <!-- refinery -->
+      <g class="sc-ref" transform="translate(-60 0)">
+        <rect x="556" y="150" width="34" height="190" fill="#22318F"/><g stroke="#4C63D8" stroke-width="3"><line x1="550" y1="190" x2="596" y2="190"/><line x1="550" y1="240" x2="596" y2="240"/><line x1="550" y1="290" x2="596" y2="290"/></g>
+        <rect x="567" y="132" width="12" height="20" fill="#2A3DA8"/>
+        <rect x="636" y="104" width="10" height="236" fill="#1E2C86"/><rect x="630" y="104" width="22" height="6" fill="#4C63D8"/>
+        <path class="sc-flame" d="M641 104 C 630 92, 636 78, 641 62 C 646 78, 654 90, 641 104 Z" fill="#FF8A1F"/>
+        <path class="sc-flame f2" d="M641 104 C 636 96, 638 86, 641 78 C 644 86, 648 96, 641 104 Z" fill="#FFE27A"/>
+        <rect x="300" y="256" width="122" height="84" fill="url(#scTank)"/><ellipse cx="361" cy="256" rx="61" ry="11" fill="#5D74E6"/>
+        <text x="361" y="300" text-anchor="middle" font-family="Poppins, sans-serif" font-weight="700" font-size="13" fill="#fff" opacity=".9" letter-spacing="1">PORT ENERGY</text>
+        <rect x="314" y="306" width="94" height="3" fill="#F3026E" opacity=".8"/>
+        <rect x="432" y="280" width="90" height="60" fill="url(#scTank)"/><ellipse cx="477" cy="280" rx="45" ry="8" fill="#5D74E6"/>
+        <g stroke="#3A50C8" stroke-width="5" fill="none"><path d="M422 300 H 556"/><path d="M590 312 H 760"/><path d="M522 322 H 640"/></g>
+        <g fill="#1B2878"><rect x="660" y="312" width="5" height="28"/><rect x="720" y="312" width="5" height="28"/></g>
+        <circle class="sc-smoke s1" cx="573" cy="126" r="9" fill="#AFC0FF"/><circle class="sc-smoke s2" cx="573" cy="126" r="7" fill="#AFC0FF"/>
+      </g>
+      <!-- tower crane -->
+      <g class="sc-crane" transform="translate(-260 0)">
+        <g stroke="#FFC21A" stroke-width="3" fill="none">
+          <rect x="1010" y="84" width="22" height="256"/>
+          <path d="M1010 84 L1032 110 L1010 136 L1032 162 L1010 188 L1032 214 L1010 240 L1032 266 L1010 292 L1032 318 L1010 340" stroke-width="2"/>
+          <path d="M900 74 H 1270 M900 84 H 1270" />
+          <path d="M920 84 L930 74 L940 84 L950 74 L960 84 L970 74 L980 84 M1040 84 L1050 74 L1060 84 L1070 74 L1080 84 L1090 74 L1100 84 L1110 74 L1120 84 L1130 74 L1140 84 L1150 74 L1160 84 L1170 74 L1180 84 L1190 74 L1200 84 L1210 74 L1220 84 L1230 74 L1240 84 L1250 74 L1260 84" stroke-width="1.5"/>
+          <path d="M1021 38 L 1021 74 M1021 38 L 910 74 M1021 38 L 1262 74" stroke-width="1.5"/>
+        </g>
+        <rect x="904" y="84" width="44" height="22" rx="2" fill="#5A6496"/>
+        <rect x="1032" y="84" width="26" height="20" rx="3" fill="#FFC21A"/><rect x="1036" y="88" width="16" height="9" rx="1" fill="#7FE7FF" opacity=".8"/>
+        <circle class="sc-blink b1" cx="1021" cy="36" r="4" fill="#FF3B6B"/>
+        <g clip-path="url(#scHoistClip)">
+          <g class="sc-trolley">
+            <rect x="1074" y="84" width="20" height="8" fill="#D99A00"/>
+            <g class="sc-hoist">
+              <line x1="1084" y1="-200" x2="1084" y2="200" stroke="#C9D3FF" stroke-width="1.5"/>
+              <path d="M1080 200 h8 l-4 8 z" fill="#FFC21A"/>
+              <g class="sc-load">
+                <path d="M1084 208 L1034 226 M1084 208 L1134 226" stroke="#C9D3FF" stroke-width="1.2"/>
+                <rect x="1014" y="226" width="140" height="14" rx="7" fill="#0B0E22" stroke="#3B4590" stroke-width="1.5"/>
+                <rect x="1018" y="229" width="132" height="2.5" rx="1" fill="#5B67B8" opacity=".7"/>
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+      <!-- ground -->
+      <rect x="0" y="338" width="1600" height="82" fill="url(#scGround)"/>
+      <rect x="0" y="336" width="1600" height="3" fill="#2C3FB0"/>
+      <rect x="0" y="388" width="1600" height="32" fill="#070A26"/>
+      <path class="sc-road" d="M0 404 H1600" stroke="#3A4AA8" stroke-width="3" stroke-dasharray="26 22"/>
+      <!-- pipeline in trench + flow -->
+      <rect x="640" y="356" width="600" height="10" fill="#050720" opacity=".8"/>
+      <rect x="640" y="343" width="560" height="16" rx="8" fill="#0B0E22" stroke="#3B4590" stroke-width="1.5"/>
+      <path class="sc-flow" d="M650 349 H1190" stroke="#00C2FF" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="18 26"/>
+      <g fill="#3B4590"><rect x="780" y="341" width="4" height="20"/><rect x="920" y="341" width="4" height="20"/><rect x="1060" y="341" width="4" height="20"/></g>
+      <!-- welder at pipe end -->
+      <g class="sc-welder">
+        <circle class="sc-weldglow" cx="1204" cy="351" r="34" fill="url(#scWeld)"/>
+        <g class="sc-spark"><path d="M1204 340 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3z" fill="#fff"/></g>
+        <path d="M1218 334 q8 -14 20 -8 l6 30 h-26z" fill="#F36A1F"/>
+        <circle cx="1232" cy="318" r="8" fill="#F2C9A0"/><path d="M1222 316 a10 9 0 0 1 20 0 z" fill="#FFC21A"/><rect x="1220" y="318" width="10" height="7" rx="2" fill="#1A1F3D"/>
+        <path d="M1220 336 L1208 346" stroke="#1A1F3D" stroke-width="4" stroke-linecap="round"/>
+        <path d="M1226 356 l-4 14 M1240 356 l6 14" stroke="#1E2A6B" stroke-width="6" stroke-linecap="round"/>
+      </g>
+      <!-- walking engineers -->
+      <g class="sc-walk">
+        <g class="sc-man">
+          <path class="sc-leg l1" d="M806 352 l0 18" stroke="#1E2A6B" stroke-width="5" stroke-linecap="round"/>
+          <path class="sc-leg l2" d="M812 352 l0 18" stroke="#1E2A6B" stroke-width="5" stroke-linecap="round"/>
+          <rect x="801" y="326" width="16" height="28" rx="5" fill="#F36A1F"/><rect x="801" y="338" width="16" height="3" fill="#FFE27A"/>
+          <circle cx="809" cy="318" r="7" fill="#F2C9A0"/><path d="M800 317 a9 8 0 0 1 18 0 z" fill="#fff"/>
+          <rect x="815" y="332" width="10" height="13" rx="1" fill="#C9D3FF"/>
+        </g>
+        <g class="sc-man m2">
+          <path class="sc-leg l2" d="M846 352 l0 18" stroke="#1E2A6B" stroke-width="5" stroke-linecap="round"/>
+          <path class="sc-leg l1" d="M852 352 l0 18" stroke="#1E2A6B" stroke-width="5" stroke-linecap="round"/>
+          <rect x="841" y="326" width="16" height="28" rx="5" fill="#2B6BFF"/><rect x="841" y="338" width="16" height="3" fill="#FFE27A"/>
+          <circle cx="849" cy="318" r="7" fill="#E8B88A"/><path d="M840 317 a9 8 0 0 1 18 0 z" fill="#FFC21A"/>
+        </g>
+      </g>
+      <!-- excavator -->
+      <g class="sc-exc" transform="translate(-1215 0)">
+        <rect x="1300" y="352" width="124" height="22" rx="11" fill="#1A1F3D"/><g fill="#3B4590"><circle cx="1314" cy="363" r="6"/><circle cx="1362" cy="363" r="6"/><circle cx="1410" cy="363" r="6"/></g>
+        <rect x="1312" y="322" width="96" height="30" rx="4" fill="#FFC21A"/>
+        <rect x="1318" y="294" width="40" height="30" rx="4" fill="#FFC21A"/><rect x="1323" y="299" width="28" height="16" rx="2" fill="#7FE7FF" opacity=".75"/>
+        <g class="sc-arm">
+          <path d="M1400 326 L1470 282 L1488 292 L1414 336 Z" fill="#E0A800"/>
+          <g class="sc-stick"><path d="M1470 282 L1500 336 L1488 340 L1462 290 Z" fill="#D99A00"/><path d="M1486 330 q22 4 26 22 l-30 0 z" fill="#5A6496"/></g>
+        </g>
+        <g class="sc-dirt" fill="#4A3A6E"><circle cx="1498" cy="356" r="3"/><circle cx="1506" cy="352" r="2.5"/><circle cx="1492" cy="350" r="2"/></g>
+      </g>
+      <!-- cones and barrier -->
+      <g><path d="M560 372 l8 -22 8 22z" fill="#FF7A1F"/><rect x="561" y="360" width="14" height="3" fill="#fff"/><path d="M1260 372 l8 -22 8 22z" fill="#FF7A1F"/><rect x="1261" y="360" width="14" height="3" fill="#fff"/>
+        <rect x="590" y="352" width="44" height="8" fill="#fff"/><g fill="#F3026E"><rect x="596" y="352" width="7" height="8"/><rect x="610" y="352" width="7" height="8"/><rect x="624" y="352" width="7" height="8"/></g><rect x="594" y="360" width="3" height="14" fill="#C9D3FF"/><rect x="627" y="360" width="3" height="14" fill="#C9D3FF"/>
+        <circle class="sc-blink b3" cx="612" cy="347" r="4" fill="#FFC21A"/></g>
+      <!-- pipe truck -->
+      <g class="sc-truck">
+        <rect x="0" y="372" width="170" height="10" rx="2" fill="#2A3270"/>
+        <g fill="#0B0E22" stroke="#3B4590" stroke-width="1.2"><rect x="4" y="352" width="160" height="10" rx="5"/><rect x="4" y="362" width="160" height="10" rx="5"/><rect x="12" y="342" width="144" height="10" rx="5"/></g>
+        <rect x="174" y="346" width="46" height="36" rx="6" fill="#F3026E"/><rect x="196" y="352" width="20" height="14" rx="2" fill="#7FE7FF" opacity=".8"/><rect x="218" y="372" width="6" height="6" fill="#FFE27A"/>
+        <g class="sc-wheel"><circle cx="34" cy="386" r="9" fill="#111530" stroke="#5A6496" stroke-width="2"/><path d="M34 379 v14 M27 386 h14" stroke="#5A6496" stroke-width="2"/></g>
+        <g class="sc-wheel"><circle cx="136" cy="386" r="9" fill="#111530" stroke="#5A6496" stroke-width="2"/><path d="M136 379 v14 M129 386 h14" stroke="#5A6496" stroke-width="2"/></g>
+        <g class="sc-wheel"><circle cx="200" cy="386" r="9" fill="#111530" stroke="#5A6496" stroke-width="2"/><path d="M200 379 v14 M193 386 h14" stroke="#5A6496" stroke-width="2"/></g>
+      </g>
+    </svg>
     <svg class="lg-waves" viewBox="0 0 1600 900" preserveAspectRatio="none">
       <defs>
         <linearGradient id="lgW1" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#00D1FF" stop-opacity="0"/><stop offset=".35" stop-color="#00D1FF"/><stop offset=".7" stop-color="#2B6BFF"/><stop offset="1" stop-color="#F3026E" stop-opacity="0"/></linearGradient>
@@ -845,16 +966,16 @@ textarea[data-fit]{overflow-y:auto}
 <div class="aip" id="aip"><div class="aih"><button class="btn ghost sm" id="aiX" aria-label="Back">&#8249;</button><div class="aiti"><b>Port Energy AI</b><small>Powered by Google Gemini</small></div><button class="btn ghost sm" id="aiNew">New chat</button></div><div class="aim" id="aim"></div><div class="aiopt"><button class="chip" id="aiWeb" type="button">&#127760; Web search</button><span id="aiFileChip"></span></div><div class="aif"><button class="btn ghost aiat" id="aiAt" type="button" aria-label="Attach file">&#128206;</button><input type="file" id="aiFile" accept="image/*,application/pdf,.pdf,.txt,.csv" hidden><textarea id="aiIn" rows="1" placeholder="Ask anything... English / Tamil"></textarea><button class="btn primary" id="aiGo" aria-label="Send">&#10148;</button></div></div>
 <div id="toast"></div>
 
-<script src="pro.js?v=202611061330"></script>
-<script src="reports.js?v=202611061330"></script>
-<script src="print.js?v=202611061330"></script>
-<script src="books.js?v=202611061330"></script>
-<script src="app.js?v=202611061330"></script>
-<script src="motion.js?v=202611061330"></script>
-<script src="install.js?v=202611061330"></script>
-<script src="wa.js?v=202611061330"></script>
-<script src="dash.js?v=202611061330"></script>
-<script src="login.js?v=202611061330"></script>
-<script src="fx.js?v=202611061330"></script>
+<script src="pro.js?v=202611071900"></script>
+<script src="reports.js?v=202611071900"></script>
+<script src="print.js?v=202611071900"></script>
+<script src="books.js?v=202611071900"></script>
+<script src="app.js?v=202611071900"></script>
+<script src="motion.js?v=202611071900"></script>
+<script src="install.js?v=202611071900"></script>
+<script src="wa.js?v=202611071900"></script>
+<script src="dash.js?v=202611071900"></script>
+<script src="login.js?v=202611071900"></script>
+<script src="fx.js?v=202611071900"></script>
 </body>
 </html>

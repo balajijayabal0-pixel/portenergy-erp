@@ -275,3 +275,60 @@
 #login .lx-secure i { background: #6F7BB0; }
 #login .otp input { background: rgba(255, 255, 255, .08); border-color: rgba(160, 185, 255, .35); color: #fff; }
 #login #stepOtp h2 { color: #fff; } #login #otpInfo { color: #C4CDF2; display: block !important; } #login #otpInfo b { color: #fff; }
+
+/* =====================================================================
+   SIGN-IN v5: live Port Energy work-site scene (pure SVG + CSS, no images).
+   Refinery flare, tower crane lifting a pipe, pipe truck, welder,
+   engineers walking, excavator digging, product flowing in the pipeline.
+   ===================================================================== */
+.lg-photo { display: none !important; }
+.lg-w1, .lg-w2 { display: none; }
+.lg-scene { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: min(52vh, 460px); }
+.lg-scene * { transform-box: fill-box; }
+.lg-bg::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 70px; background: linear-gradient(180deg, transparent, rgba(5, 8, 32, .75)); }
+.sc-sun { animation: scPulse 6s ease-in-out infinite alternate; transform-origin: center; }
+.sc-cloud { animation: scCloud 60s linear infinite; } .sc-cloud.c2 { animation-duration: 85s; animation-delay: -30s; }
+.sc-blink { animation: scBlink 2.4s steps(1) infinite; } .sc-blink.b2 { animation-delay: -.9s; animation-duration: 3.1s; } .sc-blink.b3 { animation-delay: -1.6s; animation-duration: 1.6s; }
+.sc-flame { transform-origin: 50% 100%; animation: scFlame .35s ease-in-out infinite alternate; } .sc-flame.f2 { animation-duration: .27s; }
+.sc-smoke { transform-origin: center; animation: scSmoke 4s ease-out infinite; opacity: 0; } .sc-smoke.s2 { animation-delay: -2s; }
+.sc-trolley { animation: scTrolley 12s ease-in-out infinite; }
+.sc-hoist { animation: scHoist 12s ease-in-out infinite; }
+.sc-load { transform-origin: 50% 0%; animation: scSwing 3s ease-in-out infinite alternate; }
+.sc-flow { animation: scFlow 1.1s linear infinite; filter: drop-shadow(0 0 4px #00C2FF); }
+.sc-road { animation: scFlow 2.2s linear infinite reverse; opacity: .7; }
+.sc-weldglow { transform-origin: center; animation: scWeld .18s steps(2) infinite; }
+.sc-spark { transform-origin: center; animation: scSpark .3s ease-in-out infinite alternate; }
+.sc-walk { animation: scWalk 16s ease-in-out infinite; }
+.sc-leg { transform-origin: 50% 0%; animation: scLeg .5s ease-in-out infinite alternate; } .sc-leg.l2 { animation-direction: alternate-reverse; }
+.sc-man { animation: scBob .5s ease-in-out infinite alternate; } .sc-man.m2 { animation-delay: -.25s; }
+.sc-arm { transform-origin: 0% 100%; animation: scArm 5s ease-in-out infinite; }
+.sc-stick { transform-origin: 0% 0%; animation: scStick 5s ease-in-out infinite; }
+.sc-dirt { animation: scDirt 5s ease-in-out infinite; }
+.sc-truck { animation: scTruck 18s linear infinite; }
+.sc-wheel { transform-origin: center; animation: scSpin .6s linear infinite; }
+@keyframes scPulse { to { transform: scale(1.12); opacity: .8; } }
+@keyframes scCloud { from { transform: translateX(-300px); } to { transform: translateX(1700px); } }
+@keyframes scBlink { 0%, 60% { opacity: 1; } 61%, 100% { opacity: .15; } }
+@keyframes scFlame { from { transform: scale(.85, .8) skewX(-4deg); } to { transform: scale(1.1, 1.15) skewX(5deg); } }
+@keyframes scSmoke { 0% { transform: translate(0, 0) scale(.6); opacity: .35; } 100% { transform: translate(28px, -70px) scale(2.4); opacity: 0; } }
+@keyframes scTrolley { 0%, 8% { transform: translateX(0); } 42%, 58% { transform: translateX(120px); } 92%, 100% { transform: translateX(0); } }
+@keyframes scHoist { 0%, 8% { transform: translateY(80px); } 30%, 70% { transform: translateY(-40px); } 92%, 100% { transform: translateY(80px); } }
+@keyframes scSwing { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
+@keyframes scFlow { to { stroke-dashoffset: -44; } }
+@keyframes scWeld { 0% { opacity: .95; transform: scale(1); } 100% { opacity: .45; transform: scale(.8); } }
+@keyframes scSpark { from { transform: scale(.6) rotate(0); } to { transform: scale(1.3) rotate(45deg); } }
+@keyframes scWalk { 0% { transform: translateX(0) scaleX(1); } 45% { transform: translateX(150px) scaleX(1); } 50% { transform: translateX(150px) scaleX(-1); } 95% { transform: translateX(0) scaleX(-1); } 100% { transform: translateX(0) scaleX(1); } }
+@keyframes scLeg { from { transform: rotate(-22deg); } to { transform: rotate(22deg); } }
+@keyframes scBob { to { transform: translateY(-1.5px); } }
+@keyframes scArm { 0%, 100% { transform: rotate(0); } 40% { transform: rotate(14deg); } 70% { transform: rotate(-6deg); } }
+@keyframes scStick { 0%, 100% { transform: rotate(0); } 40% { transform: rotate(-18deg); } 70% { transform: rotate(10deg); } }
+@keyframes scDirt { 0%, 35% { opacity: 0; transform: translateY(0); } 45% { opacity: 1; } 70% { opacity: 0; transform: translateY(-10px); } 100% { opacity: 0; } }
+@keyframes scTruck { from { transform: translateX(-260px); } to { transform: translateX(1700px); } }
+@keyframes scSpin { to { transform: rotate(360deg); } }
+@media (max-width: 900px) {
+  .lg-scene { bottom: auto; top: clamp(150px, 40vw, 210px); height: clamp(170px, 46vw, 250px); }
+  .lg-copy { padding-bottom: clamp(130px, 36vw, 200px); }
+  .lg-bg::after { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .lg-scene * { animation: none !important; } }
+@media (min-width: 901px) { #login .lg-stats { display: none !important; } }

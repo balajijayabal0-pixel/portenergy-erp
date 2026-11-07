@@ -253,3 +253,35 @@ body { background: radial-gradient(900px 500px at 100% 0%, rgba(240, 0, 108, .06
 #welcome .md-wel .md-ph, .wel .md-wel .md-ph { height: 100% !important; width: auto !important; max-width: none !important; padding: 0 !important; margin: 0 !important; background: none !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; filter: drop-shadow(0 12px 22px rgba(0, 0, 0, .55)) !important; animation: none !important; }
 #welcome .md-wel { height: 220px; margin-bottom: 14px; }
 @media (max-width: 600px) { #welcome .md-wel { height: 190px; } }
+
+/* ===== every drawer header (details + forms): same gradient, readable text ===== */
+.pane .dh { position: relative; overflow: hidden; align-items: center; gap: 12px; color: #fff; background: linear-gradient(115deg, #0084F0 0%, #2F6BEA 50%, #F0006C 100%) !important; border: 0 !important; }
+.pane .dh h2 { color: #fff !important; }
+.pane .dh .sub { color: rgba(255, 255, 255, .92) !important; font-weight: 500; text-shadow: 0 1px 2px rgba(0, 20, 80, .25); }
+.pane .dh .x { background: rgba(255, 255, 255, .2) !important; color: #fff !important; border: 0 !important; }
+.pane .dh .badge { box-shadow: 0 0 0 1.5px rgba(255, 255, 255, .7); }
+
+/* ===== organisation chart: fits the screen, leaders on top, no sideways scroll ===== */
+.og { display: flex; flex-direction: column; gap: 14px; }
+.og-top { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
+.og-line { width: 2px; height: 18px; margin: -6px auto -6px; background: linear-gradient(#0084F0, #F0006C); border-radius: 2px; }
+.oc { position: relative; display: flex; align-items: center; gap: 11px; min-width: 0; padding: 11px 12px; border-radius: 16px; background: #fff; border: 1px solid #E6ECF7; box-shadow: 0 10px 22px -18px rgba(0, 40, 120, .5); cursor: pointer; transition: transform .2s, box-shadow .2s; animation: rcIn .4s both; }
+.oc:hover { transform: translateY(-2px); box-shadow: 0 16px 30px -18px rgba(240, 0, 108, .4); }
+.oc-av { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: #fff; font: 700 14px var(--ap-display, system-ui); box-shadow: 0 0 0 3px #fff, 0 6px 12px -6px rgba(0, 0, 0, .5); }
+.oc-tx { flex: 1; min-width: 0; } .oc-tx b { display: block; font-size: 14px; color: #13204F; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.oc-tx small { display: block; font-size: 12px; color: #5D6894; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .oc-tx em { display: inline-block; margin-top: 3px; font-style: normal; font-size: 10.5px; font-weight: 700; color: #0084F0; background: #EAF4FF; padding: 1px 7px; border-radius: 6px; }
+.oc-n { flex: none; display: inline-flex; align-items: center; gap: 4px; border: 0; border-radius: 999px; padding: 5px 9px; font: 700 12px var(--ap-text, system-ui); color: #F0006C; background: #FFEAF4; cursor: pointer; }
+.oc.big { flex: 0 1 300px; padding: 16px; border: 0; color: #fff; background: linear-gradient(120deg, #0084F0, #2F6BEA 55%, #F0006C); box-shadow: 0 18px 34px -20px rgba(240, 0, 108, .6); }
+.oc.big .oc-av { width: 56px; height: 56px; font-size: 18px; box-shadow: 0 0 0 3px rgba(255, 255, 255, .8); }
+.oc.big .oc-tx b { color: #fff; font-size: 16.5px; } .oc.big .oc-tx small { color: rgba(255, 255, 255, .88); } .oc.big .oc-tx em { background: rgba(255, 255, 255, .2); color: #fff; }
+.oc.big .oc-n { background: rgba(255, 255, 255, .22); color: #fff; }
+.og-team { padding: 12px; border-radius: 18px; background: rgba(255, 255, 255, .6); border: 1px dashed #D5DEEF; }
+.og-team .og-team { margin-top: 12px; background: rgba(240, 245, 255, .7); }
+.og-team.shut { display: none; }
+.og-team h4 { margin: 0 0 10px; font-size: 13.5px; color: #13204F; display: flex; align-items: center; gap: 6px; }
+.og-team h4 span { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #F0006C; }
+.og-team h4 i { font-style: normal; font-size: 11px; padding: 1px 7px; border-radius: 999px; background: #EAF4FF; color: #0084F0; }
+.og-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+@media (max-width: 600px) { .og-grid { grid-template-columns: 1fr; } .oc.big { flex: 1 1 100%; } }
+html.pe-dark .oc { background: #1E2433 !important; border-color: rgba(190, 200, 225, .1) !important; } html.pe-dark .oc-tx b { color: #DFE3EA !important; } html.pe-dark .og-team { background: rgba(255, 255, 255, .03); border-color: rgba(190, 200, 225, .15); } html.pe-dark .og-team h4 { color: #D5DAE4; }
+html.pe-dark .oc.big { background: linear-gradient(120deg, #24406E, #5A2A4C) !important; }

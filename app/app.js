@@ -1594,20 +1594,26 @@ function orgChart(v) {
   var users = S.opts.users || [], byName = {}, kids = {};
   users.forEach(function (u) { byName[u.v] = u; });
   users.forEach(function (u) { var p = u.rt && byName[u.rt] ? u.rt : ''; (kids[p] = kids[p] || []).push(u); });
-  var node = function (u, depth) {
-    var ch = (kids[u.v] || []).sort(function (a, b) { return String(a.des).localeCompare(String(b.des)); });
-    return '<li><div class="onode" data-n="' + esc(u.v) + '" style="animation-delay:' + depth * 90 + 'ms"><span class="avatar">' + initials(u.v) + '</span><div><b>' + esc(u.v) + '</b><small>' + esc(u.des || u.role || '') + '</small><small class="d">' + esc(u.dept || '') + '</small></div></div>' + (ch.length ? '<ul>' + ch.map(function (c) { return node(c, depth + 1); }).join('') + '</ul>' : '') + '</li>';
+  var rank = function (u) { var n = String(u.v).toLowerCase(); return /karthi/.test(n) ? 0 : /devi/.test(n) ? 1 : 2; };
+  var top = users.filter(function (u) { return rank(u) < 2 || !(u.rt && byName[u.rt]); }).sort(function (a, b) { return rank(a) - rank(b) || String(a.v).localeCompare(String(b.v)); });
+  var onTop = {}; top.forEach(function (u) { onTop[u.v] = 1; });
+  var count = function (n) { var c = 0; (kids[n] || []).forEach(function (k) { c += 1 + count(k.v); }); return c; };
+  var card = function (u, big) {
+    var n = (kids[u.v] || []).filter(function (k) { return !onTop[k.v]; }).length;
+    return '<div class="oc' + (big ? ' big' : '') + '" data-n="' + esc(u.v) + '"><span class="oc-av" style="background:' + nameCol(u.v) + '">' + esc(initials(u.v)) + '</span><div class="oc-tx"><b>' + esc(u.v) + '</b><small>' + esc(u.des || u.role || '') + '</small>' + (u.dept ? '<em>' + esc(u.dept) + '</em>' : '') + '</div>' +
+      (n ? '<button class="oc-n" data-open="' + esc(u.v) + '" title="Show team">' + n + ' ' + icon('users', 13) + '</button>' : '') + '</div>';
   };
-  var roots = (kids[''] || []);
-  v.innerHTML = '<style>.org{overflow:auto;padding:26px 10px 30px}.org ul{display:flex;justify-content:center;padding-top:22px;position:relative;margin:0;padding-left:0}.org li{list-style:none;text-align:center;position:relative;padding:22px 8px 0}' +
-    '.org li::before,.org li::after{content:"";position:absolute;top:0;right:50%;width:50%;height:22px;border-top:2px solid #C9D3EC}.org li::after{right:auto;left:50%;border-left:2px solid #C9D3EC}.org li:only-child::before,.org li:only-child::after{display:none}.org li:only-child{padding-top:0}' +
-    '.org li:first-child::before,.org li:last-child::after{border:0 none}.org li:last-child::before{border-right:2px solid #C9D3EC;border-radius:0 10px 0 0}.org li:first-child::after{border-radius:10px 0 0 0}.org ul ul::before{content:"";position:absolute;top:0;left:50%;border-left:2px solid #C9D3EC;height:22px}' +
-    '.org>ul{padding-top:0}.org>ul>li{padding-top:0}.org>ul>li::before,.org>ul>li::after{display:none}' +
-    '.onode{display:inline-flex;gap:10px;align-items:center;text-align:left;background:#fff;border:1px solid #E1E7F5;border-radius:16px;padding:10px 14px;box-shadow:0 10px 24px -16px rgba(27,47,158,.45);cursor:pointer;min-width:190px;transition:transform .3s var(--ease),box-shadow .3s;animation:rise .55s var(--ease) both}.onode:hover{transform:translateY(-4px);box-shadow:0 20px 34px -18px rgba(232,18,124,.5)}' +
-    '.onode b{display:block;font-size:14px}.onode small{display:block;color:var(--muted);font-size:12px;line-height:1.3}.onode small.d{color:#A3ABCB}</style>' +
-    '<div class="lhead"><p>Approvals for purchase requests and expense claims follow this reporting line. Edit "Reports To" on each user to change it.</p>' + (S.sess.user.admin ? '<div class="tools"><button class="btn soft" id="toUsers">' + icon('users', 16) + 'Edit users</button></div>' : '') + '</div>' +
-    '<div class="glass org">' + (roots.length ? '<ul>' + roots.map(function (r) { return node(r, 0); }).join('') + '</ul>' : '<div class="empty"><b>No users yet</b>Add users and set Reports To.</div>') + '</div>';
-  v.querySelectorAll('.onode').forEach(function (n) { n.onclick = function () { if (!ent('users')) return; var u = (S.cache.users || []).filter(function (x) { return x.name === n.dataset.n; })[0]; if (u) openDetail('users', u.id); else call('listRecords', S.token, 'users').then(function (r) { S.cache.users = r.rows; var x = r.rows.filter(function (z) { return z.name === n.dataset.n; })[0]; if (x) openDetail('users', x.id); }).catch(fail); }; });
+  var team = function (mgr, depth) {
+    var list = (kids[mgr] || []).filter(function (k) { return !onTop[k.v]; }).sort(function (a, b) { return count(b.v) - count(a.v) || String(a.v).localeCompare(String(b.v)); });
+    if (!list.length) return '';
+    return '<section class="og-team" data-mgr="' + esc(mgr) + '" style="--d:' + depth + '"><h4><span>Reports to</span> ' + esc(mgr) + ' <i>' + list.length + '</i></h4><div class="og-grid">' + list.map(function (u) { return card(u); }).join('') + '</div>' +
+      list.map(function (u) { return team(u.v, depth + 1); }).join('') + '</section>';
+  };
+  v.innerHTML = '<div class="lhero"><span class="lh-ic">' + icon('org', 24) + '</span><div class="lh-tx"><h2>Organisation</h2><p><b>' + users.length + '</b> people · approvals follow this reporting line</p></div>' + (S.sess.user.admin ? '<button class="btn soft sm" id="toUsers" style="background:rgba(255,255,255,.2)!important;color:#fff!important">' + icon('users', 15) + 'Edit</button>' : '') + '</div>' +
+    (users.length ? '<div class="og"><div class="og-top">' + top.map(function (u) { return card(u, true); }).join('') + '</div><div class="og-line"></div>' + top.map(function (u) { return team(u.v, 0); }).join('') + '</div>' : '<div class="glass empty"><b>No users yet</b>Add users and set Reports To.</div>');
+  v.querySelectorAll('.og-team').forEach(function (t) { if (+t.style.getPropertyValue('--d') > 0) t.classList.add('shut'); });
+  v.querySelectorAll('.oc-n').forEach(function (b) { b.onclick = function (ev) { ev.stopPropagation(); var t = v.querySelector('.og-team[data-mgr="' + b.dataset.open.replace(/"/g, '\\"') + '"]'); if (t) { t.classList.toggle('shut'); if (!t.classList.contains('shut')) t.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } }; });
+  v.querySelectorAll('.oc').forEach(function (n) { n.onclick = function () { if (!ent('users')) return; var u = (S.cache.users || []).filter(function (x) { return x.name === n.dataset.n; })[0]; if (u) openDetail('users', u.id); else call('listRecords', S.token, 'users').then(function (r) { S.cache.users = r.rows; var x = r.rows.filter(function (z) { return z.name === n.dataset.n; })[0]; if (x) openDetail('users', x.id); }).catch(fail); }; });
   if ($('toUsers')) $('toUsers').onclick = function () { go({ v: 'list', k: 'users' }); };
 }
 
@@ -1740,6 +1746,20 @@ function sheet(lh, body, opt) {
     'tr{page-break-inside:avoid}' + (window.PE_PRINT_CSS || '') + '</style></head><body><div class="hd">' + head + '</div><div class="ft">' + foot + '</div>' + (wm ? '<div class="wm">' + esc(wm) + '</div><div class="wm2">' + esc(wm) + ' · printed ' + fdate(today()) + ' by ' + esc(S.sess.user.name) + ' · © 2026 Port Energy Private Limited</div>' : '') +
     '<table class="pg"><thead><tr><td></td></tr></thead><tfoot><tr><td></td></tr></tfoot><tbody><tr><td><div class="c">' + body + '</div></td></tr></tbody></table></body></html>';
 }
+/* keep a document on ONE A4 page when it only just overflows; real long documents still flow to page 2 with the letterhead repeated */
+function fitOnePage(f, opt) {
+  try {
+    var land = !!(opt && opt.landscape), d = f.contentWindow.document, c = d.querySelector('.c'); if (!c) return;
+    f.style.width = land ? '297mm' : '210mm';
+    var mm = 96 / 25.4, avail = ((land ? 210 : 297) - (land ? 34 : 38) - (land ? 18 : 21) - 14) * mm;
+    var pbs = Array.prototype.slice.call(d.querySelectorAll('.pb'));
+    pbs.forEach(function (x) { x.classList.remove('pb'); x.classList.add('pb-off'); });
+    c.style.zoom = ''; var h = c.scrollHeight;
+    if (h <= avail) return;
+    if (h < avail * 1.45) { c.style.zoom = Math.max(.7, (avail / h) * .985).toFixed(3); return; }
+    pbs.forEach(function (x) { x.classList.add('pb'); x.classList.remove('pb-off'); });
+  } catch (x) { }
+}
 function printHtml(body, opt) {
   toast('Preparing print…');
   letterhead().catch(function () { return { head: '', foot: '' }; }).then(function (lh) {
@@ -1747,7 +1767,7 @@ function printHtml(body, opt) {
     var old = document.querySelector('iframe.pf'); if (old) old.remove();
     var f = document.createElement('iframe'); f.className = 'pf'; document.body.appendChild(f);
     var d = f.contentWindow.document; d.open(); d.write(html); d.close();
-    var go2 = function () { try { f.contentWindow.focus(); f.contentWindow.print(); } catch (e) { toast('Printing is blocked here. Allow pop-ups or use Export.', true); } };
+    var go2 = function () { fitOnePage(f, opt); if (opt && opt.noPrint) return opt.noPrint(f); try { f.contentWindow.focus(); f.contentWindow.print(); } catch (e) { toast('Printing is blocked here. Allow pop-ups or use Export.', true); } };
     var imgs = d.images, left = imgs.length; if (!left) return setTimeout(go2, 150);
     var once = function () { if (--left <= 0) setTimeout(go2, 150); };
     Array.prototype.forEach.call(imgs, function (i) { if (i.complete) once(); else { i.onload = once; i.onerror = once; } });
@@ -2004,6 +2024,6 @@ window.PE = { S: S, $: $, esc: esc, icon: icon, call: call, toast: toast, busy: 
   modal: function (h) { modal(h); }, closeModal: closeModal, closeSide: closeSide, ent: ent, inr: inr, inrShort: inrShort, num: num, r2: r2, fdate: fdate, ddot: ddot, today: today, initials: initials,
   markNav: markNav, openForm: openForm, openDetail: openDetail, printHtml: printHtml, words: words, nl: nl, openAI: function () { openAI(); }, closeAI: closeAI, keysModal: keysModal, SHORTCUTS: SHORTCUTS,
   CMDS: CMDS, badge: badge, debounce: debounce, refreshBoot: refreshBoot, fval: fval, colDef: colDef, greet: greet, aiSendText: function (q) { return aiSend(q); }, AI: AI, buildNav: buildNav, findOpt: findOpt, userDes: userDes,
-  printPO: printPO, printQuotes: printQuotes, printIOA: printIOA, printCircular: printCircular, printDecision: printDecision, printGeneric: printGeneric };
+  printPO: printPO, printQuotes: printQuotes, printIOA: printIOA, printCircular: printCircular, printDecision: printDecision, printGeneric: printGeneric, printRecord: printRecord, sheet: sheet, letterhead: letterhead };
 start();
 })();

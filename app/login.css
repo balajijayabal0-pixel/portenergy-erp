@@ -404,3 +404,106 @@
 @media (prefers-reduced-motion: reduce) { .lg-fly, .lg-cloud, .lg-mrot, .lg-trot { animation: none !important; } }
 
 .lg-bg { overflow: hidden; }
+
+/* =====================================================================
+   SIGN-IN v7: tap-the-helicopter card delivery + compact sign-in card
+   ===================================================================== */
+.lg-rig, .lg-fly { display: none !important; }
+#login .lg-card { animation: none !important; transform-origin: 50% 0; will-change: transform; }
+#login .lg-card.lg-off { visibility: hidden; opacity: 0; pointer-events: none; }
+.lg-cab { position: absolute; left: 0; top: 0; z-index: 29; pointer-events: none; opacity: 0; overflow: visible; }
+.lgh { position: absolute; left: 0; top: 0; z-index: 30; border: 0; background: none; padding: 0; margin: 0; cursor: pointer; transform-origin: 0 0; -webkit-tap-highlight-color: transparent; outline: none; }
+.lgh-body { display: block; animation: lghBob 2.4s ease-in-out infinite alternate; filter: drop-shadow(0 18px 14px rgba(0, 8, 40, .38)) drop-shadow(0 2px 2px rgba(0, 8, 40, .3)); transition: filter .25s; }
+.lgh-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.lgh:hover .lgh-body, .lgh:focus-visible .lgh-body { filter: drop-shadow(0 18px 14px rgba(0, 8, 40, .38)) drop-shadow(0 0 14px rgba(0, 180, 240, .75)); }
+.lgh.lgh-fly .lgh-body { animation-duration: .9s; }
+@keyframes lghBob { 0% { transform: translateY(-3px) rotate(-.8deg); } 100% { transform: translateY(3px) rotate(.8deg); } }
+.lgh-mr { transform-box: fill-box; transform-origin: center; animation: lghRot .09s linear infinite; }
+.lgh-mr.m2 { animation-delay: -.045s; }
+@keyframes lghRot { 0% { transform: scaleX(1); } 50% { transform: scaleX(-1); } 100% { transform: scaleX(1); } }
+.lgh-tr { transform-box: fill-box; transform-origin: center; animation: lghSpin .08s linear infinite; }
+@keyframes lghSpin { to { transform: rotate(360deg); } }
+.lgh-beacon { animation: lghBeacon 1.2s steps(1) infinite; } .lgh-beacon.b2 { animation-delay: -.6s; }
+@keyframes lghBeacon { 0%, 15% { opacity: 1; } 16%, 100% { opacity: .15; } }
+.lgh-strobe { animation: lghStrobe 1.6s steps(1) infinite; }
+@keyframes lghStrobe { 0%, 6% { opacity: 1; } 7%, 100% { opacity: 0; } }
+.lgh-wash { display: none; }
+/* pulsing ring + hint while the card is away */
+#login.lg-card-away .lgh::before { content: ""; position: absolute; left: 50%; top: 56%; width: 70%; aspect-ratio: 1; border-radius: 50%; transform: translate(-50%, -50%); border: 2px solid rgba(255, 255, 255, .55); animation: lghRing 2.2s ease-out infinite; pointer-events: none; }
+@keyframes lghRing { 0% { opacity: .9; transform: translate(-50%, -50%) scale(.6); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); } }
+.lgh-hint { position: absolute; z-index: 31; width: 220px; text-align: center; padding: 9px 14px; border-radius: 999px; font: 600 13px var(--lg-font); color: #00124F; background: rgba(255, 255, 255, .92);
+  box-shadow: 0 14px 30px -12px rgba(0, 10, 50, .6); cursor: pointer; opacity: 0; transform: translateY(6px); transition: opacity .35s, transform .35s; pointer-events: none; }
+.lgh-hint.on { opacity: 1; transform: none; pointer-events: auto; animation: lghHint 2.2s ease-in-out infinite; }
+.lgh-hint::before { content: "\1F681  "; }
+@keyframes lghHint { 50% { transform: translateY(-3px); } }
+#login .lg-card.lg-landed { animation: lgLand .55s ease-out !important; }
+
+/* compact sign-in card */
+@media (min-width: 901px) {
+  #login .lg-card { max-width: 360px !important; padding: 18px 22px 14px !important; border-radius: 22px !important; }
+  #login .lg-main { grid-template-columns: minmax(0, 1.4fr) minmax(320px, 360px); }
+}
+#login .lg-cardlogo { height: 38px !important; margin: 0 auto 10px !important; padding: 4px 10px !important; border-radius: 10px !important; }
+#login .lg-wb { font-size: 10.5px !important; letter-spacing: .26em; }
+#login .lg-h { font-size: 19px !important; margin: 4px 0 10px !important; }
+#login .lg-sub { display: none !important; }
+#login label.f { font-size: 12.5px !important; margin-bottom: 6px !important; }
+#login .lgx-in input, #login .in { padding-top: 11px !important; padding-bottom: 11px !important; font-size: 15px !important; border-radius: 12px !important; }
+#login .btn.primary { margin-top: 12px !important; padding: 11px !important; font-size: 15px !important; border-radius: 12px !important; }
+#login .lgx-hint { font-size: 11px !important; margin-top: 8px !important; }
+#login .lx-secure { margin-top: 10px !important; font-size: 11px !important; }
+#login .lgx-av { width: 52px; height: 52px; }
+#login .lgx-mt b { font-size: 16.5px; }
+#login .lgx-seg button { padding-top: 8px; padding-bottom: 8px; font-size: 13px; }
+@media (max-width: 900px) {
+  #login .lg-card { padding: 14px 16px 12px !important; border-radius: 20px !important; }
+  #login .lg-h { font-size: 17px !important; margin-bottom: 8px !important; }
+}
+@media (prefers-reduced-motion: reduce) { .lgh-body, .lgh-mr, .lgh-tr, .lgh-hint.on, #login.lg-card-away .lgh::before { animation: none !important; } }
+
+/* =====================================================================
+   SIGN-IN v7b: "is this you?" hero - big photo, glossy colour animation
+   ===================================================================== */
+#login.lg-who .lg-cardlogo { display: none !important; }
+.lgx-hero { position: relative; isolation: isolate; overflow: hidden; text-align: center; margin: -4px -6px 12px; padding: 18px 10px 12px; border-radius: 20px;
+  background: linear-gradient(120deg, #00B49C, #0084F0 30%, #00249C 55%, #F0006C 80%, #00B49C); background-size: 320% 320%; animation: lgxFlow 7s ease-in-out infinite alternate, lgxIn .55s cubic-bezier(.2, 1.2, .4, 1) both;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .25), 0 18px 40px -18px rgba(240, 0, 108, .55), 0 10px 30px -14px rgba(0, 132, 240, .6); }
+@keyframes lgxFlow { 0% { background-position: 0% 30%; } 100% { background-position: 100% 70%; } }
+@keyframes lgxIn { from { opacity: 0; transform: scale(.92) translateY(8px); } }
+/* glass gloss on top half + moving shine */
+.lgx-hero::before { content: ""; position: absolute; inset: 0 0 48% 0; z-index: -1; background: linear-gradient(180deg, rgba(255, 255, 255, .38), rgba(255, 255, 255, .06)); border-radius: 20px 20px 50% 50% / 20px 20px 18px 18px; }
+.lgx-hero::after { content: ""; position: absolute; top: -30%; bottom: -30%; width: 38%; left: -60%; z-index: 2; pointer-events: none; transform: rotate(18deg);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .55), transparent); animation: lgxShine 3.6s .5s ease-in-out infinite; }
+@keyframes lgxShine { 0% { left: -60%; } 45%, 100% { left: 130%; } }
+.lgx-aura { position: absolute; left: 50%; top: 82px; width: 230px; height: 230px; margin: -115px 0 0 -115px; z-index: -1; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, .55), rgba(255, 255, 255, 0) 62%); animation: lgxAura 2.4s ease-in-out infinite alternate; }
+@keyframes lgxAura { from { transform: scale(.85); opacity: .7; } to { transform: scale(1.1); opacity: 1; } }
+/* photo with spinning brand ring */
+.lgx-ring { position: relative; width: 136px; height: 136px; margin: 0 auto 10px; border-radius: 50%; animation: lgxPop .7s .1s cubic-bezier(.2, 1.5, .4, 1) both; }
+.lgx-ring::before { content: ""; position: absolute; inset: -6px; border-radius: 50%; background: conic-gradient(#00B49C, #0084F0, #00249C, #F0006C, #FFC21A, #00B49C); animation: lgxSpin 3s linear infinite; filter: drop-shadow(0 0 10px rgba(255, 255, 255, .6)); }
+.lgx-ring::after { content: ""; position: absolute; inset: -16px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .5); animation: lgxPulse 2s ease-out infinite; }
+@keyframes lgxSpin { to { transform: rotate(360deg); } }
+@keyframes lgxPulse { from { transform: scale(.9); opacity: .9; } to { transform: scale(1.18); opacity: 0; } }
+@keyframes lgxPop { 0% { transform: scale(.3) rotate(-12deg); opacity: 0; filter: blur(6px); } 70% { filter: blur(0); } 100% { transform: none; opacity: 1; } }
+.lgx-big { position: relative; z-index: 1; display: grid; place-items: center; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; border: 4px solid #fff;
+  background: linear-gradient(135deg, #0084F0, #F0006C); color: #fff; font: 800 44px var(--lg-font); box-shadow: 0 16px 30px -10px rgba(0, 10, 50, .7); }
+.lgx-big img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.lgx-big::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: linear-gradient(140deg, rgba(255, 255, 255, .45) 0%, rgba(255, 255, 255, .08) 38%, transparent 50%); pointer-events: none; }
+.lgx-ok { position: absolute; z-index: 2; right: 6px; bottom: 6px; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; color: #fff;
+  background: linear-gradient(135deg, #00D4B4, #00A08A); border: 3px solid #fff; box-shadow: 0 6px 14px -4px rgba(0, 80, 70, .7); animation: lgxPop .5s .75s cubic-bezier(.2, 1.6, .4, 1) both; }
+/* confetti burst */
+.lgx-burst { position: absolute; left: 50%; top: 86px; z-index: 0; }
+.lgx-burst i { position: absolute; width: 8px; height: 8px; margin: -4px; border-radius: 2px; opacity: 0; animation: lgxBurst 1.3s .35s cubic-bezier(.1, .7, .3, 1) both; }
+.lgx-burst i:nth-child(4n+1) { background: #FFC21A; } .lgx-burst i:nth-child(4n+2) { background: #fff; border-radius: 50%; } .lgx-burst i:nth-child(4n+3) { background: #00E0C0; } .lgx-burst i:nth-child(4n) { background: #FF5AA5; border-radius: 50%; }
+.lgx-burst i:nth-child(1) { --a: 0deg; } .lgx-burst i:nth-child(2) { --a: 30deg; } .lgx-burst i:nth-child(3) { --a: 60deg; } .lgx-burst i:nth-child(4) { --a: 90deg; } .lgx-burst i:nth-child(5) { --a: 120deg; } .lgx-burst i:nth-child(6) { --a: 150deg; }
+.lgx-burst i:nth-child(7) { --a: 180deg; } .lgx-burst i:nth-child(8) { --a: 210deg; } .lgx-burst i:nth-child(9) { --a: 240deg; } .lgx-burst i:nth-child(10) { --a: 270deg; } .lgx-burst i:nth-child(11) { --a: 300deg; } .lgx-burst i:nth-child(12) { --a: 330deg; }
+@keyframes lgxBurst { 0% { opacity: 1; transform: rotate(var(--a)) translateX(30px) scale(.4); } 100% { opacity: 0; transform: rotate(var(--a)) translateX(120px) rotate(200deg) scale(1); } }
+.lgx-greet { display: block; font: 600 11px var(--lg-font); letter-spacing: .24em; text-transform: uppercase; color: rgba(255, 255, 255, .92); animation: lgUp .5s .45s both; }
+.lgx-name { display: block; margin: 2px 0 1px; font: 800 24px/1.2 var(--lg-font); color: #fff; text-shadow: 0 4px 16px rgba(0, 10, 60, .5); animation: lgUp .5s .55s both; }
+.lgx-role { display: block; font: 500 12.5px var(--lg-font); color: rgba(255, 255, 255, .9); animation: lgUp .5s .65s both; }
+#login .lgx-hero .lgx-chg { position: absolute; top: 10px; right: 12px; z-index: 3; font: 600 11.5px var(--lg-font); color: #fff !important; background: rgba(0, 18, 80, .35); border: 1px solid rgba(255, 255, 255, .35); padding: 4px 10px; border-radius: 999px; cursor: pointer; }
+@media (max-width: 900px) { .lgx-ring { width: 118px; height: 118px; } .lgx-aura, .lgx-burst { top: 77px; } .lgx-name { font-size: 21px; } }
+@media (prefers-reduced-motion: reduce) { .lgx-hero, .lgx-hero::after, .lgx-ring, .lgx-ring::before, .lgx-ring::after, .lgx-aura, .lgx-burst i, .lgx-ok { animation: none !important; } .lgx-burst { display: none; } }
+/* hint pill: one line */
+.lgh-hint { width: auto !important; white-space: nowrap; }
+.lgh-hint::before { content: none !important; }

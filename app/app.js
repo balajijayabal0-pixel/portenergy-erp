@@ -262,7 +262,9 @@ function renderVerify() {
   var w = L.who || {}, box = $('stepPhone'); $('login').classList.add('lg-who');
   var how = L.how && (L.how === 'pin' ? w.hasPin !== false : w.hasEmail !== false) ? L.how : (w.hasPin !== false ? 'pin' : 'otp');
   box.innerHTML = '<div class="lgx-step">' +
-    '<div class="lgx-me">' + avHtml(w) + '<div class="lgx-mt"><small>' + greet() + '</small><b>' + esc(w.name || L.id) + '</b><span>' + esc([w.designation, w.dept].filter(String).join(' · ')) + '</span></div>' +
+    '<div class="lgx-hero"><span class="lgx-aura"></span><span class="lgx-burst">' + '<i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>' + '</span>' +
+    '<div class="lgx-ring">' + avHtml(w, 'lgx-big') + '<em class="lgx-ok">' + icon('check', 14) + '</em></div>' +
+    '<small class="lgx-greet">' + greet() + '</small><b class="lgx-name">' + esc(w.name || L.id) + '</b><span class="lgx-role">' + esc([w.designation, w.dept].filter(String).join(' · ')) + '</span>' +
     '<button class="linkbtn lgx-chg" id="lgChg" type="button">Not you?</button></div>' +
     '<div class="lgx-seg" role="tablist"><button data-h="pin" role="tab"' + (how === 'pin' ? ' class="on"' : '') + '>' + icon('lock', 15) + 'Use my PIN</button><button data-h="otp" role="tab"' + (how === 'otp' ? ' class="on"' : '') + '>' + icon('mail', 15) + 'Send OTP</button></div>' +
     '<div id="lgHow"></div></div>';

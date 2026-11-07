@@ -470,3 +470,11 @@ html.pe-dark .rb-chips span, html.pe-dark .rb-cols span { background: #1A1F2B; b
 html.pe-dark .pl-o { background: #1A1F2B; border-color: rgba(190, 200, 225, .14); } html.pe-dark .pl-ot, html.pe-dark .pl-o > b, html.pe-dark .pl-c h3 { color: #DFE3EA; }
 html.pe-dark .pl-who i { border-color: #1E2433; } html.pe-dark .pl-st.op { background: rgba(11, 138, 98, .2); color: #7FD8B6; } html.pe-dark .pl-st.cl { background: rgba(255, 255, 255, .06); color: #9AA2B4; }
 @media (max-width: 900px) { .top .aibtn { font-size: 0 !important; width: 36px; height: 36px; min-width: 36px; padding: 0 !important; justify-content: center; border-radius: 50% !important; gap: 0; } .top .aibtn .ai-mini { width: 16px; height: 16px; } }
+/* in-app print preview (desktop app) */
+.pv-ov { position: fixed; inset: 0; z-index: 300; display: flex; flex-direction: column; background: rgba(20, 24, 40, .82); backdrop-filter: blur(6px); animation: fade .2s; }
+.pv-bar { display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: #fff; box-shadow: 0 6px 20px -10px rgba(0, 0, 0, .5); }
+.pv-bar b { font-size: 15px; color: #13204F; } .pv-bar span { font-size: 12.5px; color: #6A7395; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pv-sp { flex: 1; } .pv-x { font-size: 22px !important; width: 40px; padding: 0 !important; }
+.pv-scroll { flex: 1; overflow: auto; padding: 24px; display: flex; justify-content: center; }
+.pv-page { background: #fff; box-shadow: 0 20px 60px -20px rgba(0, 0, 0, .8); height: max-content; }
+iframe.pv-frame { display: block; border: 0; position: static !important; left: auto !important; }

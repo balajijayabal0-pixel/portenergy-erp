@@ -80,35 +80,12 @@
     var id = o.r.id || o.id, name = (e.single || 'Document') + ' ' + id;
     P().toast('Making PDF with letterhead…');
     window.__peCapture = function (f) {
-      Promise.all([lib('vendor/html2canvas.min.js'), lib('vendor/jspdf.umd.min.js')]).then(function () {
-        var d = f.contentWindow.document, ps = pageSize(d.documentElement.innerHTML);
-        var mm = 96 / 25.4, W = Math.round(ps.w * mm), H = Math.round(ps.h * mm);
-        f.style.cssText = 'position:fixed;left:-10000px;top:0;width:' + W + 'px;height:' + H + 'px;border:0;visibility:visible';
-        return new Promise(function (r) { setTimeout(r, 350); }).then(function () {
-          var full = Math.max(H, d.documentElement.scrollHeight);
-          if (full > H + 4) { f.style.height = full + 'px'; }
-          return new Promise(function (r) { setTimeout(r, 150); });
-        }).then(function () {
-          return window.html2canvas(d.documentElement, { scale: 2, useCORS: true, backgroundColor: '#ffffff', windowWidth: W, width: W, height: Math.max(H, d.documentElement.scrollHeight) });
-        }).then(function (cv) {
-          var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: [ps.w, ps.h], orientation: ps.land ? 'landscape' : 'portrait' });
-          var pxPage = Math.round(cv.width * ps.h / ps.w), pages = Math.max(1, Math.ceil((cv.height - 8) / pxPage));
-          for (var i = 0; i < pages; i++) {
-            var c = document.createElement('canvas'); c.width = cv.width; c.height = pxPage;
-            var g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(cv, 0, -i * pxPage);
-            if (i) pdf.addPage([ps.w, ps.h], ps.land ? 'landscape' : 'portrait');
-            pdf.addImage(c.toDataURL('image/jpeg', .92), 'JPEG', 0, 0, ps.w, ps.h);
-          }
-          f.remove();
-          return pdf.output('blob');
-        });
-      }).then(function (blob) {
+      makePdf(f).then(function (blob) {
+        f.remove();
         var fname = name.replace(/[\\/:*?"<>|]+/g, '-') + '.pdf';
         var file = new File([blob], fname, { type: 'application/pdf' });
         var text = '*Port Energy Private Limited*\n' + name;
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          return navigator.share({ files: [file], title: name, text: text }).catch(function (x) { if (x && x.name !== 'AbortError') throw x; });
-        }
+        if (navigator.canShare && navigator.canShare({ files: [file] })) return navigator.share({ files: [file], title: name, text: text }).catch(function () { });
         var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fname; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
         P().toast('PDF downloaded. Attach it in WhatsApp (opening now).');
         setTimeout(function () { window.open('https://web.whatsapp.com/', '_blank', 'noopener'); }, 900);
@@ -116,6 +93,60 @@
     };
     try { P().printRecord(e, o.r, o.x || {}); } catch (x) { window.__peCapture = null; P().toast('Could not prepare the print copy.', true); }
   }
+  /* turn a filled print iframe into a PDF blob (letterhead included) */
+  function makePdf(f) {
+    return Promise.all([lib('vendor/html2canvas.min.js'), lib('vendor/jspdf.umd.min.js')]).then(function () {
+      var d = f.contentWindow.document, ps = pageSize(d.documentElement.innerHTML);
+      var mm = 96 / 25.4, W = Math.round(ps.w * mm), H = Math.round(ps.h * mm);
+      var keep = f.style.cssText;
+      f.style.cssText = 'position:fixed;left:-10000px;top:0;width:' + W + 'px;height:' + H + 'px;border:0;visibility:visible';
+      return new Promise(function (r) { setTimeout(r, 350); }).then(function () {
+        var full = Math.max(H, d.documentElement.scrollHeight); if (full > H + 4) f.style.height = full + 'px';
+        return new Promise(function (r) { setTimeout(r, 150); });
+      }).then(function () {
+        return window.html2canvas(d.documentElement, { scale: 2, useCORS: true, backgroundColor: '#ffffff', windowWidth: W, width: W, height: Math.max(H, d.documentElement.scrollHeight) });
+      }).then(function (cv) {
+        f.style.cssText = keep;
+        var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: [ps.w, ps.h], orientation: ps.land ? 'landscape' : 'portrait' });
+        var pxPage = Math.round(cv.width * ps.h / ps.w), pages = Math.max(1, Math.ceil((cv.height - 8) / pxPage));
+        for (var i = 0; i < pages; i++) {
+          var c = document.createElement('canvas'); c.width = cv.width; c.height = pxPage;
+          var g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(cv, 0, -i * pxPage);
+          if (i) pdf.addPage([ps.w, ps.h], ps.land ? 'landscape' : 'portrait');
+          pdf.addImage(c.toDataURL('image/jpeg', .92), 'JPEG', 0, 0, ps.w, ps.h);
+        }
+        return pdf.output('blob');
+      });
+    });
+  }
+  window.PE_MAKEPDF = makePdf;
+
+  /* desktop app: Windows print dialog has no preview, so show our own preview first */
+  var DESK = /Electron/i.test(navigator.userAgent) || /source=desktop/.test(location.search) || (function () { try { return sessionStorage.getItem('pe_desk') === '1'; } catch (x) { return false; } })();
+  try { if (/source=desktop/.test(location.search)) sessionStorage.setItem('pe_desk', '1'); } catch (x) { }
+  window.PE_PRINT_GO = function (f) {
+    if (!DESK) return false;
+    var d = f.contentWindow.document, ps = pageSize(d.documentElement.innerHTML), t = d.title || 'Document';
+    var ov = document.createElement('div'); ov.className = 'pv-ov';
+    ov.innerHTML = '<div class="pv-bar"><b>Print preview</b><span>' + t.replace(/[<>&]/g, '') + '</span><div class="pv-sp"></div><button class="btn soft" data-a="pdf">Save as PDF</button><button class="btn primary" data-a="print">Print</button><button class="btn ghost pv-x" data-a="x" aria-label="Close">×</button></div><div class="pv-scroll"><div class="pv-page"></div></div>';
+    document.body.appendChild(ov);
+    var mm = 96 / 25.4, html = '<!doctype html>' + d.documentElement.outerHTML; f.remove();
+    f = document.createElement('iframe'); f.className = 'pv-frame'; f.style.cssText = 'width:' + Math.round(ps.w * mm) + 'px;height:' + Math.round(ps.h * mm) + 'px';
+    ov.querySelector('.pv-page').appendChild(f);
+    var nd = f.contentWindow.document; nd.open(); nd.write(html); nd.close(); d = nd;
+    setTimeout(function () { try { var h = Math.max(Math.round(ps.h * mm), nd.documentElement.scrollHeight); f.style.height = h + 'px'; } catch (x) { } }, 400);
+    var close = function () { ov.remove(); document.removeEventListener('keydown', esc); };
+    var esc = function (e) { if (e.key === 'Escape') close(); };
+    document.addEventListener('keydown', esc);
+    ov.querySelector('[data-a="x"]').onclick = close;
+    ov.querySelector('[data-a="print"]').onclick = function () { try { f.contentWindow.focus(); f.contentWindow.print(); } catch (x) { P().toast('Could not open the printer.', true); } };
+    ov.querySelector('[data-a="pdf"]').onclick = function () {
+      var b = this; P().busy(b, true);
+      makePdf(f).then(function (blob) { P().busy(b, false); var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = t.replace(/[\\/:*?"<>|]+/g, '-') + '.pdf'; document.body.appendChild(a); a.click(); setTimeout(function () { a.remove(); }, 3000); P().toast('PDF saved to Downloads.'); })
+        .catch(function (x) { P().busy(b, false); P().toast((x && x.message) || 'Could not make the PDF.', true); });
+    };
+    return true;
+  };
 
   var q = false;
   new MutationObserver(function () { if (q) return; q = true; requestAnimationFrame(function () { q = false; addButton(); }); })

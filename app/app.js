@@ -1768,7 +1768,7 @@ function printHtml(body, opt) {
     var old = document.querySelector('iframe.pf'); if (old) old.remove();
     var f = document.createElement('iframe'); f.className = 'pf'; document.body.appendChild(f);
     var d = f.contentWindow.document; d.open(); d.write(html); d.close();
-    var go2 = function () { fitOnePage(f, opt); if (window.__peCapture) { var cb = window.__peCapture; window.__peCapture = null; return cb(f); } try { f.contentWindow.focus(); f.contentWindow.print(); } catch (e) { toast('Printing is blocked here. Allow pop-ups or use Export.', true); } };
+    var go2 = function () { fitOnePage(f, opt); if (window.__peCapture) { var cb = window.__peCapture; window.__peCapture = null; return cb(f); } if (window.PE_PRINT_GO && window.PE_PRINT_GO(f)) return; try { f.contentWindow.focus(); f.contentWindow.print(); } catch (e) { toast('Printing is blocked here. Allow pop-ups or use Export.', true); } };
     var imgs = d.images, left = imgs.length; if (!left) return setTimeout(go2, 150);
     var once = function () { if (--left <= 0) setTimeout(go2, 150); };
     Array.prototype.forEach.call(imgs, function (i) { if (i.complete) once(); else { i.onload = once; i.onerror = once; } });

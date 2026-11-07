@@ -12,7 +12,7 @@ const ERP_ORIGIN = 'https://balajijayabal0-pixel.github.io';
 // pages the ERP itself opens and should stay inside the app (Google sign-in for Drive files, printing helpers)
 const INSIDE = [ERP_ORIGIN, 'https://script.google.com', 'https://script.googleusercontent.com'];
 
-let win = null;
+let win = null, splash = null;
 
 if (!app.requestSingleInstanceLock()) { app.quit(); }
 app.on('second-instance', () => { if (win) { if (win.isMinimized()) win.restore(); win.focus(); } });
@@ -29,7 +29,18 @@ function createWindow() {
     show: false,
     webPreferences: { contextIsolation: true, nodeIntegration: false, sandbox: true, spellcheck: true }
   });
-  win.once('ready-to-show', () => { win.maximize(); win.show(); });
+  // native splash first, the ERP window appears only when the app has finished loading (no browser-style loading)
+  splash = new BrowserWindow({ width: 420, height: 300, frame: false, resizable: false, center: true, show: true, backgroundColor: '#001250', alwaysOnTop: true, skipTaskbar: true, icon: path.join(__dirname, 'build', 'icon.png') });
+  splash.loadFile(path.join(__dirname, 'splash.html'));
+  let shown = false;
+  const reveal = () => { if (shown) return; shown = true; win.maximize(); win.show(); if (splash && !splash.isDestroyed()) { splash.destroy(); } splash = null; };
+  win.webContents.on('did-finish-load', () => {
+    // wait until the ERP has painted its first screen (boot screen gone)
+    const t0 = Date.now();
+    const poll = () => win.webContents.executeJavaScript("(function(){var b=document.getElementById('boot');return !b||b.style.display==='none'||getComputedStyle(b).display==='none'||getComputedStyle(b).opacity==='0';})()").then((ok) => { if (ok || Date.now() - t0 > 6000) setTimeout(reveal, 150); else setTimeout(poll, 120); }).catch(() => setTimeout(reveal, 300));
+    poll();
+  });
+  setTimeout(reveal, 12000);
 
   // links to other sites (vendor websites, Drive files, maps) open in the normal browser
   win.webContents.setWindowOpenHandler(({ url }) => {
@@ -41,7 +52,7 @@ function createWindow() {
 
   // no internet at start -> friendly page with a Try again button
   win.webContents.on('did-fail-load', (_e, code, _desc, url, isMain) => {
-    if (isMain && code !== -3) win.loadFile(path.join(__dirname, 'offline.html'), { query: { u: ERP_URL } });
+    if (isMain && code !== -3) { setTimeout(() => { if (!shown) { shown = true; win.maximize(); win.show(); if (splash && !splash.isDestroyed()) splash.destroy(); } }, 300); win.loadFile(path.join(__dirname, 'offline.html'), { query: { u: ERP_URL } }); }
   });
 
   win.loadURL(ERP_URL);

@@ -8,7 +8,7 @@
 /* ---------- hero: shorter, calmer, one search only ---------- */
 .dx-hero { min-height: 0 !important; padding: 16px 22px 18px !important; }
 .dx-art { width: 58% !important; opacity: .55; filter: saturate(.75); }
-.dx-hero::after { background: linear-gradient(90deg, #0B1546 30%, rgba(11, 21, 70, .7) 55%, rgba(11, 21, 70, .25) 100%) !important; }
+.dx-hero::after { background: linear-gradient(90deg, #00175F 30%, rgba(11, 21, 70, .7) 55%, rgba(11, 21, 70, .25) 100%) !important; }
 .dx-hero h2 { font-size: clamp(20px, 2.1vw, 26px) !important; margin: 6px 0 4px !important; text-shadow: none !important; }
 .dx-find { display: none !important; }                 /* top bar (desktop) and bottom bar (phone) already search */
 .dx-motto {                                             /* sits on the info line instead of floating in the corner */
@@ -25,9 +25,9 @@
 .kpi[data-dx] .dx-ki { width: 34px !important; height: 34px !important; border-radius: 10px !important; box-shadow: none !important; }
 .kpi[data-dx="pink"] .dx-ki   { background: #FDE7F1 !important; color: #D4025F !important; }
 .kpi[data-dx="blue"] .dx-ki   { background: #E3F0FF !important; color: #0066D6 !important; }
-.kpi[data-dx="violet"] .dx-ki { background: #EFE7FF !important; color: #6430E0 !important; }
+.kpi[data-dx="violet"] .dx-ki { background: #E6F2FF !important; color: #00249C !important; }
 .kpi[data-dx="teal"] .dx-ki   { background: #DDF7F2 !important; color: #018A78 !important; }
-.kpi[data-dx="navy"] .dx-ki   { background: #E5E8F8 !important; color: #1B2F9E !important; }
+.kpi[data-dx="navy"] .dx-ki   { background: #E5E8F8 !important; color: #00249C !important; }
 .kpi[data-dx="red"] .dx-ki    { background: #FDE6EA !important; color: #C8183E !important; }
 .kpi[data-dx="amber"] .dx-ki  { background: #FFF1D9 !important; color: #B86300 !important; }
 .kpi[data-dx="green"] .dx-ki  { background: #DFF6EA !important; color: #0B8A55 !important; }
@@ -62,7 +62,7 @@
 /* who holds it now: a calm pill, not a pink sentence */
 .pe-with { display: inline-flex; align-items: center; gap: 5px; max-width: 46%; padding: 3px 9px 3px 7px; border-radius: 999px; background: #F1F3FA;
   border: 1px solid #E2E6F2; font-size: 11.5px; color: #4A5582; white-space: nowrap; overflow: hidden; }
-.pe-with i { flex: none; width: 7px; height: 7px; border-radius: 50%; background: #F3026E; box-shadow: 0 0 0 3px rgba(243, 2, 110, .15); }
+.pe-with i { flex: none; width: 7px; height: 7px; border-radius: 50%; background: #F0006C; box-shadow: 0 0 0 3px rgba(240, 0, 108, .15); }
 .pe-with b { color: #0D1A4F; font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
 .pe-with small { color: #7A84A8; overflow: hidden; text-overflow: ellipsis; }
 .pe-with small::before { content: "·"; margin-right: 4px; }

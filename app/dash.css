@@ -5,13 +5,13 @@
    colour-coded KPI icons, executive home dashboard (dash.js).
    ===================================================================== */
 :root {
-  --dx-navy: #0B1546;
+  --dx-navy: #00175F;
   --dx-navy2: #13206B;
   --dx-ink: #0F1B4C;
-  --dx-pink: #F3026E;
-  --dx-teal: #01B7A0;
-  --dx-blue: #0089F5;
-  --dx-violet: #7A3FF2;
+  --dx-pink: #F0006C;
+  --dx-teal: #00B49C;
+  --dx-blue: #0084F0;
+  --dx-violet: #00249C;
   --dx-amber: #F59E0B;
   --dx-red: #E5254B;
   --dx-green: #12B76A;
@@ -22,7 +22,7 @@ body { background: var(--ap-bg); }
 /* ---------- sidebar: deep navy with the motto and pipeline art at the foot ---------- */
 /* applies on phone too (menu drawer), and beats the light fallbacks in apple.css / polish.css */
 html body .side {
-    background: linear-gradient(180deg, #0B1546 0%, #101C5C 55%, #0B1546 100%) !important;
+    background: linear-gradient(180deg, #00175F 0%, #101C5C 55%, #00175F 100%) !important;
     backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border-right: 0 !important;
     box-shadow: 8px 0 30px -18px rgba(11, 21, 70, .6) !important;
 }
@@ -34,10 +34,10 @@ html body .side {
 .ni { color: #E4E9FF !important; font-weight: 500 !important; }
 .ni svg { color: #8FB2FF !important; }
 .ni:hover { background: rgba(255, 255, 255, .07) !important; }
-.ni.on { background: linear-gradient(90deg, #0089F5, #2563EB) !important; color: #fff !important; font-weight: 600 !important; box-shadow: 0 8px 18px -8px rgba(0, 137, 245, .8); }
+.ni.on { background: linear-gradient(90deg, #0084F0, #2563EB) !important; color: #fff !important; font-weight: 600 !important; box-shadow: 0 8px 18px -8px rgba(0, 137, 245, .8); }
 .ni.on svg { color: #fff !important; }
 .ni .tc { color: #7E8BC4 !important; }
-.ni .ct { background: var(--dx-pink) !important; box-shadow: 0 0 0 2px #0B1546; }
+.ni .ct { background: var(--dx-pink) !important; box-shadow: 0 0 0 2px #00175F; }
 .side nav { position: relative; }
 .side .me { border-top: 1px solid rgba(255, 255, 255, .08) !important; background: rgba(0, 0, 0, .12) !important; }
 .side .me b { color: #fff; } .side .me small { color: #9AA6D6 !important; }
@@ -74,11 +74,11 @@ html body .side {
 
 .dx-hero {
   position: relative; overflow: hidden; border-radius: 18px; min-height: 150px; padding: 20px 24px; color: #fff;
-  background: radial-gradient(120% 140% at 0% 0%, #1C2C8F 0%, #0B1546 55%, #0B1546 100%);
+  background: radial-gradient(120% 140% at 0% 0%, #1C2C8F 0%, #00175F 55%, #00175F 100%);
   box-shadow: 0 18px 40px -22px rgba(11, 21, 70, .8); isolation: isolate;
 }
 .dx-art { position: absolute; right: 0; bottom: 0; height: 100%; width: 72%; z-index: -1; }
-.dx-hero::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, #0B1546 18%, rgba(11, 21, 70, .65) 42%, rgba(11, 21, 70, 0) 70%); }
+.dx-hero::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, #00175F 18%, rgba(11, 21, 70, .65) 42%, rgba(11, 21, 70, 0) 70%); }
 .dx-hl { position: relative; max-width: 560px; }
 .dx-eye { font: 700 11.5px/1 var(--ap-text); letter-spacing: .28em; text-transform: uppercase; color: #8FD3FF; }
 .dx-eye::before { content: ""; display: inline-block; width: 18px; height: 2px; margin: 0 8px 3px 0; background: var(--dx-pink); vertical-align: middle; }
@@ -98,11 +98,11 @@ html body .side {
 .kpi[data-dx] .bar { display: none !important; }
 .dx-ki { grid-row: 1 / span 3; width: 44px; height: 44px; border-radius: 13px; display: grid; place-items: center; color: #fff; box-shadow: 0 8px 18px -8px currentColor; }
 .kpi[data-dx]::after { content: ""; position: absolute; right: -30px; bottom: -40px; width: 120px; height: 80px; border-radius: 50%; opacity: .14; transform: rotate(-12deg); }
-.kpi[data-dx="pink"] .dx-ki { background: linear-gradient(135deg, #FF4D9A, #F3026E); }      .kpi[data-dx="pink"]::after { background: #F3026E; }
-.kpi[data-dx="blue"] .dx-ki { background: linear-gradient(135deg, #3FA9FF, #0060D1); }      .kpi[data-dx="blue"]::after { background: #0089F5; }
-.kpi[data-dx="violet"] .dx-ki { background: linear-gradient(135deg, #9B6BFF, #5B21D6); }    .kpi[data-dx="violet"]::after { background: #7A3FF2; }
-.kpi[data-dx="teal"] .dx-ki { background: linear-gradient(135deg, #2EE0C2, #01977F); }      .kpi[data-dx="teal"]::after { background: #01B7A0; }
-.kpi[data-dx="navy"] .dx-ki { background: linear-gradient(135deg, #3D4FCF, #13206B); }      .kpi[data-dx="navy"]::after { background: #1B2F9E; }
+.kpi[data-dx="pink"] .dx-ki { background: linear-gradient(135deg, #FF4D9A, #F0006C); }      .kpi[data-dx="pink"]::after { background: #F0006C; }
+.kpi[data-dx="blue"] .dx-ki { background: linear-gradient(135deg, #3FA9FF, #0060D1); }      .kpi[data-dx="blue"]::after { background: #0084F0; }
+.kpi[data-dx="violet"] .dx-ki { background: linear-gradient(135deg, #3D7BE0, #00249C); }    .kpi[data-dx="violet"]::after { background: #00249C; }
+.kpi[data-dx="teal"] .dx-ki { background: linear-gradient(135deg, #2EE0C2, #01977F); }      .kpi[data-dx="teal"]::after { background: #00B49C; }
+.kpi[data-dx="navy"] .dx-ki { background: linear-gradient(135deg, #0060D0, #13206B); }      .kpi[data-dx="navy"]::after { background: #00249C; }
 .kpi[data-dx="red"] .dx-ki { background: linear-gradient(135deg, #FF6B81, #D11A42); }       .kpi[data-dx="red"]::after { background: #E5254B; }
 .kpi[data-dx="amber"] .dx-ki { background: linear-gradient(135deg, #FFC24D, #E07B00); }     .kpi[data-dx="amber"]::after { background: #F59E0B; }
 .kpi[data-dx="green"] .dx-ki { background: linear-gradient(135deg, #3DDC97, #0E9F6E); }     .kpi[data-dx="green"]::after { background: #12B76A; }
@@ -119,11 +119,11 @@ html body .side {
 .dx-p h3 small { white-space: nowrap; }
 .dx-p h3 { display: flex; align-items: center; gap: 9px; margin: 0 0 10px; font: 700 15px var(--ap-display); color: var(--dx-ink); letter-spacing: -.01em; }
 .dx-p h3 small { font: 500 12px var(--ap-text); color: #7A84A8; }
-.dx-hi { width: 28px; height: 28px; border-radius: 9px; display: grid; place-items: center; color: #fff; background: linear-gradient(135deg, #0089F5, #1B2F9E); flex: none; }
+.dx-hi { width: 28px; height: 28px; border-radius: 9px; display: grid; place-items: center; color: #fff; background: linear-gradient(135deg, #0084F0, #00249C); flex: none; }
 .dx-alerts .dx-hi { background: linear-gradient(135deg, #FF4D6D, #E5254B); }
 .dx-donut .dx-hi, .dx-site .dx-hi { background: linear-gradient(135deg, #FFC24D, #E07B00); }
-.dx-trend .dx-hi { background: linear-gradient(135deg, #2EE0C2, #0089F5); }
-.dx-vend .dx-hi { background: linear-gradient(135deg, #9B6BFF, #F3026E); }
+.dx-trend .dx-hi { background: linear-gradient(135deg, #2EE0C2, #0084F0); }
+.dx-vend .dx-hi { background: linear-gradient(135deg, #3D7BE0, #F0006C); }
 .dx-link { margin-left: auto; display: inline-flex; align-items: center; gap: 4px; border: 0; background: none; color: #0A6FD8; font: 600 12.5px var(--ap-text); cursor: pointer; }
 .dx-chip { margin-left: auto; font: 600 11.5px var(--ap-text); padding: 3px 8px; border-radius: 999px; }
 .dx-chip.up { background: #E3F8EE; color: #0B8A55; } .dx-chip.down { background: #FDE8EC; color: #C81E45; }
@@ -145,11 +145,11 @@ html body .side {
 .dx-pn b { display: block; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .dx-pn small { display: block; color: #7A84A8; font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .dx-pav { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; color: #fff; font: 700 12px var(--ap-display); flex: none; }
-.dx-c0 { background: linear-gradient(135deg, #0089F5, #1B2F9E); } .dx-c1 { background: linear-gradient(135deg, #F3026E, #9B1B8F); } .dx-c2 { background: linear-gradient(135deg, #01B7A0, #0B7A8F); } .dx-c3 { background: linear-gradient(135deg, #F59E0B, #E5254B); } .dx-c4 { background: linear-gradient(135deg, #7A3FF2, #0089F5); }
+.dx-c0 { background: linear-gradient(135deg, #0084F0, #00249C); } .dx-c1 { background: linear-gradient(135deg, #F0006C, #9B1B8F); } .dx-c2 { background: linear-gradient(135deg, #00B49C, #0B7A8F); } .dx-c3 { background: linear-gradient(135deg, #F59E0B, #E5254B); } .dx-c4 { background: linear-gradient(135deg, #00249C, #0084F0); }
 .dx-pg { display: grid; grid-template-columns: 38px 1fr; align-items: center; gap: 8px; }
 .dx-pg b { font-size: 12.5px; }
 .dx-pg i { height: 7px; border-radius: 7px; background: #EEF1F7; overflow: hidden; display: block; }
-.dx-pg em { display: block; height: 100%; border-radius: 7px; background: linear-gradient(90deg, #01B7A0, #0089F5); transition: width .9s cubic-bezier(.2, .9, .24, 1); }
+.dx-pg em { display: block; height: 100%; border-radius: 7px; background: linear-gradient(90deg, #00B49C, #0084F0); transition: width .9s cubic-bezier(.2, .9, .24, 1); }
 .dx-st { display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 999px; font: 600 11.5px var(--ap-text); white-space: nowrap; }
 .dx-st::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
 .dx-ok { background: #E3F8EE; color: #0B8A55; } .dx-warn { background: #FFF3DE; color: #B86A00; } .dx-bad { background: #FDE8EC; color: #C81E45; } .dx-mute { background: #EEF1F7; color: #6A7395; }
@@ -191,9 +191,9 @@ html body .side {
 .dx-step:hover { background: #EAF2FF; transform: translateY(-2px); }
 .dx-hex { width: 52px; height: 52px; display: grid; place-items: center; color: #fff; clip-path: polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0 50%); background: linear-gradient(135deg, #3FA9FF, #0060D1); margin-bottom: 4px; }
 .dx-step:nth-of-type(2) .dx-hex { background: linear-gradient(135deg, #2EE0C2, #01977F); }
-.dx-step:nth-of-type(3) .dx-hex { background: linear-gradient(135deg, #FF4D9A, #F3026E); }
-.dx-step:nth-of-type(4) .dx-hex { background: linear-gradient(135deg, #9B6BFF, #5B21D6); }
-.dx-step:nth-of-type(5) .dx-hex { background: linear-gradient(135deg, #3D4FCF, #13206B); }
+.dx-step:nth-of-type(3) .dx-hex { background: linear-gradient(135deg, #FF4D9A, #F0006C); }
+.dx-step:nth-of-type(4) .dx-hex { background: linear-gradient(135deg, #3D7BE0, #00249C); }
+.dx-step:nth-of-type(5) .dx-hex { background: linear-gradient(135deg, #0060D0, #13206B); }
 .dx-step b { font: 700 12px var(--ap-text); color: #4A5582; }
 .dx-step strong { font: 800 22px/1.1 var(--ap-display); color: var(--dx-ink); }
 .dx-step small { font-size: 10.5px; color: #7A84A8; text-align: center; line-height: 1.2; }
@@ -202,7 +202,7 @@ html body .side {
 /* chart */
 .dx-chart { width: 100%; height: auto; max-height: 230px; display: block; margin-top: auto; }
 .dx-grid line { stroke: #EEF1F7; } .dx-grid text, .dx-x { fill: #7A84A8; font: 500 11px var(--ap-text); }
-.dx-chart circle { fill: #fff; stroke: #0089F5; stroke-width: 2.5; }
+.dx-chart circle { fill: #fff; stroke: #0084F0; stroke-width: 2.5; }
 .dx-line { stroke-dasharray: 1200; stroke-dashoffset: 1200; animation: dxLine 1.4s cubic-bezier(.2, .9, .24, 1) forwards; }
 @keyframes dxLine { to { stroke-dashoffset: 0; } }
 
@@ -217,7 +217,7 @@ html body .side {
 .dx-vr b { font-size: 12.5px; color: var(--dx-ink); }
 
 /* site manpower */
-.dx-mt { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; background: linear-gradient(90deg, #EAF2FF, #F3EEFF); margin-bottom: 6px; }
+.dx-mt { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; background: linear-gradient(90deg, #EAF2FF, #EAF4FF); margin-bottom: 6px; }
 .dx-mt span { font-weight: 600; font-size: 13px; color: #4A5582; } .dx-mt b { margin-left: auto; font: 800 22px var(--ap-display); color: var(--dx-ink); } .dx-mt svg { color: #0A6FD8; }
 .dx-ms { display: flex; align-items: center; gap: 8px; padding: 8px 6px; border-bottom: 1px solid #EEF1F7; }
 .dx-ms span { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13px; font-weight: 500; color: var(--dx-ink); min-width: 0; }
@@ -235,7 +235,7 @@ html body .side {
   .dx-r2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .dx-r2 .dx-flow { grid-column: 1 / -1; }
 }
 @media (max-width: 760px) {
-  .top { background: #0B1546 !important; }
+  .top { background: #00175F !important; }
   .dx-hero { min-height: 170px; padding: 16px; }
   .dx-art { width: 100%; opacity: .7; }
   .dx-hero::after { background: linear-gradient(180deg, rgba(11, 21, 70, .9) 30%, rgba(11, 21, 70, .35) 100%); }

@@ -59,10 +59,10 @@
 
   /* port + pipeline artwork for the banner (vector, brand colours, no photos) */
   var ART = '<svg class="dx-art" viewBox="0 0 640 200" preserveAspectRatio="xMaxYMax slice" aria-hidden="true">' +
-    '<defs><linearGradient id="dxSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14206B" stop-opacity="0"/><stop offset=".55" stop-color="#7A1E8E" stop-opacity=".55"/><stop offset="1" stop-color="#F3026E" stop-opacity=".85"/></linearGradient>' +
+    '<defs><linearGradient id="dxSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14206B" stop-opacity="0"/><stop offset=".55" stop-color="#7A1E8E" stop-opacity=".55"/><stop offset="1" stop-color="#F0006C" stop-opacity=".85"/></linearGradient>' +
     '<linearGradient id="dxSun" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD39A"/><stop offset="1" stop-color="#FF7A59"/></linearGradient>' +
     '<linearGradient id="dxSea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0E2A7A"/><stop offset="1" stop-color="#081446"/></linearGradient>' +
-    '<linearGradient id="dxPipe" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5DD6FF"/><stop offset=".45" stop-color="#0089F5"/><stop offset="1" stop-color="#0B2A88"/></linearGradient></defs>' +
+    '<linearGradient id="dxPipe" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5DD6FF"/><stop offset=".45" stop-color="#0084F0"/><stop offset="1" stop-color="#0B2A88"/></linearGradient></defs>' +
     '<rect width="640" height="200" fill="url(#dxSky)"/>' +
     '<circle cx="470" cy="128" r="34" fill="url(#dxSun)" opacity=".9"/>' +
     '<rect y="132" width="640" height="68" fill="url(#dxSea)"/>' +
@@ -74,7 +74,7 @@
       // ship with containers
       '<path d="M86 124h140l-14 14H98z"/><rect x="100" y="106" width="22" height="18"/><rect x="124" y="110" width="20" height="14"/><rect x="146" y="102" width="22" height="22"/><rect x="170" y="108" width="20" height="16"/><rect x="192" y="96" width="14" height="28"/>' +
     '</g>' +
-    '<g opacity=".55"><rect x="102" y="108" width="18" height="5" fill="#F3026E"/><rect x="148" y="104" width="18" height="5" fill="#01B7A0"/><rect x="172" y="110" width="16" height="4" fill="#0089F5"/></g>' +
+    '<g opacity=".55"><rect x="102" y="108" width="18" height="5" fill="#F0006C"/><rect x="148" y="104" width="18" height="5" fill="#00B49C"/><rect x="172" y="110" width="16" height="4" fill="#0084F0"/></g>' +
     '<g stroke="#5DD6FF" stroke-opacity=".25" stroke-width="1"><path d="M0 146h640M0 158h640"/></g>' +
     // foreground pipeline with flanges
     '<path d="M-10 186 C160 168 300 176 650 160" stroke="url(#dxPipe)" stroke-width="20" fill="none" stroke-linecap="round"/>' +
@@ -152,13 +152,13 @@
     var area = line + ' L' + pts[pts.length - 1][0].toFixed(1) + ' ' + (H - pb) + ' L' + pl + ' ' + (H - pb) + ' Z';
     var grid = [0, .5, 1].map(function (f) { var y = pt + (H - pt - pb) * (1 - f); return '<line x1="' + pl + '" x2="' + (W - pr) + '" y1="' + y + '" y2="' + y + '"/><text x="' + (pl - 8) + '" y="' + (y + 4) + '" text-anchor="end">' + inrShort(mx * f).replace('₹ ', '') + '</text>'; }).join('');
     return panel('dx-trend', 'chart', 'Approved PO value <small>last 6 months</small>',
-      '<svg class="dx-chart" viewBox="0 0 ' + W + ' ' + H + '"><defs><linearGradient id="dxArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0089F5" stop-opacity=".35"/><stop offset="1" stop-color="#F3026E" stop-opacity="0"/></linearGradient><linearGradient id="dxLine" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#01B7A0"/><stop offset=".5" stop-color="#0089F5"/><stop offset="1" stop-color="#F3026E"/></linearGradient></defs>' +
+      '<svg class="dx-chart" viewBox="0 0 ' + W + ' ' + H + '"><defs><linearGradient id="dxArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0084F0" stop-opacity=".35"/><stop offset="1" stop-color="#F0006C" stop-opacity="0"/></linearGradient><linearGradient id="dxLine" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#00B49C"/><stop offset=".5" stop-color="#0084F0"/><stop offset="1" stop-color="#F0006C"/></linearGradient></defs>' +
       '<g class="dx-grid">' + grid + '</g><path d="' + area + '" fill="url(#dxArea)"/><path class="dx-line" d="' + line + '" fill="none" stroke="url(#dxLine)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>' +
       pts.map(function (p, i) { return '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="4.5"><title>' + d[i].label + ': ' + inrShort(d[i].v) + '</title></circle><text class="dx-x" x="' + p[0].toFixed(1) + '" y="' + (H - 8) + '" text-anchor="middle">' + esc(d[i].label) + '</text>'; }).join('') + '</svg>');
   }
   function vendors(k) {
     var v = k.topVendors; if (!v || !v.length) return '';
-    var mx = v[0].amt || 1, col = ['#F3026E', '#0089F5', '#01B7A0', '#7A3FF2', '#F59E0B'];
+    var mx = v[0].amt || 1, col = ['#F0006C', '#0084F0', '#00B49C', '#00249C', '#F59E0B'];
     return panel('dx-vend', 'people', 'Top vendors <small>this financial year</small>',
       '<div class="dx-vl">' + v.slice(0, 5).map(function (x, i) {
         return '<button type="button" class="dx-vr" data-vendor="' + esc(x.v) + '"><span class="dx-rank" style="background:' + col[i % 5] + '">' + (i + 1) + '</span><span class="dx-vn">' + esc(x.v) + '<i><em style="width:' + Math.max(4, x.amt / mx * 100) + '%;background:' + col[i % 5] + '"></em></i></span><b>' + inrShort(x.amt) + '</b></button>';
@@ -236,7 +236,7 @@
     if (dn) {
       dn.classList.remove('dx-load');
       var cnt = { 'Active': 0, 'On Hold': 0, 'Completed': 0 }; list.forEach(function (p) { cnt[p.pstatus || 'Active'] = (cnt[p.pstatus || 'Active'] || 0) + 1; });
-      var tot = list.length, segs = [['Active', '#01B7A0'], ['On Hold', '#F59E0B'], ['Completed', '#0089F5']], R = 52, C = 2 * Math.PI * R, off = 0;
+      var tot = list.length, segs = [['Active', '#00B49C'], ['On Hold', '#F59E0B'], ['Completed', '#0084F0']], R = 52, C = 2 * Math.PI * R, off = 0;
       dn.innerHTML = '<div class="dx-dn"><svg viewBox="0 0 140 140"><circle cx="70" cy="70" r="' + R + '" fill="none" stroke="#EEF1F7" stroke-width="16"/>' +
         segs.map(function (s) { var f = tot ? cnt[s[0]] / tot : 0, len = f * C, el = '<circle class="dx-seg" cx="70" cy="70" r="' + R + '" fill="none" stroke="' + s[1] + '" stroke-width="16" stroke-dasharray="' + len.toFixed(2) + ' ' + (C - len).toFixed(2) + '" stroke-dashoffset="' + (-off).toFixed(2) + '" transform="rotate(-90 70 70)"/>'; off += len; return f ? el : ''; }).join('') +
         '</svg><div class="dx-dc"><b>' + tot + '</b><span>Projects</span></div></div><div class="dx-lg">' +

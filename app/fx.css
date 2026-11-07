@@ -28,9 +28,9 @@
 @keyframes pbDraw { to { stroke-dashoffset: 0; } }
 .pb-pulse { fill: none; stroke-width: 5; stroke-linecap: round; stroke-dasharray: 7 93; stroke-dashoffset: 107; opacity: 0;
   animation: pbPump 1.7s cubic-bezier(.55, 0, .45, 1) infinite; }
-.pb-pulse.p1 { stroke: #7FE3FF; filter: drop-shadow(0 0 6px #00C2FF); animation-delay: .9s; }
-.pb-pulse.p2 { stroke: #FF7AB6; filter: drop-shadow(0 0 6px #F3026E); animation-delay: 1.1s; }
-.pb-pulse.p3 { stroke: #B9A8FF; filter: drop-shadow(0 0 6px #7A5CFF); animation-delay: 1.3s; }
+.pb-pulse.p1 { stroke: #7FE3FF; filter: drop-shadow(0 0 6px #00B49C); animation-delay: .9s; }
+.pb-pulse.p2 { stroke: #FF7AB6; filter: drop-shadow(0 0 6px #F0006C); animation-delay: 1.1s; }
+.pb-pulse.p3 { stroke: #8CC8FF; filter: drop-shadow(0 0 6px #0084F0); animation-delay: 1.3s; }
 .pb-pulse.p4 { stroke: #8FC2FF; filter: drop-shadow(0 0 6px #2F8BFF); animation-delay: 1.5s; }
 @keyframes pbPump { 0% { stroke-dashoffset: 107; opacity: 0; } 12% { opacity: 1; } 88% { opacity: 1; } 100% { stroke-dashoffset: 7; opacity: 0; } }
 
@@ -41,8 +41,8 @@
 }
 @keyframes pbLogo { 60% { opacity: 1; transform: scale(1.045); filter: blur(0); } to { opacity: 1; transform: scale(1); filter: blur(0); } }
 @keyframes pbBeat {   /* the logo "receives" each energy pulse */
-  0%, 100% { box-shadow: 0 30px 60px -28px rgba(0, 0, 0, .75), 0 0 0 1px rgba(255, 255, 255, .6), 0 0 0 0 rgba(0, 194, 255, 0); }
-  45% { box-shadow: 0 30px 60px -28px rgba(0, 0, 0, .75), 0 0 0 1px rgba(255, 255, 255, .6), 0 0 46px 6px rgba(0, 194, 255, .35); }
+  0%, 100% { box-shadow: 0 30px 60px -28px rgba(0, 0, 0, .75), 0 0 0 1px rgba(255, 255, 255, .6), 0 0 0 0 rgba(0, 180, 156, 0); }
+  45% { box-shadow: 0 30px 60px -28px rgba(0, 0, 0, .75), 0 0 0 1px rgba(255, 255, 255, .6), 0 0 46px 6px rgba(0, 180, 156, .35); }
 }
 .pb-sheen { position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, .95) 50%, transparent 65%);
@@ -79,7 +79,7 @@
 /* ---------- 4. touch ripple ---------- */
 .fx-rw { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; pointer-events: none; z-index: 0; }
 .fx-rip { position: absolute; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; pointer-events: none;
-  background: radial-gradient(circle, rgba(0, 194, 255, .38) 0%, rgba(122, 92, 255, .26) 45%, rgba(243, 2, 110, 0) 72%);
+  background: radial-gradient(circle, rgba(0, 180, 156, .38) 0%, rgba(0, 132, 240, .26) 45%, rgba(240, 0, 108, 0) 72%);
   transform: scale(0); opacity: 1; animation: fxRip .65s cubic-bezier(.2, .8, .3, 1) forwards; }
 .btn.primary .fx-rip, .ni.on .fx-rip { background: radial-gradient(circle, rgba(255, 255, 255, .55) 0%, rgba(255, 255, 255, 0) 70%); }
 @keyframes fxRip { to { transform: scale(var(--fx-s, 30)); opacity: 0; } }

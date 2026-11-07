@@ -112,8 +112,8 @@
      REPORTS CENTRE
      ================================================================ */
   var RDEF = {
-    md: { t: 'Management overview', d: 'One page for the MD: money, approvals, procurement, sites, materials and machines.', i: 'pulse', c: '#1B2F9E' },
-    proc: { t: 'Procurement report', d: 'PRs, quotations, purchase orders, deliveries and top vendors.', i: 'cart', c: '#E8127C' },
+    md: { t: 'Management overview', d: 'One page for the MD: money, approvals, procurement, sites, materials and machines.', i: 'pulse', c: '#00249C' },
+    proc: { t: 'Procurement report', d: 'PRs, quotations, purchase orders, deliveries and top vendors.', i: 'cart', c: '#F0006C' },
     acc: { t: 'Accounts & payables', d: 'Vendor bills, what is due, overdue, payments and receivables.', i: 'rupee', c: '#0E9F6E' },
     mat: { t: 'Materials report', d: 'Stock at store and sites, issues, short / excess, service and loss.', i: 'box', c: '#B5309F' },
     mch: { t: 'Machinery & equipment', d: 'Where every machine is, breakdowns, repairs, missing, service due.', i: 'bolt', c: '#C26A00' },
@@ -279,7 +279,7 @@
     var parts = [];
     tmp.querySelectorAll('.rp-sec').forEach(function (s) { var h = s.querySelector('h3'), t = s.querySelector('table'); if (t) parts.push('<h3>' + esc(h ? h.textContent : '') + '</h3>' + t.outerHTML); });
     var boxes = Array.prototype.map.call(tmp.querySelectorAll('.rp-box'), function (b) { return '<tr><td>' + esc(b.querySelector('small').textContent) + '</td><td><b>' + esc(b.querySelector('b').textContent) + '</b></td></tr>'; }).join('');
-    var doc = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="utf-8"><style>body{font-family:Calibri,Arial}h2{color:#1B2F9E}h3{color:#E8127C;margin-top:14px}table{border-collapse:collapse}th{background:#0B1546;color:#fff;padding:6px 10px;border:1px solid #9AA6D6}td{padding:5px 10px;border:1px solid #C9D0EA;vertical-align:top}</style></head><body>' +
+    var doc = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="utf-8"><style>body{font-family:Calibri,Arial}h2{color:#00249C}h3{color:#F0006C;margin-top:14px}table{border-collapse:collapse}th{background:#00175F;color:#fff;padding:6px 10px;border:1px solid #9AA6D6}td{padding:5px 10px;border:1px solid #C9D0EA;vertical-align:top}</style></head><body>' +
       '<h2>Port Energy Private Limited - ' + esc(title) + '</h2><p>As on ' + esc(fd(today())) + '</p>' + (boxes ? '<table>' + boxes + '</table>' : '') + parts.join('') + '</body></html>';
     var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + doc], { type: 'application/vnd.ms-excel' })); a.download = title.replace(/[^\w]+/g, '-') + '-' + today() + '.xls'; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
   }

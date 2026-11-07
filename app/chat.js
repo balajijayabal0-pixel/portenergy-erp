@@ -8,7 +8,7 @@
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
   var ls = { get: function (k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (x) { return d; } }, set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (x) { } } };
   var C = { me: '', admin: false, msgs: [], cv: 0, nf: [], nv: 0, read: 0, seen: 0, inbox: null, timer: null, busy: false, reply: null, on: false, last: 0 };
-  var COLORS = ['#1E5BFF', '#F3026E', '#7A3CF0', '#00A3C4', '#E8590C', '#2B8A3E', '#C2255C', '#5C7CFA', '#0CA678', '#D9480F'];
+  var COLORS = ['#0084F0', '#F0006C', '#00249C', '#00A3C4', '#E8590C', '#2B8A3E', '#C2255C', '#5C7CFA', '#0CA678', '#D9480F'];
   function col(n) { var h = 7; String(n).split('').forEach(function (c) { h = (h * 37 + c.charCodeAt(0)) >>> 0; }); return COLORS[h % COLORS.length]; }
   function ini(n) { return String(n || '?').replace(/[^A-Za-z ]/g, ' ').trim().split(/\s+/).map(function (w) { return w[0]; }).slice(0, 2).join('').toUpperCase() || 'PE'; }
   function tok() { var p = P(); return p && p.S && p.S.token; }
@@ -160,9 +160,9 @@
     var el = $('peNfList'); if (!el) return;
     var list = C.nf.filter(function (n) { return n.by !== C.me; }).slice().reverse().slice(0, 60);
     var uc = unreadChat();
-    el.innerHTML = (uc ? '<button class="pe-nfi chat" data-chat="1"><span class="pe-nfic" style="background:#7A3CF0">' + ic('chat', 16) + '</span><span><b>' + uc + ' new message' + (uc > 1 ? 's' : '') + ' in Team chat</b><small>Tap to open</small></span></button>' : '') +
+    el.innerHTML = (uc ? '<button class="pe-nfi chat" data-chat="1"><span class="pe-nfic" style="background:#00249C">' + ic('chat', 16) + '</span><span><b>' + uc + ' new message' + (uc > 1 ? 's' : '') + ' in Team chat</b><small>Tap to open</small></span></button>' : '') +
       (list.length ? list.map(function (n) {
-        var ap = n.id.charAt(0) === 'A', c = ap ? '#F3026E' : n.key === 'notices' ? '#E8590C' : '#1E5BFF';
+        var ap = n.id.charAt(0) === 'A', c = ap ? '#F0006C' : n.key === 'notices' ? '#E8590C' : '#0084F0';
         return '<button class="pe-nfi' + (n.at > C.read ? ' new' : '') + '" data-k="' + esc(n.key) + '" data-id="' + esc(n.rid) + '"><span class="pe-nfic" style="background:' + c + '">' + ic(ap ? 'check' : 'bell', 15) + '</span><span><b>' + esc(n.title) + '</b><small>' + esc(n.body) + '</small><em>' + ago(n.at) + '</em></span></button>';
       }).join('') : (uc ? '' : '<div class="empty"><b>No notifications yet</b>Approvals, status changes, tasks and notices will show here.</div>'));
     el.querySelectorAll('.pe-nfi').forEach(function (b) {

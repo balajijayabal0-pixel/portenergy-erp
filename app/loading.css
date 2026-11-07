@@ -8,8 +8,8 @@
 
 /* ---------- start screen ---------- */
 #boot {
-  background: radial-gradient(800px 560px at 50% 42%, #1A2A8C 0%, rgba(26, 42, 140, 0) 70%),
-              linear-gradient(160deg, #0B1650 0%, #0A1240 55%, #0B0F38 100%) !important;
+  background: radial-gradient(800px 560px at 50% 42%, #00249C 0%, rgba(26, 42, 140, 0) 70%),
+              linear-gradient(160deg, #001A6B 0%, #001250 55%, #000C3A 100%) !important;
   transition: opacity .45s ease !important;
 }
 #boot .pe-boot { display: flex; flex-direction: column; align-items: center; gap: 0; animation: none !important; }
@@ -25,7 +25,7 @@
 }
 #boot .pe-bar i {
   display: block; height: 100%; width: 100%; border-radius: 3px;
-  background: linear-gradient(90deg, #00C2FF, #7A5CFF, #F3026E);
+  background: linear-gradient(90deg, #00B49C, #0084F0, #F0006C);
   transform-origin: left; transform: scaleX(0);
   animation: pbFill 4s cubic-bezier(.12, .7, .25, 1) .4s forwards !important;
 }
@@ -41,7 +41,7 @@
 .pe-net { height: 2.5px !important; background: transparent; }
 .pe-net i {
   width: 100% !important; box-shadow: none !important; border-radius: 0 !important;
-  background: linear-gradient(90deg, #00C2FF, #7A5CFF, #F3026E) !important;
+  background: linear-gradient(90deg, #00B49C, #0084F0, #F0006C) !important;
   transform-origin: left; transform: scaleX(0); animation: none !important;
 }
 .pe-net.on i { animation: pbFill 6s cubic-bezier(.12, .7, .25, 1) forwards !important; }
@@ -49,7 +49,7 @@
 /* ---------- daily welcome screen: same calm line ---------- */
 .wel-bar i {
   display: block; height: 100%; width: 100% !important;
-  background: linear-gradient(90deg, #00C2FF, #7A5CFF, #F3026E) !important;
+  background: linear-gradient(90deg, #00B49C, #0084F0, #F0006C) !important;
   transform-origin: left; transform: scaleX(0); animation: pbFill 4s cubic-bezier(.12, .7, .25, 1) forwards !important;
 }
 

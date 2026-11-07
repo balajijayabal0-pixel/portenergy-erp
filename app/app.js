@@ -678,9 +678,9 @@ function home(v) {
   skeleton(v, 10);
   call('getHome', S.token).then(function (h) { S.home = h; renderHome(v, h); }).catch(function (e) { v.innerHTML = '<div class="empty"><b>Could not load</b>' + esc(e.message) + '</div>'; });
 }
-var QUICK = [['po', 'New PO', '#1B2F9E', 'ME21N'], ['pr', 'Purchase request', '#E8127C', 'ME51N'], ['quotes', 'Compare quotations', '#B5309F', 'ME47'], ['grn', 'Goods receipt', '#12B39A', 'MIGO'],
-  ['bills', 'Vendor bill', '#1E90F5', 'MIRO'], ['payments', 'Payment request', '#E8127C', 'F-53'], ['expenses', 'Expense claim', '#0E9F6E', ''], ['clientbills', 'Client invoice', '#1667C4', 'FB70'],
-  ['pettycash', 'Petty cash', '#5D6894', ''], ['photos', 'Upload photos', '#F0569C', ''], ['maintenance', 'Maintenance', '#C26A00', ''], ['vendors', 'New vendor', '#12B39A', 'XK01']];
+var QUICK = [['po', 'New PO', '#00249C', 'ME21N'], ['pr', 'Purchase request', '#F0006C', 'ME51N'], ['quotes', 'Compare quotations', '#B5309F', 'ME47'], ['grn', 'Goods receipt', '#00B49C', 'MIGO'],
+  ['bills', 'Vendor bill', '#0084F0', 'MIRO'], ['payments', 'Payment request', '#F0006C', 'F-53'], ['expenses', 'Expense claim', '#0E9F6E', ''], ['clientbills', 'Client invoice', '#1667C4', 'FB70'],
+  ['pettycash', 'Petty cash', '#5D6894', ''], ['photos', 'Upload photos', '#F0569C', ''], ['maintenance', 'Maintenance', '#C26A00', ''], ['vendors', 'New vendor', '#00B49C', 'XK01']];
 function renderHome(v, h, silent) {
   if (!v || S.route.v !== 'home') return;
   S.home = h; setInboxCount(h.inbox.length);
@@ -723,14 +723,14 @@ function renderHome(v, h, silent) {
 /* =====================================================================
    MY WORKSPACE (employee self-service on the home page)
    ===================================================================== */
-var WS_TILES = [['approvals', 'Approval note', 'Inter-office approval', 'stamp', 'linear-gradient(135deg,#1B2F9E,#1E90F5)'],
-  ['expenses', 'Expense claim', 'Bills & reimbursement', 'receipt', 'linear-gradient(135deg,#0E9F6E,#12B39A)'],
-  ['transfers', 'Material transfer', 'Store to site', 'swap', 'linear-gradient(135deg,#B5309F,#E8127C)'],
+var WS_TILES = [['approvals', 'Approval note', 'Inter-office approval', 'stamp', 'linear-gradient(135deg,#00249C,#0084F0)'],
+  ['expenses', 'Expense claim', 'Bills & reimbursement', 'receipt', 'linear-gradient(135deg,#0E9F6E,#00B49C)'],
+  ['transfers', 'Material transfer', 'Store to site', 'swap', 'linear-gradient(135deg,#B5309F,#F0006C)'],
   ['dsr', 'Daily site report', 'Work, manpower, photos', 'clipboard', 'linear-gradient(135deg,#C26A00,#F5A524)'],
   ['leaves', 'Leave / permission', 'Apply & track', 'calendar', 'linear-gradient(135deg,#1667C4,#5AB0FF)'],
-  ['photos', 'Site photos', 'Upload from phone', 'camera', 'linear-gradient(135deg,#E8127C,#FF7AB8)'],
-  ['tasks', 'Assign a task', 'To you or your team', 'target', 'linear-gradient(135deg,#121B54,#3D4FCF)'],
-  ['pr', 'Purchase request', 'Need material?', 'cart', 'linear-gradient(135deg,#0B7A8F,#12B39A)']];
+  ['photos', 'Site photos', 'Upload from phone', 'camera', 'linear-gradient(135deg,#F0006C,#FF7AB8)'],
+  ['tasks', 'Assign a task', 'To you or your team', 'target', 'linear-gradient(135deg,#121B54,#0060D0)'],
+  ['pr', 'Purchase request', 'Need material?', 'cart', 'linear-gradient(135deg,#0B7A8F,#00B49C)']];
 function wsHtml(w) {
   if (!w) return '';
   var h = '';
@@ -1438,12 +1438,13 @@ function renderFiles(f) {
   var box = $('pane').querySelector('[data-files="' + f.k + '"]'); if (!box) return;
   var arr = F.rec[f.k] || [], max = f.max || 5;
   box.innerHTML = arr.map(function (x, i) { var src = typeof x === 'string' ? thumb(x, 240) : (x.data.indexOf('application/pdf') > -1 ? '' : x.data); return '<div class="fth"><span>PDF</span>' + (src ? '<img src="' + src + '" alt="" onerror="this.remove()">' : '') + '<button class="x" data-rmf="' + i + '" aria-label="Remove">×</button></div>'; }).join('') +
-    (arr.length < max ? '<label class="fadd" for="fi_' + f.k + '"><span>' + icon('camera', 22) + '<br>Add</span></label>' : '') + '<div class="note" style="align-self:center">' + arr.length + ' / ' + max + '</div>';
+    (arr.length < max ? '<label class="fadd pe-up" for="fi_' + f.k + '" title="Upload photo or file"><span class="pe-up-l"><i></i><i></i></span><span class="pe-up-b"><i></i><i></i><i></i></span><span class="pe-up-c"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="M6 10l6-6 6 6"/><path d="M4 20h16"/></svg><b>Upload</b></span></label>' : '') + '<div class="note" style="align-self:center">' + arr.length + ' / ' + max + '</div>';
   var input = $('pane').querySelector('[data-fin="' + f.k + '"]'); input.id = 'fi_' + f.k;
   box.querySelectorAll('[data-rmf]').forEach(function (b) { b.onclick = function () { arr.splice(+b.dataset.rmf, 1); renderFiles(f); }; });
   input.onchange = function () {
     var files = Array.prototype.slice.call(this.files), room = max - arr.length;
     if (files.length > room) toast('Only ' + room + ' more file(s) allowed.', true);
+    var up = box.querySelector('.pe-up'); if (up && files.length) up.classList.add('busy');
     files.slice(0, room).forEach(function (file) { prepFile(file, f).then(function (d) { arr.push({ data: d, name: file.name }); F.rec[f.k] = arr; renderFiles(f); }).catch(fail); });
     this.value = '';
   };
@@ -1664,10 +1665,10 @@ function sheet(lh, body, opt) {
   var co = S.sess.config.companies[0], land = !!opt.landscape, wm = S.sess.config.watermark;
   var logo = window.LOGO_FULL ? '<img src="' + window.LOGO_FULL + '" style="height:17mm;width:auto;display:block">' : '';
   var head = lh.head ? '<img src="' + lh.head + '" style="display:block;margin:0 auto;' + (land ? 'height:30mm' : 'width:100%') + '">' :
-    '<div style="display:flex;align-items:center;justify-content:space-between;gap:8mm;padding:7mm ' + (land ? 12 : 18) + 'mm 3mm;border-bottom:2.2pt solid #0B1546;position:relative">' + logo +
-    '<div style="text-align:right;font:8.5pt Arial;color:#333;line-height:1.45"><div style="font:800 13pt Arial;color:#0B1546;letter-spacing:.4px">' + esc(co.name.toUpperCase()) + '</div>' + esc(co.address || '') + (co.gstin ? '<br>GSTIN: ' + esc(co.gstin) : '') + (co.phone || co.email ? '<br>' + esc([co.phone ? 'Ph: ' + co.phone : '', co.email || '', co.web || ''].filter(String).join(' · ')) : '') + '</div>' +
-    '<i style="position:absolute;left:' + (land ? 12 : 18) + 'mm;bottom:-2.2pt;width:38mm;height:2.2pt;background:#E8127C"></i></div>';
-  var foot = lh.foot ? '<img src="' + lh.foot + '" style="display:block;margin:0 auto;' + (land ? 'height:15mm' : 'width:100%') + '">' : '<div style="text-align:center;font:8.5pt Arial;padding:4mm 0;border-top:1px solid #1B2F9E">' + esc(co.address) + '</div>';
+    '<div style="display:flex;align-items:center;justify-content:space-between;gap:8mm;padding:7mm ' + (land ? 12 : 18) + 'mm 3mm;border-bottom:2.2pt solid #00175F;position:relative">' + logo +
+    '<div style="text-align:right;font:8.5pt Arial;color:#333;line-height:1.45"><div style="font:800 13pt Arial;color:#00175F;letter-spacing:.4px">' + esc(co.name.toUpperCase()) + '</div>' + esc(co.address || '') + (co.gstin ? '<br>GSTIN: ' + esc(co.gstin) : '') + (co.phone || co.email ? '<br>' + esc([co.phone ? 'Ph: ' + co.phone : '', co.email || '', co.web || ''].filter(String).join(' · ')) : '') + '</div>' +
+    '<i style="position:absolute;left:' + (land ? 12 : 18) + 'mm;bottom:-2.2pt;width:38mm;height:2.2pt;background:#F0006C"></i></div>';
+  var foot = lh.foot ? '<img src="' + lh.foot + '" style="display:block;margin:0 auto;' + (land ? 'height:15mm' : 'width:100%') + '">' : '<div style="text-align:center;font:8.5pt Arial;padding:4mm 0;border-top:1px solid #00249C">' + esc(co.address) + '</div>';
   var hh = land ? 34 : 38, fh = land ? 18 : 21;
   return '<!doctype html><html><head><meta charset="utf-8"><title>' + esc(opt.title || 'Print') + '</title><style>' +
     '@page{size:A4 ' + (land ? 'landscape' : 'portrait') + ';margin:0}*{box-sizing:border-box}body{margin:0;font:10.5pt Arial,Helvetica,sans-serif;color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}' +

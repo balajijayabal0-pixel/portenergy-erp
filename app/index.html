@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Sora:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <title>Port Energy ERP</title>
-<meta name="theme-color" content="#0B1546">
+<meta name="theme-color" content="#00175F">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -17,12 +17,12 @@
 <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://script.google.com">
 <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
-<script src="../config.js?v=202611072000"></script>
-<script src="bridge.js?v=202611072000"></script>
-<script src="logo.js?v=202611072000"></script>
+<script src="../config.js?v=202611072130"></script>
+<script src="bridge.js?v=202611072130"></script>
+<script src="logo.js?v=202611072130"></script>
 <style>
 :root{
-  --ink:#121B54; --navy:#1B2F9E; --sky:#1E90F5; --teal:#12B39A; --magenta:#E8127C; --pink:#F0569C;
+  --ink:#121B54; --navy:#00249C; --sky:#0084F0; --teal:#00B49C; --magenta:#F0006C; --pink:#F0569C;
   --mist:#F1F4FB; --line:#DFE5F3; --soft:#F7F9FE; --muted:#5D6894; --card:rgba(255,255,255,.9);
   --ok:#0E9F6E; --warn:#C26A00; --bad:#D4183D; --info:#1667C4;
   --grad:linear-gradient(120deg,var(--magenta) 0%,#B5309F 38%,var(--navy) 72%,var(--sky) 100%);
@@ -53,9 +53,9 @@ kbd{font-family:Manrope,sans-serif;font-size:11px;font-weight:800;background:#ff
 #login{min-height:100vh;display:none;position:relative;z-index:1;color:#fff;grid-template-rows:auto 1fr auto;padding:26px clamp(18px,4vw,56px);gap:10px;isolation:isolate}
 .lx-bg{position:absolute;inset:0;min-height:100vh;z-index:-1;overflow:hidden;background:radial-gradient(1200px 700px at 12% 8%,#2A3FC4 0%,transparent 60%),radial-gradient(900px 600px at 95% 90%,#7A0F55 0%,transparent 55%),linear-gradient(160deg,#0A1033 0%,#121B54 45%,#0B0F2E 100%)}
 .lx-bg i{position:absolute;border-radius:50%;filter:blur(80px);opacity:.55;mix-blend-mode:screen;animation:drift 22s ease-in-out infinite alternate}
-.lx-bg .a1{width:46vw;height:46vw;left:-12vw;top:-18vw;background:#1E90F5}
-.lx-bg .a2{width:40vw;height:40vw;right:-10vw;bottom:-16vw;background:#E8127C;opacity:.42;animation-delay:-9s}
-.lx-bg .a3{width:30vw;height:30vw;left:38vw;top:30vh;background:#12B39A;opacity:.28;animation-delay:-15s}
+.lx-bg .a1{width:46vw;height:46vw;left:-12vw;top:-18vw;background:#0084F0}
+.lx-bg .a2{width:40vw;height:40vw;right:-10vw;bottom:-16vw;background:#F0006C;opacity:.42;animation-delay:-9s}
+.lx-bg .a3{width:30vw;height:30vw;left:38vw;top:30vh;background:#00B49C;opacity:.28;animation-delay:-15s}
 .lx-grid{position:absolute;left:-50%;right:-50%;bottom:-10%;height:62%;background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px);background-size:56px 56px;transform:perspective(600px) rotateX(62deg);transform-origin:bottom;-webkit-mask-image:linear-gradient(to top,#000 10%,transparent 85%);mask-image:linear-gradient(to top,#000 10%,transparent 85%);animation:gridmove 14s linear infinite}
 @keyframes gridmove{to{background-position:0 56px,0 0}}
 .lx-stars{position:absolute;inset:0;background-image:radial-gradient(1.5px 1.5px at 12% 22%,rgba(255,255,255,.8),transparent),radial-gradient(1px 1px at 72% 14%,rgba(255,255,255,.7),transparent),radial-gradient(1.5px 1.5px at 84% 46%,rgba(255,255,255,.6),transparent),radial-gradient(1px 1px at 32% 68%,rgba(255,255,255,.5),transparent),radial-gradient(1.2px 1.2px at 56% 36%,rgba(255,255,255,.7),transparent),radial-gradient(1px 1px at 92% 78%,rgba(255,255,255,.5),transparent),radial-gradient(1.4px 1.4px at 6% 88%,rgba(255,255,255,.6),transparent);animation:twinkle 6s ease-in-out infinite alternate}
@@ -68,17 +68,17 @@ kbd{font-family:Manrope,sans-serif;font-size:11px;font-weight:800;background:#ff
 .lx-main{display:grid;grid-template-columns:1.25fr .9fr;align-items:center;gap:clamp(26px,5vw,72px);max-width:1280px;width:100%;margin:0 auto}
 .hero{position:relative}
 .eyebrow{display:inline-flex;align-items:center;gap:10px;font:700 12.5px Manrope,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#C9D4FF;padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);animation:fadeD .9s .1s var(--ease) both}
-.eyebrow .pulse{width:8px;height:8px;border-radius:50%;background:#E8127C;box-shadow:0 0 0 0 rgba(232,18,124,.7);animation:pulse 2s infinite}
+.eyebrow .pulse{width:8px;height:8px;border-radius:50%;background:#F0006C;box-shadow:0 0 0 0 rgba(232,18,124,.7);animation:pulse 2s infinite}
 @keyframes pulse{70%{box-shadow:0 0 0 12px rgba(232,18,124,0)}100%{box-shadow:0 0 0 0 rgba(232,18,124,0)}}
 .mottoX{font-family:Sora,sans-serif;font-weight:800;font-size:clamp(46px,7.4vw,112px);line-height:.98;letter-spacing:-.035em;margin:22px 0 0;text-shadow:0 30px 60px rgba(0,0,0,.35)}
 .mottoX .w{display:block;opacity:0;filter:blur(14px);transform:translateY(34px);animation:wordIn 1s var(--ease) forwards}
 .mottoX .w1{animation-delay:.25s;color:#fff}
 .mottoX .w2{animation-delay:.55s;color:rgba(214,222,255,.78);font-weight:700;font-size:.62em;letter-spacing:-.01em;margin:.08em 0 .02em}
-.mottoX .w3{animation-delay:.85s;background:linear-gradient(90deg,#FF5FA8 0%,#E8127C 22%,#7FC4FF 50%,#2BE0C0 75%,#FF5FA8 100%);background-size:240% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:wordIn 1s .85s var(--ease) forwards,hueflow 7s 1.9s linear infinite;filter:drop-shadow(0 10px 34px rgba(232,18,124,.45))}
+.mottoX .w3{animation-delay:.85s;background:linear-gradient(90deg,#FF5FA8 0%,#F0006C 22%,#7FC4FF 50%,#2BE0C0 75%,#FF5FA8 100%);background-size:240% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:wordIn 1s .85s var(--ease) forwards,hueflow 7s 1.9s linear infinite;filter:drop-shadow(0 10px 34px rgba(232,18,124,.45))}
 @keyframes wordIn{to{opacity:1;filter:blur(0);transform:none}}
 @keyframes hueflow{to{background-position:240% 0}}
 .strike{position:relative;display:inline-block}
-.strike::after{content:"";position:absolute;left:-2%;right:-2%;top:54%;height:.085em;border-radius:9px;background:linear-gradient(90deg,#E8127C,#FF7AB8);transform:scaleX(0);transform-origin:left;animation:strike 3.2s 1.5s var(--ease) both}
+.strike::after{content:"";position:absolute;left:-2%;right:-2%;top:54%;height:.085em;border-radius:9px;background:linear-gradient(90deg,#F0006C,#FF7AB8);transform:scaleX(0);transform-origin:left;animation:strike 3.2s 1.5s var(--ease) both}
 @keyframes strike{30%{transform:scaleX(1)}62%{transform:scaleX(1);transform-origin:right}100%{transform:scaleX(0);transform-origin:right}}
 .lx-rule{width:120px;height:4px;border-radius:9px;background:var(--grad);margin:26px 0 0;transform-origin:left;animation:grow2 1s 1.3s var(--ease) both}
 .lead{color:#CFD7F7;font-size:clamp(15px,1.25vw,18px);line-height:1.6;max-width:560px;margin:18px 0 0;animation:fadeU 1s 1.2s var(--ease) both}
@@ -469,7 +469,7 @@ iframe.pf{position:fixed;width:0;height:0;border:0;left:-9999px}
 .wst::after{content:"";position:absolute;right:-30px;top:-30px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.14)}
 .wst b{font-size:14.5px;position:relative;z-index:1}.wst small{opacity:.85;font-size:11.5px;position:relative;z-index:1}
 .wst .ic{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:rgba(255,255,255,.2);position:relative;z-index:1}
-.urgent{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:16px 18px;border-radius:18px;margin-bottom:16px;color:#fff;background:linear-gradient(110deg,#B3122E,#E8127C);box-shadow:0 22px 40px -24px rgba(179,18,46,.9);animation:rise .5s var(--ease) both}
+.urgent{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:16px 18px;border-radius:18px;margin-bottom:16px;color:#fff;background:linear-gradient(110deg,#B3122E,#F0006C);box-shadow:0 22px 40px -24px rgba(179,18,46,.9);animation:rise .5s var(--ease) both}
 .urgent .t{flex:1;min-width:220px}.urgent b{display:block;font-size:15px}.urgent p{margin:3px 0 0;opacity:.92;font-size:13px}
 .urgent .btn{background:#fff;color:#B3122E}
 .nudge{display:flex;gap:12px;align-items:center;padding:12px 16px;border-radius:16px;margin-bottom:16px;background:#FFF6E5;border:1px solid #FBD58C;color:#7A4B00;animation:rise .5s var(--ease) both}
@@ -518,7 +518,7 @@ html,body{overscroll-behavior:none}
  #boot img{animation:none}
 }
 /* ===== motivation: login quote + welcome screen ===== */
-.lq{margin:0 0 14px;padding:12px 14px;border-radius:14px;background:linear-gradient(120deg,#FFF0F7,#EEF4FF);color:#3A1D5E;font:700 14px/1.45 Manrope,sans-serif;border-left:4px solid var(--magenta);animation:fadeU .5s var(--ease) both}
+.lq{margin:0 0 14px;padding:12px 14px;border-radius:14px;background:linear-gradient(120deg,#FFF0F7,#EEF4FF);color:#4A0030;font:700 14px/1.45 Manrope,sans-serif;border-left:4px solid var(--magenta);animation:fadeU .5s var(--ease) both}
 .lq::before{content:"\201C";font:800 22px/0 Sora,sans-serif;color:var(--magenta);vertical-align:-6px;margin-right:4px}
 .hello .hq{margin:6px 0 0;color:var(--magenta);font-weight:700;font-size:13.5px}
 .wel{position:fixed;inset:0;z-index:220;display:grid;place-items:center;padding:24px;color:#fff;text-align:center;opacity:0;pointer-events:none;transition:opacity .35s;background:radial-gradient(700px 500px at 15% 10%,#2A3FC4 0%,transparent 60%),radial-gradient(600px 500px at 90% 95%,#8A1060 0%,transparent 55%),linear-gradient(160deg,#0A1033,#121B54 55%,#0B0F2E)}
@@ -531,7 +531,7 @@ html,body{overscroll-behavior:none}
 .wel p{margin:14px 0 0;font-size:16.5px;line-height:1.5;color:#FFD1E6;font-weight:700}
 .wel-bar{height:4px;width:140px;margin:22px auto 0;border-radius:9px;background:rgba(255,255,255,.15);overflow:hidden;visibility:hidden}
 .wel.pend .wel-bar{visibility:visible}
-.wel-bar i{display:block;height:100%;width:40%;border-radius:9px;background:linear-gradient(90deg,#E8127C,#7FC4FF);animation:welbar 1s ease-in-out infinite}
+.wel-bar i{display:block;height:100%;width:40%;border-radius:9px;background:linear-gradient(90deg,#F0006C,#7FC4FF);animation:welbar 1s ease-in-out infinite}
 @keyframes welbar{0%{transform:translateX(-100%)}100%{transform:translateX(260%)}}
 .wel-skip{display:block;margin-top:18px;font-size:12px;color:#8F9BD0}
 .wel.pend .wel-skip{visibility:hidden}
@@ -545,12 +545,12 @@ html,body{overscroll-behavior:none}
 .aip{position:fixed;inset:0;z-index:95;display:none;flex-direction:column;background:var(--mist)}
 .aip.open{display:flex;animation:fade .2s}
 @media (min-width:961px){.aip{left:auto;width:440px;box-shadow:-30px 0 60px -30px rgba(18,27,84,.45);border-left:1px solid var(--line)}}
-.aih{display:flex;align-items:center;gap:10px;padding:max(10px,env(safe-area-inset-top)) 12px 10px;background:linear-gradient(120deg,#121B54,#1B2F9E 60%,#8A1060);color:#fff}
+.aih{display:flex;align-items:center;gap:10px;padding:max(10px,env(safe-area-inset-top)) 12px 10px;background:linear-gradient(120deg,#121B54,#00249C 60%,#8A1060);color:#fff}
 .aih .btn{color:#fff;font-size:22px;padding:4px 10px}.aih #aiNew{font-size:12.5px;border:1px solid rgba(255,255,255,.35)}
 .aiti{flex:1;min-width:0}.aiti b{display:block;font:800 16px Sora,sans-serif}.aiti small{color:#C9D4FF;font-size:11.5px}
 .aim{flex:1;overflow:auto;padding:16px 14px 10px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch}
 .aib{max-width:88%;padding:11px 14px;border-radius:18px;font-size:14.5px;line-height:1.5;-webkit-user-select:text;user-select:text;word-wrap:break-word}
-.aib.me{align-self:flex-end;background:linear-gradient(120deg,#E8127C,#B5309F);color:#fff;border-bottom-right-radius:6px}
+.aib.me{align-self:flex-end;background:linear-gradient(120deg,#F0006C,#B5309F);color:#fff;border-bottom-right-radius:6px}
 .aib.ai{align-self:flex-start;background:#fff;color:var(--ink);border:1px solid var(--line);border-bottom-left-radius:6px;box-shadow:0 8px 20px -14px rgba(18,27,84,.35)}
 .aib p{margin:0 0 6px}.aib p:last-of-type{margin-bottom:0}.aib ul{margin:4px 0 6px;padding-left:20px}.aib li{margin:2px 0}
 .aicp{display:block;margin-top:8px;border:0;background:#F1F4FB;color:var(--navy);font-size:11.5px;font-weight:800;padding:4px 10px;border-radius:999px;cursor:pointer}
@@ -601,13 +601,13 @@ img,svg,canvas,video{max-width:100%}
 /* ===== loading quotes ===== */
 .ldq{display:flex;gap:10px;align-items:center;padding:14px 16px;border-radius:16px;background:linear-gradient(120deg,#FFF0F7,#EEF4FF);margin-bottom:16px;font-weight:800;font-size:14px;line-height:1.4;overflow:hidden;box-shadow:0 10px 24px -18px rgba(18,27,84,.5)}
 .ldq-ic{color:var(--magenta);font-size:18px;display:inline-block;animation:ldspin 2.4s linear infinite;flex:none}
-.ldq-t{background:linear-gradient(90deg,#3A1D5E,#E8127C 35%,#1B2F9E 65%,#3A1D5E);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:ldin .5s var(--ease) both,ldsh 3.2s linear infinite}
+.ldq-t{background:linear-gradient(90deg,#4A0030,#F0006C 35%,#00249C 65%,#4A0030);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:ldin .5s var(--ease) both,ldsh 3.2s linear infinite}
 .ldq-t.in,.aity.in{animation:ldin .5s var(--ease) both,ldsh 3.2s linear infinite}
 @keyframes ldin{from{opacity:0;transform:translateY(8px)}}
 @keyframes ldsh{to{background-position:-220% 0}}
 @keyframes ldspin{to{transform:rotate(360deg)}}
 .aib.typing{align-items:center}
-.aity{margin-left:6px;font-size:12.5px;font-weight:800;background:linear-gradient(90deg,#5D6894,#E8127C,#1B2F9E,#5D6894);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:ldsh 3.2s linear infinite}
+.aity{margin-left:6px;font-size:12.5px;font-weight:800;background:linear-gradient(90deg,#5D6894,#F0006C,#00249C,#5D6894);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:ldsh 3.2s linear infinite}
 /* ===== AI attach + web ===== */
 .aiopt{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 12px 0;background:#fff;border-top:1px solid var(--line)}
 .aiopt .chip{font-size:12.5px}#aiWeb.on{background:#E3F7EF;border-color:#0E9F6E;color:#0B7D57}
@@ -653,7 +653,7 @@ body{font-size:14px}
 textarea{min-height:44px;resize:vertical;line-height:1.4}
 textarea[data-fit]{overflow-y:auto}
 /* ===== Home dashboard hero ===== */
-.hero2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) auto;gap:16px;align-items:center;margin:6px 0 14px;padding:16px 20px;border-radius:20px;color:#fff;background:linear-gradient(115deg,#121B54 0%,#1B2F9E 48%,#B3125E 100%);box-shadow:0 18px 38px -24px rgba(18,27,84,.8);position:relative;overflow:hidden;animation:rise .5s var(--ease) both}
+.hero2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) auto;gap:16px;align-items:center;margin:6px 0 14px;padding:16px 20px;border-radius:20px;color:#fff;background:linear-gradient(115deg,#121B54 0%,#00249C 48%,#B3125E 100%);box-shadow:0 18px 38px -24px rgba(18,27,84,.8);position:relative;overflow:hidden;animation:rise .5s var(--ease) both}
 .hero2::after{content:"";position:absolute;right:-60px;top:-70px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.07);pointer-events:none}
 .h2l{min-width:0}
 .h2d{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.16)}
@@ -704,24 +704,24 @@ textarea[data-fit]{overflow-y:auto}
  .tb td,.tb th{padding-top:8px!important;padding-bottom:8px!important}
 }
 </style>
-<link rel="stylesheet" href="polish.css?v=202611072000">
-<link rel="stylesheet" href="apple.css?v=202611072000">
-<link rel="stylesheet" href="dash.css?v=202611072000">
-<link rel="stylesheet" href="login.css?v=202611072000">
-<link rel="stylesheet" href="loading.css?v=202611072000">
-<link rel="stylesheet" href="fx.css?v=202611072000">
-<link rel="stylesheet" href="refine.css?v=202611072000">
-<link rel="stylesheet" href="pro.css?v=202611072000">
+<link rel="stylesheet" href="polish.css?v=202611072130">
+<link rel="stylesheet" href="apple.css?v=202611072130">
+<link rel="stylesheet" href="dash.css?v=202611072130">
+<link rel="stylesheet" href="login.css?v=202611072130">
+<link rel="stylesheet" href="loading.css?v=202611072130">
+<link rel="stylesheet" href="fx.css?v=202611072130">
+<link rel="stylesheet" href="refine.css?v=202611072130">
+<link rel="stylesheet" href="pro.css?v=202611072130">
 </head>
 <body>
 <div class="amb"><i></i><i></i><i></i></div>
 <div id="boot" role="status" aria-label="Loading Port Energy ERP">
   <svg class="pb-flow" viewBox="0 0 1200 800" preserveAspectRatio="none" aria-hidden="true">
     <defs>
-      <linearGradient id="pbG1" x1="0" x2="1"><stop offset="0" stop-color="#00C2FF" stop-opacity="0"/><stop offset="1" stop-color="#00C2FF"/></linearGradient>
-      <linearGradient id="pbG2" x1="1" x2="0"><stop offset="0" stop-color="#F3026E" stop-opacity="0"/><stop offset="1" stop-color="#F3026E"/></linearGradient>
-      <linearGradient id="pbG3" x1="0" x2="1"><stop offset="0" stop-color="#7A5CFF" stop-opacity="0"/><stop offset="1" stop-color="#7A5CFF"/></linearGradient>
-      <linearGradient id="pbG4" x1="1" x2="0"><stop offset="0" stop-color="#1E5BFF" stop-opacity="0"/><stop offset="1" stop-color="#2F8BFF"/></linearGradient>
+      <linearGradient id="pbG1" x1="0" x2="1"><stop offset="0" stop-color="#00B49C" stop-opacity="0"/><stop offset="1" stop-color="#00B49C"/></linearGradient>
+      <linearGradient id="pbG2" x1="1" x2="0"><stop offset="0" stop-color="#F0006C" stop-opacity="0"/><stop offset="1" stop-color="#F0006C"/></linearGradient>
+      <linearGradient id="pbG3" x1="0" x2="1"><stop offset="0" stop-color="#0084F0" stop-opacity="0"/><stop offset="1" stop-color="#0084F0"/></linearGradient>
+      <linearGradient id="pbG4" x1="1" x2="0"><stop offset="0" stop-color="#0084F0" stop-opacity="0"/><stop offset="1" stop-color="#2F8BFF"/></linearGradient>
     </defs>
     <g class="pb-pipes">
       <path class="pb-pipe p1" pathLength="100" stroke="url(#pbG1)" d="M-60 660 C 260 660 330 400 600 400"/>
@@ -738,7 +738,7 @@ textarea[data-fit]{overflow-y:auto}
   </svg>
   <div class="pe-boot"><div class="pb-logo"><img alt="Port Energy" id="bootLogo"><i class="pb-sheen"></i></div><div class="pe-bar"><i></i></div>
     <div class="pb-run" aria-hidden="true"><i class="pb-track"></i><i class="pb-dust"></i>
-      <div class="pb-runner"><svg viewBox="0 0 44 54"><g class="lg2"><path d="M22 34 L17 50" stroke="#0B2A88" stroke-width="4.5" stroke-linecap="round"/></g><g class="ar2"><path d="M22 22 L15 30" stroke="#0E7FD6" stroke-width="3.5" stroke-linecap="round"/></g><path d="M22 20 L22 35" stroke="#FFD23F" stroke-width="7.5" stroke-linecap="round"/><path d="M19 27h6" stroke="#E8E8E8" stroke-width="1.6"/><circle cx="23" cy="13" r="5.2" fill="#F2C9A0"/><path d="M16.6 12.2a6.4 6 0 0 1 12.8 0h1.8v2.2H15v-2.2z" fill="#F3026E"/><g class="lg1"><path d="M22 34 L27 50" stroke="#13206B" stroke-width="4.5" stroke-linecap="round"/></g><g class="ar1"><path d="M22 22 L29 29" stroke="#13A4F0" stroke-width="3.5" stroke-linecap="round"/></g></svg></div></div>
+      <div class="pb-runner"><svg viewBox="0 0 44 54"><g class="lg2"><path d="M22 34 L17 50" stroke="#0B2A88" stroke-width="4.5" stroke-linecap="round"/></g><g class="ar2"><path d="M22 22 L15 30" stroke="#0E7FD6" stroke-width="3.5" stroke-linecap="round"/></g><path d="M22 20 L22 35" stroke="#FFD23F" stroke-width="7.5" stroke-linecap="round"/><path d="M19 27h6" stroke="#E8E8E8" stroke-width="1.6"/><circle cx="23" cy="13" r="5.2" fill="#F2C9A0"/><path d="M16.6 12.2a6.4 6 0 0 1 12.8 0h1.8v2.2H15v-2.2z" fill="#F0006C"/><g class="lg1"><path d="M22 34 L27 50" stroke="#13206B" stroke-width="4.5" stroke-linecap="round"/></g><g class="ar1"><path d="M22 22 L29 29" stroke="#13A4F0" stroke-width="3.5" stroke-linecap="round"/></g></svg></div></div>
     <div class="pb-msg" id="bootMsg">Preparing your workspace…</div><small class="pb-motto"><span>Impossible</span> <span>can</span> <span>be</span> <span>possible.</span></small></div>
 </div>
 <div class="pe-net" id="peNet" aria-hidden="true"><i></i></div>
@@ -751,8 +751,8 @@ textarea[data-fit]{overflow-y:auto}
         <pattern id="scWin" width="16" height="20" patternUnits="userSpaceOnUse"><rect x="4" y="5" width="7" height="9" rx="1" fill="#6F86FF" opacity=".35"/></pattern>
         <linearGradient id="scGround" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#15207A"/><stop offset="1" stop-color="#070B2E"/></linearGradient>
         <linearGradient id="scTank" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2A3DA8"/><stop offset=".45" stop-color="#4C63D8"/><stop offset="1" stop-color="#1E2C86"/></linearGradient>
-        <radialGradient id="scSun"><stop offset="0" stop-color="#FFD36B"/><stop offset=".45" stop-color="#FF9F43" stop-opacity=".55"/><stop offset="1" stop-color="#F3026E" stop-opacity="0"/></radialGradient>
-        <radialGradient id="scWeld"><stop offset="0" stop-color="#fff"/><stop offset=".3" stop-color="#7FE7FF"/><stop offset="1" stop-color="#00C2FF" stop-opacity="0"/></radialGradient>
+        <radialGradient id="scSun"><stop offset="0" stop-color="#FFD36B"/><stop offset=".45" stop-color="#FF9F43" stop-opacity=".55"/><stop offset="1" stop-color="#F0006C" stop-opacity="0"/></radialGradient>
+        <radialGradient id="scWeld"><stop offset="0" stop-color="#fff"/><stop offset=".3" stop-color="#7FE7FF"/><stop offset="1" stop-color="#00B49C" stop-opacity="0"/></radialGradient>
         <clipPath id="scHoistClip"><rect x="0" y="80" width="1600" height="340"/></clipPath>
       </defs>
       <!-- sun + clouds -->
@@ -775,7 +775,7 @@ textarea[data-fit]{overflow-y:auto}
         <path class="sc-flame f2" d="M641 104 C 636 96, 638 86, 641 78 C 644 86, 648 96, 641 104 Z" fill="#FFE27A"/>
         <rect x="300" y="256" width="122" height="84" fill="url(#scTank)"/><ellipse cx="361" cy="256" rx="61" ry="11" fill="#5D74E6"/>
         <text x="361" y="300" text-anchor="middle" font-family="Poppins, sans-serif" font-weight="700" font-size="13" fill="#fff" opacity=".9" letter-spacing="1">PORT ENERGY</text>
-        <rect x="314" y="306" width="94" height="3" fill="#F3026E" opacity=".8"/>
+        <rect x="314" y="306" width="94" height="3" fill="#F0006C" opacity=".8"/>
         <rect x="432" y="280" width="90" height="60" fill="url(#scTank)"/><ellipse cx="477" cy="280" rx="45" ry="8" fill="#5D74E6"/>
         <g stroke="#3A50C8" stroke-width="5" fill="none"><path d="M422 300 H 556"/><path d="M590 312 H 760"/><path d="M522 322 H 640"/></g>
         <g fill="#1B2878"><rect x="660" y="312" width="5" height="28"/><rect x="720" y="312" width="5" height="28"/></g>
@@ -816,7 +816,7 @@ textarea[data-fit]{overflow-y:auto}
       <!-- pipeline in trench + flow -->
       <rect x="640" y="356" width="600" height="10" fill="#050720" opacity=".8"/>
       <rect x="640" y="343" width="560" height="16" rx="8" fill="#0B0E22" stroke="#3B4590" stroke-width="1.5"/>
-      <path class="sc-flow" d="M650 349 H1190" stroke="#00C2FF" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="18 26"/>
+      <path class="sc-flow" d="M650 349 H1190" stroke="#00B49C" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="18 26"/>
       <g fill="#3B4590"><rect x="780" y="341" width="4" height="20"/><rect x="920" y="341" width="4" height="20"/><rect x="1060" y="341" width="4" height="20"/></g>
       <!-- welder at pipe end -->
       <g class="sc-welder">
@@ -839,7 +839,7 @@ textarea[data-fit]{overflow-y:auto}
         <g class="sc-man m2">
           <path class="sc-leg l2" d="M846 352 l0 18" stroke="#1E2A6B" stroke-width="5" stroke-linecap="round"/>
           <path class="sc-leg l1" d="M852 352 l0 18" stroke="#1E2A6B" stroke-width="5" stroke-linecap="round"/>
-          <rect x="841" y="326" width="16" height="28" rx="5" fill="#2B6BFF"/><rect x="841" y="338" width="16" height="3" fill="#FFE27A"/>
+          <rect x="841" y="326" width="16" height="28" rx="5" fill="#0084F0"/><rect x="841" y="338" width="16" height="3" fill="#FFE27A"/>
           <circle cx="849" cy="318" r="7" fill="#E8B88A"/><path d="M840 317 a9 8 0 0 1 18 0 z" fill="#FFC21A"/>
         </g>
       </g>
@@ -852,17 +852,17 @@ textarea[data-fit]{overflow-y:auto}
           <path d="M1400 326 L1470 282 L1488 292 L1414 336 Z" fill="#E0A800"/>
           <g class="sc-stick"><path d="M1470 282 L1500 336 L1488 340 L1462 290 Z" fill="#D99A00"/><path d="M1486 330 q22 4 26 22 l-30 0 z" fill="#5A6496"/></g>
         </g>
-        <g class="sc-dirt" fill="#4A3A6E"><circle cx="1498" cy="356" r="3"/><circle cx="1506" cy="352" r="2.5"/><circle cx="1492" cy="350" r="2"/></g>
+        <g class="sc-dirt" fill="#3A4A6E"><circle cx="1498" cy="356" r="3"/><circle cx="1506" cy="352" r="2.5"/><circle cx="1492" cy="350" r="2"/></g>
       </g>
       <!-- cones and barrier -->
       <g><path d="M560 372 l8 -22 8 22z" fill="#FF7A1F"/><rect x="561" y="360" width="14" height="3" fill="#fff"/><path d="M1260 372 l8 -22 8 22z" fill="#FF7A1F"/><rect x="1261" y="360" width="14" height="3" fill="#fff"/>
-        <rect x="590" y="352" width="44" height="8" fill="#fff"/><g fill="#F3026E"><rect x="596" y="352" width="7" height="8"/><rect x="610" y="352" width="7" height="8"/><rect x="624" y="352" width="7" height="8"/></g><rect x="594" y="360" width="3" height="14" fill="#C9D3FF"/><rect x="627" y="360" width="3" height="14" fill="#C9D3FF"/>
+        <rect x="590" y="352" width="44" height="8" fill="#fff"/><g fill="#F0006C"><rect x="596" y="352" width="7" height="8"/><rect x="610" y="352" width="7" height="8"/><rect x="624" y="352" width="7" height="8"/></g><rect x="594" y="360" width="3" height="14" fill="#C9D3FF"/><rect x="627" y="360" width="3" height="14" fill="#C9D3FF"/>
         <circle class="sc-blink b3" cx="612" cy="347" r="4" fill="#FFC21A"/></g>
       <!-- pipe truck -->
       <g class="sc-truck">
         <rect x="0" y="372" width="170" height="10" rx="2" fill="#2A3270"/>
         <g fill="#0B0E22" stroke="#3B4590" stroke-width="1.2"><rect x="4" y="352" width="160" height="10" rx="5"/><rect x="4" y="362" width="160" height="10" rx="5"/><rect x="12" y="342" width="144" height="10" rx="5"/></g>
-        <rect x="174" y="346" width="46" height="36" rx="6" fill="#F3026E"/><rect x="196" y="352" width="20" height="14" rx="2" fill="#7FE7FF" opacity=".8"/><rect x="218" y="372" width="6" height="6" fill="#FFE27A"/>
+        <rect x="174" y="346" width="46" height="36" rx="6" fill="#F0006C"/><rect x="196" y="352" width="20" height="14" rx="2" fill="#7FE7FF" opacity=".8"/><rect x="218" y="372" width="6" height="6" fill="#FFE27A"/>
         <g class="sc-wheel"><circle cx="34" cy="386" r="9" fill="#111530" stroke="#5A6496" stroke-width="2"/><path d="M34 379 v14 M27 386 h14" stroke="#5A6496" stroke-width="2"/></g>
         <g class="sc-wheel"><circle cx="136" cy="386" r="9" fill="#111530" stroke="#5A6496" stroke-width="2"/><path d="M136 379 v14 M129 386 h14" stroke="#5A6496" stroke-width="2"/></g>
         <g class="sc-wheel"><circle cx="200" cy="386" r="9" fill="#111530" stroke="#5A6496" stroke-width="2"/><path d="M200 379 v14 M193 386 h14" stroke="#5A6496" stroke-width="2"/></g>
@@ -870,8 +870,8 @@ textarea[data-fit]{overflow-y:auto}
     </svg>
     <svg class="lg-waves" viewBox="0 0 1600 900" preserveAspectRatio="none">
       <defs>
-        <linearGradient id="lgW1" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#00D1FF" stop-opacity="0"/><stop offset=".35" stop-color="#00D1FF"/><stop offset=".7" stop-color="#2B6BFF"/><stop offset="1" stop-color="#F3026E" stop-opacity="0"/></linearGradient>
-        <linearGradient id="lgW2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7A3FF2" stop-opacity="0"/><stop offset=".5" stop-color="#F3026E"/><stop offset="1" stop-color="#FF5FA8" stop-opacity=".2"/></linearGradient>
+        <linearGradient id="lgW1" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#00B49C" stop-opacity="0"/><stop offset=".35" stop-color="#00B49C"/><stop offset=".7" stop-color="#0084F0"/><stop offset="1" stop-color="#F0006C" stop-opacity="0"/></linearGradient>
+        <linearGradient id="lgW2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#00249C" stop-opacity="0"/><stop offset=".5" stop-color="#F0006C"/><stop offset="1" stop-color="#FF5FA8" stop-opacity=".2"/></linearGradient>
       </defs>
       <g class="lg-w lg-w1"><path d="M-100 840 C 200 760, 420 900, 760 860 S 1300 760, 1700 820" stroke="url(#lgW1)" stroke-width="5" fill="none"/><path d="M-100 870 C 240 800, 480 930, 820 890 S 1320 800, 1700 860" stroke="url(#lgW1)" stroke-width="2" fill="none" opacity=".6"/></g>
       <g class="lg-w lg-w2"><path d="M900 900 C 1100 820, 1300 860, 1700 700" stroke="url(#lgW2)" stroke-width="6" fill="none"/><path d="M960 920 C 1160 850, 1360 880, 1700 740" stroke="url(#lgW2)" stroke-width="2" fill="none" opacity=".6"/></g>
@@ -966,17 +966,18 @@ textarea[data-fit]{overflow-y:auto}
 <div class="aip" id="aip"><div class="aih"><button class="btn ghost sm" id="aiX" aria-label="Back">&#8249;</button><div class="aiti"><b>Port Energy AI</b><small>Powered by Google Gemini</small></div><button class="btn ghost sm" id="aiNew">New chat</button></div><div class="aim" id="aim"></div><div class="aiopt"><button class="chip" id="aiWeb" type="button">&#127760; Web search</button><span id="aiFileChip"></span></div><div class="aif"><button class="btn ghost aiat" id="aiAt" type="button" aria-label="Attach file">&#128206;</button><input type="file" id="aiFile" accept="image/*,application/pdf,.pdf,.txt,.csv" hidden><textarea id="aiIn" rows="1" placeholder="Ask anything... English / Tamil"></textarea><button class="btn primary" id="aiGo" aria-label="Send">&#10148;</button></div></div>
 <div id="toast"></div>
 
-<script src="pro.js?v=202611072000"></script>
-<script src="reports.js?v=202611072000"></script>
-<script src="print.js?v=202611072000"></script>
-<script src="books.js?v=202611072000"></script>
-<script src="chat.js?v=202611072000"></script>
-<script src="app.js?v=202611072000"></script>
-<script src="motion.js?v=202611072000"></script>
-<script src="install.js?v=202611072000"></script>
-<script src="wa.js?v=202611072000"></script>
-<script src="dash.js?v=202611072000"></script>
-<script src="login.js?v=202611072000"></script>
-<script src="fx.js?v=202611072000"></script>
+<script src="pro.js?v=202611072130"></script>
+<script src="reports.js?v=202611072130"></script>
+<script src="print.js?v=202611072130"></script>
+<script src="books.js?v=202611072130"></script>
+<script src="chat.js?v=202611072130"></script>
+<script src="loginfx.js?v=202611072130"></script>
+<script src="app.js?v=202611072130"></script>
+<script src="motion.js?v=202611072130"></script>
+<script src="install.js?v=202611072130"></script>
+<script src="wa.js?v=202611072130"></script>
+<script src="dash.js?v=202611072130"></script>
+<script src="login.js?v=202611072130"></script>
+<script src="fx.js?v=202611072130"></script>
 </body>
 </html>

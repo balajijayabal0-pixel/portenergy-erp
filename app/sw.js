@@ -6,8 +6,8 @@
  * Screens: open from the saved copy, then quietly fetch the newest copy for next time.
  * Change VERSION on each upload to clear old copies.
  */
-const VERSION = 'pe-app-v17';
-const SHELL = ['./', './index.html', './app.js', './bridge.js', './logo.js', './polish.css', './apple.css', './dash.css', './motion.js', './install.js', './wa.js', './dash.js', './login.css', './login.js', './loading.css', './fx.css', './refine.css', './pro.css', './pro.js', './reports.js', './print.js', './books.js', './chat.js', './loginfx.js', './fx.js',
+const VERSION = 'pe-app-v18';
+const SHELL = ['./', './index.html', './app.js', './bridge.js', './logo.js', './polish.css', './apple.css', './dash.css', './motion.js', './install.js', './wa.js', './dash.js', './login.css', './login.js', './loading.css', './fx.css', './refine.css', './pro.css', './brand.css', './pro.js', './reports.js', './print.js', './books.js', './chat.js', './loginfx.js', './fx.js',
   './manifest.webmanifest', '../config.js', '../icons/icon-192.png', '../icons/icon-512.png', '../icons/favicon.png'];
 
 self.addEventListener('install', function (e) {

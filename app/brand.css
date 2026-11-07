@@ -1,0 +1,54 @@
+/* © 2026 Port Energy Private Limited. All rights reserved.
+   PORT ENERGY ERP - BRAND THEME (inside the app)
+   Built only from the four logo colours: teal #00B49C, blue #0084F0, navy #00249C, magenta #F0006C.
+   Loaded last so it wins over the older blue theme. */
+:root {
+  --pe-teal: #00B49C; --pe-blue: #0084F0; --pe-navy: #00249C; --pe-mag: #F0006C; --pe-deep: #00124F;
+  --pe-line: linear-gradient(90deg, #00B49C, #0084F0 38%, #00249C 62%, #F0006C);
+  --pe-btn: linear-gradient(100deg, #0084F0 0%, #00249C 52%, #F0006C 100%);
+}
+/* page: soft white with logo-colour glows */
+body { background: radial-gradient(900px 500px at 100% 0%, rgba(240, 0, 108, .07), transparent 60%), radial-gradient(800px 520px at 0% 100%, rgba(0, 180, 156, .09), transparent 60%), #F3F6FC !important; background-attachment: fixed !important; }
+
+/* sidebar: logo navy fading to deep magenta, brand stripe on the edge */
+html body .side { background: linear-gradient(185deg, #00249C 0%, #00175F 38%, #0A0E45 72%, #3B0036 100%) !important; }
+html body .side::after { content: ""; position: absolute; top: 0; right: 0; bottom: 0; width: 3px; background: linear-gradient(180deg, #00B49C, #0084F0 35%, #00249C 60%, #F0006C); opacity: .9; pointer-events: none; }
+.side .ng .ngh, .side .ngh { color: #5FE3CB !important; }
+.ni { transition: background .2s, color .2s, transform .15s !important; }
+.ni:hover { background: rgba(0, 180, 156, .14) !important; }
+.ni.on { background: linear-gradient(95deg, #F0006C 0%, #B0008A 45%, #0084F0 100%) !important; color: #fff !important; box-shadow: 0 10px 22px -10px rgba(240, 0, 108, .85), inset 0 1px 0 rgba(255, 255, 255, .25) !important; }
+.ni .ct, .ni .tc + .ct { background: #F0006C !important; color: #fff !important; }
+
+/* top bar: navy -> blue with the moving brand line */
+html body .top { background: linear-gradient(100deg, #00175F 0%, #00249C 45%, #0060D0 100%) !important; }
+html body .top::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: linear-gradient(90deg, #00B49C, #0084F0, #F0006C, #00B49C); background-size: 200% 100%; animation: peLine 8s linear infinite; }
+@keyframes peLine { to { background-position: 200% 0; } }
+.top { position: sticky; }
+.top .btn.soft { background: rgba(255, 255, 255, .12) !important; border: 1px solid rgba(255, 255, 255, .14) !important; }
+.top .aibtn { background: linear-gradient(100deg, #00B49C, #0084F0) !important; color: #fff !important; border: 0 !important; }
+
+/* buttons */
+.btn.primary { background: var(--pe-btn) !important; background-size: 160% 100% !important; background-position: 0 0 !important; color: #fff !important; border: 0 !important; box-shadow: 0 10px 22px -12px rgba(0, 36, 156, .8) !important; transition: background-position .4s, transform .15s, box-shadow .2s !important; }
+.btn.primary:hover { background-position: 100% 0 !important; box-shadow: 0 14px 28px -12px rgba(240, 0, 108, .7) !important; }
+.btn.soft { color: var(--pe-navy); }
+.chip.on, .chips .chip.on { background: var(--pe-navy) !important; color: #fff !important; border-color: var(--pe-navy) !important; }
+
+/* executive hero: navy to magenta */
+.dx-hero { background: radial-gradient(120% 160% at 0% 0%, #0060D0 0%, #00249C 38%, #00124F 70%, #4A0040 100%) !important; }
+.dx-hero::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--pe-line); z-index: 2; }
+
+/* KPI cards + panels: brand line on top, gentle lift */
+.kpi[data-dx] { position: relative; transition: transform .2s, box-shadow .2s !important; }
+.kpi[data-dx]::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--pe-line); opacity: .85; }
+.kpi[data-dx]:hover { transform: translateY(-3px); box-shadow: 0 18px 34px -18px rgba(0, 36, 156, .45) !important; }
+.panel > h3, .glass.panel > h3 { position: relative; }
+.panel > h3::after { content: ""; display: block; width: 44px; height: 3px; margin-top: 6px; border-radius: 3px; background: var(--pe-line); }
+.badge.b-pink { background: #F0006C !important; color: #fff !important; }
+
+/* phone bottom bar */
+.bnav button.on { color: #fff !important; background: linear-gradient(135deg, #F0006C, #0084F0) !important; box-shadow: 0 8px 18px -8px rgba(240, 0, 108, .8); }
+
+/* scrollbars */
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #0084F0, #F0006C) !important; border-radius: 8px; }
+::selection { background: rgba(240, 0, 108, .22); }
+@media (prefers-reduced-motion: reduce) { html body .top::before { animation: none; } }

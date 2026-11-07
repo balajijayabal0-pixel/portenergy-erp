@@ -28,6 +28,7 @@ var TCODE = { po: 'ME23N', pr: 'ME53N', quotes: 'ME49', grn: 'MB51', bills: 'MIR
 
 /* ---------------- icons ---------------- */
 var IC = {
+  grid: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>', list: '<path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/>',
   home: '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>', check: '<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
   users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18.5 14.5A6.5 6.5 0 0 1 21.5 20"/>',
   org: '<rect x="9" y="3" width="6" height="5" rx="1"/><rect x="3" y="16" width="6" height="5" rx="1"/><rect x="15" y="16" width="6" height="5" rx="1"/><path d="M12 8v4M6 16v-4h12v4"/>',
@@ -73,8 +74,9 @@ var LOADQ = ['Great things load step by step - just like great projects.', 'Tip:
 var LQI = Math.floor(Math.random() * 12);
 function loadLine() { LQI = (LQI + 1) % LOADQ.length; return LOADQ[LQI]; }
 function skeleton(el, rows) {
-  var h = ''; for (var i = 0; i < (rows || 6); i++) h += '<div class="sk skl" style="width:' + (60 + (i * 37) % 40) + '%"></div>';
-  el.innerHTML = '<div style="padding:22px"><div class="ldq"><span class="ldq-ic">&#10022;</span><span class="ldq-t">' + esc(loadLine()) + '</span></div>' + h + '</div>';
+  var n = Math.max(3, Math.min(6, rows || 6)), h = '';
+  for (var i = 0; i < n; i++) h += '<div class="pl-card" style="--i:' + i + '"><div class="pl-row"><i class="pl-av"></i><span><i class="pl-l" style="width:' + (55 + (i * 17) % 35) + '%"></i><i class="pl-l s" style="width:' + (30 + (i * 23) % 30) + '%"></i></span><i class="pl-pill"></i></div><i class="pl-l" style="width:' + (70 + (i * 11) % 25) + '%"></i></div>';
+  el.innerHTML = '<div class="pl-wrap"><div class="pl-head"><span class="pl-orb"><i></i><i></i><i></i><b></b></span><span class="pl-tx"><b class="ldq-t">' + esc(loadLine()) + '</b><span class="pl-flow"><i></i></span></span></div><div class="pl-grid">' + h + '</div></div>';
   var t = setInterval(function () { var s = el.querySelector('.ldq-t'); if (!s || !document.body.contains(s)) { clearInterval(t); return; } s.classList.remove('in'); void s.offsetWidth; s.textContent = loadLine(); s.classList.add('in'); }, 2300);
 }
 document.addEventListener('pointerdown', function (e) {
@@ -850,9 +852,10 @@ function list(v, key, presetStatus) {
   var extra = '';
   if (key === 'vendors' && ent('bills') && ent('bills').all) extra += '<button class="btn soft" id="ledBtn">' + icon('ledger', 16) + 'Ledger</button>';
   if (key === 'decisions') extra += '<button class="btn soft" id="regBtn">' + icon('print', 16) + 'Print register</button>';
-  v.innerHTML = '<div class="lhead"><p>' + esc(e.all ? 'All records' : (e.self ? 'Your records and your team' : 'Your department')) + '</p>' +
-    '<div class="tools"><div class="search">' + icon('search', 16) + '<input id="q" placeholder="Filter this list" value="' + esc(st.q) + '"></div>' +
-    (e.dateField ? '<input type="date" class="in" id="from" value="' + st.from + '" title="From"><input type="date" class="in" id="to" value="' + st.to + '" title="To">' : '') +
+  v.innerHTML = '<div class="lhero"><span class="lh-ic">' + icon(e.icon || 'box', 24) + '</span><div class="lh-tx"><h2>' + esc(e.title) + '</h2><p><b id="lhN">' + ((S.cache[key] || []).length || '') + '</b> ' + esc(e.all ? 'records · everyone' : (e.self ? 'records · you and your team' : 'records · your department')) + '</p></div>' +
+    '<div class="pe-vt" id="vt" role="tablist"><button data-vm="cards" title="Card view">' + icon('grid', 16) + '</button><button data-vm="table" title="Table view">' + icon('list', 16) + '</button></div></div>' +
+    '<div class="lhead"><div class="tools"><div class="search">' + icon('search', 16) + '<input id="q" placeholder="Search ' + esc(e.title.toLowerCase()) + '…" value="' + esc(st.q) + '"></div>' +
+    (e.dateField ? '<label class="pe-dt"><span>From</span><input type="date" class="in" id="from" value="' + st.from + '"></label><label class="pe-dt"><span>To</span><input type="date" class="in" id="to" value="' + st.to + '"></label>' : '') +
     extra + ((!window.PE_CANDL || window.PE_CANDL()) ? '<button class="btn soft" id="csvBtn">' + icon('down', 16) + 'Export</button>' : '') +
     (e.canCreate ? '<button class="btn primary" id="newBtn" title="Alt+N">' + icon('plus', 16) + 'New</button>' : '') + '</div></div>' +
     '<div class="chips status-chips" id="chips"></div><div class="glass" id="tbl"></div>';
@@ -880,6 +883,8 @@ function list(v, key, presetStatus) {
     var rows = filtered();
     if (!rows.length) { $('tbl').innerHTML = '<div class="empty"><b>' + (all.length ? 'No matching records' : 'No ' + esc(e.title.toLowerCase()) + ' yet') + '</b>' + (e.canCreate && !all.length ? 'Press New (Alt+N) to add the first one.' : 'Try a different search or filter.') + '</div>'; return; }
     if (key === 'photos') return gallery(rows);
+    if ($('lhN')) $('lhN').textContent = all.length;
+    if (viewMode(e) === 'cards') return cards(rows);
     var cols = e.list.map(function (k) { return colDef(e, k); }), so = S.sort[key];
     var sums = {}; cols.forEach(function (c) { if (isMoney(c)) sums[c.k] = 0; });
     var body = rows.slice(0, 400).map(function (r, i) {
@@ -892,7 +897,13 @@ function list(v, key, presetStatus) {
     $('tbl').querySelectorAll('tr[data-id]').forEach(function (tr) { tr.onclick = function () { openDetail(key, tr.dataset.id); }; });
     $('tbl').querySelectorAll('th[data-sort]').forEach(function (th) { th.onclick = function () { var c = S.sort[key]; S.sort[key] = { k: th.dataset.sort, d: c && c.k === th.dataset.sort ? -c.d : 1 }; draw(); }; });
   }
-  function gallery(rows) {
+  function cards(rows) {
+    var cols = e.list.map(function (k) { return colDef(e, k); });
+    $('tbl').innerHTML = '<div class="rcg">' + rows.slice(0, 300).map(function (r, i) { return recCard(e, r, i, cols); }).join('') + '</div>' +
+      (rows.length > 300 ? '<p class="note" style="padding:8px 16px">Showing 300 of ' + rows.length + '. Use search or dates to narrow.</p>' : '');
+    $('tbl').querySelectorAll('.rc[data-id]').forEach(function (c) { c.onclick = function () { openDetail(key, c.dataset.id); }; });
+  }
+    function gallery(rows) {
     $('tbl').innerHTML = '<div style="padding:18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px">' + rows.slice(0, 200).map(function (r, i) {
       var f = (r.files || [])[0];
       return '<div class="sec" style="padding:0;overflow:hidden;cursor:pointer;margin:0;animation-delay:' + Math.min(i, 16) * 30 + 'ms" data-id="' + esc(r.id) + '"><div style="aspect-ratio:4/3;background:#E9EEF8">' + (f ? '<img loading="lazy" src="' + thumb(f, 500) + '" style="width:100%;height:100%;object-fit:cover" alt="">' : '') + '</div>' +
@@ -900,6 +911,9 @@ function list(v, key, presetStatus) {
     }).join('') + '</div>';
     $('tbl').querySelectorAll('[data-id]').forEach(function (c) { c.onclick = function () { openDetail(key, c.dataset.id); }; });
   }
+  var vtSet = function () { var m = viewMode(e); v.querySelectorAll('#vt [data-vm]').forEach(function (b) { b.classList.toggle('on', b.dataset.vm === m); }); $('tbl').classList.toggle('rc-on', m === 'cards'); };
+  v.querySelectorAll('#vt [data-vm]').forEach(function (b) { b.onclick = function () { store.set('pe_vm_' + key, b.dataset.vm); vtSet(); draw(); }; });
+  vtSet();
   $('q').oninput = debounce(function () { st.q = $('q').value; draw(); }, 120);
   if ($('from')) { $('from').onchange = function () { st.from = this.value; draw(); }; $('to').onchange = function () { st.to = this.value; draw(); }; }
   if ($('newBtn')) $('newBtn').onclick = function () { openForm(key); };
@@ -908,6 +922,42 @@ function list(v, key, presetStatus) {
   if ($('csvBtn')) $('csvBtn').onclick = function () { exportCsv(e, filtered()); };
   S.reloadList = load; S.redrawList = function () { if ($('tbl')) draw(); };
   load();
+}
+
+/* ---------- premium record cards (list pages) ---------- */
+var RC_COL = ['#0084F0', '#F0006C', '#00B49C', '#6F42C1', '#E8590C', '#0CA678', '#C2255C', '#1C7ED6', '#D9480F', '#2B8A3E'];
+function nameCol(n) { var h = 7; String(n || '').split('').forEach(function (c) { h = (h * 37 + c.charCodeAt(0)) >>> 0; }); return RC_COL[h % RC_COL.length]; }
+function viewMode(e) {
+  var m = store.get('pe_vm_' + e.key); if (m === 'cards' || m === 'table') return m;
+  if (e.key === 'photos') return 'table';
+  if (window.innerWidth <= 900) return 'cards';
+  var money = e.list.filter(function (k) { return isMoney(colDef(e, k)); }).length;
+  return money && e.list.length > 5 ? 'table' : 'cards';
+}
+function recCard(e, r, i, cols) {
+  var used = { id: 1, status: 1 }, title = null, people = [], dates = [], money = [], tags = [];
+  cols.forEach(function (c) {
+    if (used[c.k]) return; var v = r[c.k]; if (v === '' || v == null || (Array.isArray(v) && !v.length)) return;
+    if (c.t === 'ref' && c.ref === 'users') people.push({ c: c, v: v });
+    else if (c.t === 'date' || c.k === 'lastDate') dates.push({ c: c, v: v });
+    else if (isMoney(c)) money.push({ c: c, v: v });
+    else if (!title && c.t !== 'number' && c.t !== 'auto') title = { c: c, v: v };
+    else tags.push({ c: c, v: v });
+  });
+  var st = r.status || '', cls = st ? statusCls(st) : '', over = statusExtra(e, r);
+  var tt = title ? (Array.isArray(title.v) ? title.v.join(', ') : String(title.v)) : r.id;
+  var ppl = people.slice(0, 3).map(function (p) {
+    var names = Array.isArray(p.v) ? p.v : String(p.v).split(/\s*,\s*/);
+    return '<span class="rc-p" title="' + esc(p.c.l) + '"><span class="rc-avs">' + names.slice(0, 4).map(function (n) { return '<i style="background:' + nameCol(n) + '">' + esc(initials(n)) + '</i>'; }).join('') + '</span><span><small>' + esc(p.c.l) + '</small><b>' + esc(names.join(', ')) + '</b></span></span>';
+  }).join('');
+  var dts = dates.slice(0, 2).map(function (d) { var late = e.dueField === d.c.k && /Overdue/.test(over); return '<span class="rc-d' + (late ? ' late' : '') + '">' + icon('calendar', 13) + '<small>' + esc(d.c.l) + '</small> ' + fdate(d.v) + '</span>'; }).join('');
+  var tg = tags.slice(0, 3).map(function (t) { return '<span class="rc-tag"><small>' + esc(t.c.l) + '</small>' + fval(t.c, t.v) + '</span>'; }).join('');
+  var amt = money.length ? '<span class="rc-amt"><small>' + esc(money[0].c.l) + '</small>' + inr(money[0].v) + '</span>' : '';
+  return '<div class="rc click ' + cls + '" data-id="' + esc(r.id) + '" style="--i:' + Math.min(i, 18) + ';--rc:' + nameCol(e.key) + '">' +
+    '<div class="rc-top"><span class="rc-ic">' + icon(e.icon || 'box', 18) + '</span><div class="rc-t"><b>' + esc(tt) + '</b><small>' + esc(r.id) + '</small></div><div class="rc-st">' + (st ? badge(st) : '') + over.replace(/<div[^>]*>.*<\/div>/, '') + '</div></div>' +
+    (tg ? '<div class="rc-tags">' + tg + '</div>' : '') +
+    ((ppl || dts || amt) ? '<div class="rc-bot">' + (ppl ? '<div class="rc-ppl">' + ppl + '</div>' : '') + '<div class="rc-meta">' + dts + amt + '</div></div>' : '') +
+    '</div>';
 }
 function exportCsv(e, rows) {
   if (!rows.length) return toast('Nothing to export.', true);
@@ -1480,7 +1530,14 @@ function saveForm(btn, then) {
   busy(btn, true, 'Saving');
   var other = $('fSubmit') && btn !== $('fSubmit') ? $('fSubmit') : $('fSave'); if (other) other.disabled = true;
   var key = F.key;
+  var multi = F.multi && F.multi.k && F.multi.names.length > 1 ? F.multi : null;
   call('saveRecord', S.token, key, data).then(function (res) {
+    if (res && !res.offline && multi) {
+      return Promise.all(multi.names.slice(1).map(function (n) { var d = {}; Object.keys(data).forEach(function (k) { if (k !== 'id') d[k] = data[k]; }); d[multi.k] = n; return call('saveRecord', S.token, key, d); })).then(function (more) {
+        closeDrawer(); toast('Assigned to ' + multi.names.length + ' people: ' + [res.id].concat(more.map(function (m) { return m && m.id; })).filter(String).join(', '));
+        S.cache[key] = null; if (S.reloadList && S.route.k === key) S.reloadList(); if (S.route.v === 'home') refreshBoot();
+      });
+    }
     if (res && res.offline) { if (then && window.PE_QUEUE_THEN) window.PE_QUEUE_THEN(res.qid, then); closeDrawer(); toast('No internet - saved on this device. It uploads automatically when you are online.'); return; }
     var done = function (msg) { closeDrawer(); toast(msg); S.cache[key] = null; if (S.reloadList && S.route.k === key) S.reloadList(); refreshOpts(); openDetail(key, res.id); if (S.route.v === 'home') refreshBoot(); };
     if (then) return call('doAction', S.token, key, res.id, then, {}).then(function () { done(res.id + (then === 'post' ? ' posted.' : ' submitted.')); }).catch(function (x) { done(res.id + ' saved as draft. ' + x.message); });

@@ -78,7 +78,7 @@
   window.PE_LOCKED = function (v, key) {
     P().setTitle(catTitle(key), 'Access needed');
     var sa = superAdmins();
-    v.innerHTML = '<div class="pe-deny"><div class="pe-deny-ic">' + ic('lock', 34) + '</div>' +
+    v.innerHTML = '<div class="pe-deny pe-deny2"><div class="pe-guard"><span class="pe-guard-ring"></span><img src="img/guard.webp" alt=""><span class="pe-guard-lock">' + ic('lock', 18) + '</span></div>' +
       '<h2>You are not authorised to view ' + esc(catTitle(key)) + '</h2>' +
       '<p>This section is open only to people the Super Admin has given access. Your data is safe and nothing here was loaded.</p>' +
       '<div class="pe-deny-box"><b>How to get access</b><span>Ask your Super Admin' + (sa.length ? ' (' + esc(sa.join(', ')) + ')' : '') + ' to tick <em>' + esc(catTitle(key)) + '</em> for you in Users &amp; Access.</span></div>' +

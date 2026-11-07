@@ -106,7 +106,7 @@
     var exec = u.admin || (u.role && u.role !== 'Staff');
     var nm = String(u.name || '').split(' ').slice(-1)[0];
     var hr = t.getHours(), g = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
-    return '<section class="dx-hero">' + ART +
+    return '<section class="dx-hero">' + ART + '<i class="dx-shine"></i>' +
       '<div class="dx-hl"><div class="dx-eye">' + (exec ? 'Executive dashboard' : 'My dashboard') + '</div>' +
       '<h2>' + (exec ? 'Company Operations Overview' : g + (nm ? ', ' + esc(nm) : '')) + '</h2>' +
       '<p>' + ico('clock', 15) + ' ' + DAY[t.getDay()] + ', ' + ('0' + t.getDate()).slice(-2) + ' ' + MON[t.getMonth()] + ' ' + t.getFullYear() + ' <i></i> Chennai, TN' + (exec && nm ? ' <i></i> ' + g + ', ' + esc(nm) : '') + '</p>' +

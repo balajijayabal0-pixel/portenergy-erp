@@ -171,7 +171,7 @@ var hqLast = -1, hqT = null;
 function pickHQ() { var n; do { n = Math.floor(Math.random() * HQ.length); } while (n === hqLast && HQ.length > 1); hqLast = n; return HQ[n]; }
 function startHQ() { clearInterval(hqT); var nx = function () { var t = $('hQt'); if (!t) { clearInterval(hqT); return; } t.classList.remove('qin'); void t.offsetWidth; t.textContent = pickHQ(); t.classList.add('qin'); }; hqT = setInterval(nx, 15000); }
 /* Text boxes: start small (2 lines) and grow with what is typed */
-function fitTA(t) { if (!t || t.id === 'aiIn') return; t.style.height = 'auto'; t.style.height = Math.min(t.scrollHeight + 2, Math.round(window.innerHeight * 0.5)) + 'px'; }
+function fitTA(t) { if (!t || t.id === 'aiIn' || t.id === 'peChIn') return; t.style.height = 'auto'; t.style.height = Math.min(t.scrollHeight + 2, Math.round(window.innerHeight * 0.5)) + 'px'; }
 document.addEventListener('input', function (e) { if (e.target && e.target.tagName === 'TEXTAREA') fitTA(e.target); }, true);
 (function () { var go = function () { new MutationObserver(function () { document.querySelectorAll('textarea:not([data-fit])').forEach(function (t) { t.setAttribute('data-fit', '1'); if (t.id === 'aiIn') return; t.setAttribute('rows', '2'); requestAnimationFrame(function () { fitTA(t); }); }); }).observe(document.body, { childList: true, subtree: true }); }; if (document.body) go(); else document.addEventListener('DOMContentLoaded', go); })();
 function dayQ() { var d = new Date(), n = d.getFullYear() * 400 + d.getMonth() * 31 + d.getDate(); return WQ[n % WQ.length]; }

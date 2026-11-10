@@ -41,7 +41,7 @@
     }
     function sync() { if (mode === 'clone') { F.multi.names = sel.slice(); setField(k, sel[0] || ''); } else setField(k, sel.join(', ')); draw(); }
     $('mpQ').oninput = draw;
-    $('mpTeam').onclick = function () { var t = (P().S.sess && P().S.sess.user && P().S.sess.user.team) || []; t.forEach(function (n) { if (sel.indexOf(n) < 0) sel.push(n); }); if (!t.length) P().toast('No team members found for you.'); sync(); };
+    $('mpTeam').onclick = function () { var t = (P().S.sess && P().S.sess.user && P().S.sess.user.myTeam) || []; t.forEach(function (n) { if (sel.indexOf(n) < 0) sel.push(n); }); if (!t.length) P().toast('No team members found for you.'); sync(); };
     draw();
   }
 

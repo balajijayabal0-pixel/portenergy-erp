@@ -66,6 +66,37 @@
   window.addEventListener('storage', function (e) { if (e.key === 'pe_lgmode') applyTheme(); });
   document.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('#lgMode')) setTimeout(applyTheme, 30); }, true);
 
+  /* ---------- saved My Team ---------- */
+  function myTeamButton() {
+    if ($('peMyTeam')) return;
+    var ai = $('refreshBtn'); if (!ai) return;
+    ai.insertAdjacentHTML('beforebegin', '<button class="pe-dn" id="peMyTeam" aria-label="Manage My Team" title="Manage My Team">👥</button>');
+    $('peMyTeam').onclick = function () {
+      var token = P().S.token, me = P().S.sess.user, host = document.createElement('div');
+      host.className = 'modal'; host.innerHTML = '<div class="modal-in" style="max-width:620px"><div class="mh"><h3>My Team</h3><button class="x" aria-label="Close">×</button></div><div class="note">Choose active employees for quick access. This does not change reporting lines.</div><div class="note" id="mtLoading">Loading…</div></div>';
+      document.body.appendChild(host);
+      function close() { host.remove(); }
+      host.querySelector('.x').onclick = close;
+      host.onclick = function (e) { if (e.target === host) close(); };
+      P().call('teamGet', token, me.id).then(function (data) {
+        var selected = {}; (data.members || []).forEach(function (p) { selected[p.id] = 1; });
+        var list = (data.users || []).map(function (p) {
+          return '<label class="mp-o" style="display:flex;align-items:center;gap:10px"><input type="checkbox" value="' + esc(p.id) + '"' + (selected[p.id] ? ' checked' : '') + '><span><b>' + esc(p.name) + '</b><small>' + esc([p.empNo, p.designation, p.dept].filter(Boolean).join(' · ')) + '</small></span></label>';
+        }).join('') || '<p class="note">No eligible employees found.</p>';
+        host.querySelector('.modal-in').innerHTML = '<div class="mh"><h3>My Team</h3><button class="x" aria-label="Close">×</button></div><div class="note">Saved people appear in <b>+ My team</b>. Reporting hierarchy is unchanged.</div><input class="in" id="mtFind" placeholder="Search employees…" style="margin:10px 0"><div id="mtChoices" style="max-height:360px;overflow:auto">' + list + '</div><div class="mfoot"><button class="btn" id="mtCancel">Cancel</button><button class="btn primary" id="mtSave">Save My Team</button></div>';
+        host.querySelector('.x').onclick = host.querySelector('#mtCancel').onclick = close;
+        host.querySelector('#mtFind').oninput = function () { var q = this.value.toLowerCase(); host.querySelectorAll('#mtChoices label').forEach(function (el) { el.style.display = el.textContent.toLowerCase().indexOf(q) > -1 ? 'flex' : 'none'; }); };
+        host.querySelector('#mtSave').onclick = function () {
+          var b = this, ids = Array.prototype.map.call(host.querySelectorAll('#mtChoices input:checked'), function (el) { return el.value; });
+          P().busy(b, true); P().call('teamSave', token, me.id, ids).then(function (out) {
+            P().S.sess.user.myTeam = (out.members || []).map(function (p) { return p.name; });
+            P().toast('My Team saved.'); close();
+          }).catch(function (e) { P().busy(b, false); P().fail(e); });
+        };
+      }).catch(function (e) { host.querySelector('#mtLoading').textContent = e.message || 'Could not load My Team.'; });
+    };
+  }
+
   /* ---------- mail settings: send each mail type only to chosen people ---------- */
   window.PE_MAILTO = function (el) {
     el.innerHTML = '<h3 style="margin:0 0 4px">Who receives each mail</h3><p class="note">Leave a mail type on <b>Usual people</b>, or pick exact people - then only they get that mail.</p><div class="note">Loading…</div>';
@@ -104,6 +135,6 @@
     var w = document.querySelector('#welcome .wel-in'); if (!w || w.querySelector('.md')) return;
     w.insertAdjacentHTML('afterbegin', mdCard('md-wel'));
   }
-  new MutationObserver(function () { addHero(); dnButton(); }).observe(document.documentElement, { childList: true, subtree: true });
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', addWelcome); else addWelcome();
+  new MutationObserver(function () { addHero(); dnButton(); myTeamButton(); }).observe(document.documentElement, { childList: true, subtree: true });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', addWelcome); else addWelcome();\n  myTeamButton();
 })();

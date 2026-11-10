@@ -354,3 +354,28 @@
 .fadd.pe-up.busy .pe-up-c b { font-size: 0; } .fadd.pe-up.busy .pe-up-c b::after { content: "Adding…"; font-size: 11px; }
 .fadd.pe-up.busy .pe-up-c svg { animation: peArrow .5s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .pe-up-l i, .pe-up-b i, .pe-up-c svg { animation: none !important; } }
+
+/* ---------- My Team page ---------- */
+.pe-team { max-width: 640px; }
+.pe-team-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--pe-line); }
+.pe-team-lbl { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13.5px; color: var(--pe-ink); white-space: nowrap; }
+.pe-team-sel { flex: 1; min-width: 180px; max-width: 320px; }
+.pe-team-chips { display: flex; flex-wrap: wrap; gap: 8px; min-height: 36px; padding: 8px 0; }
+.pe-team-chips .mp-chip { font-size: 13.5px; }
+.pe-team-chips .mp-none { color: var(--pe-slate); font-size: 13px; font-style: italic; }
+.pe-team-add { position: relative; margin-top: 4px; }
+.pe-team-add .in { width: 100%; }
+.pe-team-list { display: flex; flex-direction: column; gap: 2px; margin-top: 6px; max-height: 320px; overflow-y: auto; }
+.pe-team-list .mp-o { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border: none; border-radius: 8px; background: none; cursor: pointer; text-align: left; font: inherit; width: 100%; transition: background .15s; }
+.pe-team-list .mp-o:hover { background: rgba(0, 132, 240, .08); }
+.pe-team-list .mp-o i { width: 32px; height: 32px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: #fff; font-style: normal; font-weight: 700; font-size: 12px; flex: none; }
+.pe-team-list .mp-o span { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.pe-team-list .mp-o b { font-size: 13.5px; font-weight: 600; }
+.pe-team-list .mp-o small { font-size: 12px; color: var(--pe-slate); }
+.pe-team-list .mp-o em { font-style: normal; font-size: 18px; color: var(--pe-blue); font-weight: 700; opacity: .6; }
+.pe-team-list .mp-o:hover em { opacity: 1; }
+.pe-team-empty { padding: 12px; text-align: center; color: var(--pe-slate); font-size: 13px; }
+.pe-team-ct { font-size: 13px; color: var(--pe-slate); margin-left: 8px; }
+.pe-dark .pe-team-list .mp-o:hover { background: rgba(0, 132, 240, .15); }
+.pe-dark .pe-team-chips .mp-none { color: #8892B4; }
+.pe-dark .pe-team-top { border-bottom-color: rgba(255,255,255,.1); }

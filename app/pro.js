@@ -65,11 +65,13 @@
     rh.insertAdjacentHTML('beforeend', navBtn(' data-v="reports"', 'ledger', 'Reports', '<span class="tc">Alt R</span>') +
       (have.matitems || have.matmoves ? navBtn(' data-v="matstatus"', 'pulse', 'Material status board') : '') +
       navBtn(' data-v="help"', 'shield', 'Help & user guide', '<span class="tc">Alt G</span>'));
+    /* My Team - available to everyone */
+    var sys = groupEl('System');
+    sys.insertAdjacentHTML('beforeend', navBtn(' data-v="myteam"', 'users', 'My Team'));
     if (admin()) {
-      var sys = groupEl('System');
       sys.insertAdjacentHTML('beforeend', navBtn(' data-v="uphotos"', 'camera', 'User photos') + navBtn(' data-v="mailsw"', 'mail', 'Mail settings') + navBtn(' data-v="repacl"', 'key', 'Report access') + navBtn(' data-v="bookser"', 'ledger', 'Book serial numbers'));
     }
-    $('nav').querySelectorAll('.ni[data-lock], .ni[data-v="reports"], .ni[data-v="matstatus"], .ni[data-v="help"], .ni[data-v="uphotos"], .ni[data-v="mailsw"], .ni[data-v="repacl"], .ni[data-v="bookser"]').forEach(function (b) {
+    $('nav').querySelectorAll('.ni[data-lock], .ni[data-v="reports"], .ni[data-v="matstatus"], .ni[data-v="help"], .ni[data-v="myteam"], .ni[data-v="uphotos"], .ni[data-v="mailsw"], .ni[data-v="repacl"], .ni[data-v="bookser"]').forEach(function (b) {
       b.onclick = function () { P().closeSide(); if (b.dataset.lock) P().go({ v: 'list', k: b.dataset.lock }); else P().go({ v: b.dataset.v }); };
     });
     P().markNav();
@@ -282,6 +284,102 @@
       '<div class="mfoot" style="justify-content:flex-start"><button class="btn primary" id="bkSave">Save</button></div></div>';
     $('bkSave').onclick = function () { var o = {}, b = this; v.querySelectorAll('[data-b]').forEach(function (i) { o[i.dataset.b] = i.value; }); P().busy(b, true); P().call('bookSerialSave', tok(), o).then(function (r) { drawBook(v, r); P().toast('Serial numbers saved.'); }).catch(function (e) { P().busy(b, false); P().fail(e); }); };
   }
+  /* ================================================================
+     8. MY TEAM – let any user define their team members
+     Admin can manage teams for all users.
+     ================================================================ */
+  function teamPage(v) {
+    P().setTitle('My Team', 'Choose your team members for quick task assignment');
+    P().skeleton(v, 6);
+    var isAdm = admin();
+    var me = sess().user.name;
+    P().call('teamGet', tok(), isAdm ? null : me).then(function (d) { drawTeam(v, d, isAdm); }).catch(function (e) { v.innerHTML = '<div class="empty"><b>Could not load</b>' + esc(e.message) + '</div>'; });
+  }
+
+  function drawTeam(v, d, isAdm) {
+    var COL = ['#0084F0', '#F0006C', '#00B49C', '#6F42C1', '#E8590C', '#0CA678', '#C2255C', '#1C7ED6'];
+    function col(n) { var h = 7; String(n).split('').forEach(function (c) { h = (h * 37 + c.charCodeAt(0)) >>> 0; }); return COL[h % COL.length]; }
+    var users = d.users || [];
+    var forUser = d.name;
+    var sel = (d.team || []).slice();
+
+    var h = '<div class="glass panel pe-team">';
+    // Admin: user selector at top
+    if (isAdm) {
+      h += '<div class="pe-team-top"><label class="pe-team-lbl">' + ic('users', 16) + ' Manage team for:</label>' +
+        '<select class="in pe-team-sel" id="tmFor">' + users.map(function (u) {
+          return '<option value="' + esc(u.n) + '"' + (u.n === forUser ? ' selected' : '') + '>' + esc(u.n) + (u.d ? ' - ' + esc(u.d) : '') + '</option>';
+        }).join('') + '</select></div>';
+    }
+    h += '<h3 style="margin:4px 0 2px">' + esc(isAdm ? forUser + '\'s team' : 'My team') + '</h3>' +
+      '<p class="note" style="margin:0 0 12px">People listed here are added when you tap <b>+ My team</b> on any task or approval form.</p>';
+
+    // chips for selected members
+    h += '<div class="pe-team-chips" id="tmChips">' + (sel.length ? sel.map(function (n) {
+      return '<span class="mp-chip"><i style="background:' + col(n) + '">' + esc(P().initials(n)) + '</i>' + esc(n) + '<button type="button" data-rm="' + esc(n) + '" title="Remove">×</button></span>';
+    }).join('') : '<span class="mp-none">No team members yet</span>') + '</div>';
+
+    // search + add
+    h += '<div class="pe-team-add"><input class="in" id="tmQ" placeholder="Type a name to add…" autocomplete="off"><div class="pe-team-list" id="tmList"></div></div>';
+
+    h += '<div class="mfoot" style="justify-content:flex-start;margin-top:14px"><button class="btn primary" id="tmSave">' + ic('check', 15) + ' Save team</button>' +
+      '<span class="note pe-team-ct" id="tmCt">' + sel.length + ' member' + (sel.length !== 1 ? 's' : '') + '</span></div></div>';
+
+    v.innerHTML = h;
+
+    function drawList() {
+      var q = $('tmQ').value.trim().toLowerCase();
+      var list = users.filter(function (u) { return u.n !== forUser && sel.indexOf(u.n) < 0 && (!q || u.n.toLowerCase().indexOf(q) > -1 || (u.d + ' ' + u.dept).toLowerCase().indexOf(q) > -1); }).slice(0, q ? 12 : 8);
+      $('tmList').innerHTML = list.map(function (u) {
+        return '<button type="button" class="mp-o" data-add="' + esc(u.n) + '"><i style="background:' + col(u.n) + '">' + esc(P().initials(u.n)) + '</i><span><b>' + esc(u.n) + '</b><small>' + esc([u.d, u.dept].filter(String).join(' · ')) + '</small></span><em>+</em></button>';
+      }).join('') + (!list.length && q ? '<div class="pe-team-empty">No match for "' + esc(q) + '"</div>' : '');
+      $('tmList').querySelectorAll('[data-add]').forEach(function (b) {
+        b.onclick = function () { sel.push(b.dataset.add); $('tmQ').value = ''; refresh(); $('tmQ').focus(); };
+      });
+    }
+
+    function refresh() {
+      // re-draw chips
+      $('tmChips').innerHTML = sel.length ? sel.map(function (n) {
+        return '<span class="mp-chip"><i style="background:' + col(n) + '">' + esc(P().initials(n)) + '</i>' + esc(n) + '<button type="button" data-rm="' + esc(n) + '" title="Remove">×</button></span>';
+      }).join('') : '<span class="mp-none">No team members yet</span>';
+      $('tmChips').querySelectorAll('[data-rm]').forEach(function (b) {
+        b.onclick = function () { sel = sel.filter(function (x) { return x !== b.dataset.rm; }); refresh(); };
+      });
+      $('tmCt').textContent = sel.length + ' member' + (sel.length !== 1 ? 's' : '');
+      drawList();
+    }
+
+    // wire events
+    $('tmQ').oninput = drawList;
+    $('tmChips').querySelectorAll('[data-rm]').forEach(function (b) {
+      b.onclick = function () { sel = sel.filter(function (x) { return x !== b.dataset.rm; }); refresh(); };
+    });
+    drawList();
+
+    // admin user switch
+    if (isAdm && $('tmFor')) {
+      $('tmFor').onchange = function () {
+        P().skeleton(v, 6);
+        P().call('teamGet', tok(), this.value).then(function (d2) { drawTeam(v, d2, true); }).catch(function (e) { P().toast(e.message, true); });
+      };
+    }
+
+    // save
+    $('tmSave').onclick = function () {
+      var btn = this;
+      P().busy(btn, true);
+      P().call('teamSave', tok(), forUser, sel).then(function (r) {
+        // update session team if saving own team
+        if (forUser === sess().user.name) {
+          sess().user.team = r.team;
+        }
+        drawTeam(v, r, isAdm);
+        P().toast('Team saved for ' + r.name + '.');
+      }).catch(function (e) { P().busy(btn, false); P().fail(e); });
+    };
+  }
+
   /* expose for reports.js */
   window.PE_PRO = { esc: esc, ic: ic, admin: admin, tok: tok, rep: function () { return REP; }, catTitle: catTitle, squash: squash, pickPhoto: pickPhoto, photo: function () { return myPh; } };
 
@@ -291,4 +389,5 @@
   window.PE_VIEWS.mailcfg = mailPage;      // old "Daily report mail" item opens the new settings too
   window.PE_VIEWS.repacl = repAclPage;
   window.PE_VIEWS.bookser = bookPage;
+  window.PE_VIEWS.myteam = teamPage;
 })();

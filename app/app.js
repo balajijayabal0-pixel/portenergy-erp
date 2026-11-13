@@ -1070,7 +1070,7 @@ function renderDetail(e, res) {
   var acts = res.actions.map(function (a) { return '<button class="btn ' + (a.style === 'primary' ? 'primary' : a.style === 'danger' ? 'danger' : 'soft') + '" data-a="' + a.k + '">' + esc(a.l) + '</button>'; });
   var can = function (k) { return ent(k) && ent(k).canCreate; };
   if (res.canEdit) acts.push('<button class="btn soft" data-edit>Edit</button>');
-  if (e.key === 'pr' && r.status === 'Approved') { if (can('po')) acts.push('<button class="btn primary" data-mk="po">Create PO</button>'); if (can('quotes')) acts.push('<button class="btn soft" data-mk="quotes">Compare quotations</button>'); }
+  if (e.key === 'pr' && r.status === 'Approved') { if (can('po')) acts.push('<button class="btn primary" data-mk="po">Convert to Order</button>'); if (can('quotes')) acts.push('<button class="btn soft" data-mk="quotes">Compare quotations</button>'); }
   if (e.key === 'quotes' && r.status === 'Open' && can('po') && r.l1Vendor) acts.push('<button class="btn primary" data-mk="poL1">Create PO from L1 · ' + esc(r.l1Vendor) + '</button>');
   if (e.key === 'po' && can('po')) acts.push('<button class="btn soft" data-mk="copy">' + icon('copy', 15) + 'Copy as new PO</button>');
   if (e.key === 'po' && ['Approved', 'Sent to Vendor', 'Partially Received'].indexOf(r.status) > -1 && can('grn')) acts.push('<button class="btn soft" data-mk="grn">Receive goods (MIGO)</button>');
@@ -1078,7 +1078,7 @@ function renderDetail(e, res) {
   if (e.key === 'bills' && ['Verified', 'Partially Paid'].indexOf(r.status) > -1 && num(r.balance) > 0 && can('payments')) acts.push('<button class="btn soft" data-mk="payments">Request payment</button>');
   if (e.key === 'vendors') { if (can('po')) acts.push('<button class="btn primary" data-mk="poV">New PO for vendor</button>'); if (ent('bills') && ent('bills').all) acts.push('<button class="btn soft" data-led>' + icon('ledger', 15) + 'Ledger</button>'); }
   if (e.key === 'users' && S.sess.user.admin) acts.push('<button class="btn soft" data-upin>' + icon('key', 15) + 'Set PIN</button><button class="btn soft" data-pinreset>Reset PIN</button>');
-  acts.push('<button class="btn soft" data-print>' + icon('print', 16) + (e.key === 'po' ? 'Print PO' : e.key === 'quotes' ? 'Print comparison' : e.key === 'approvals' ? 'Print approval note' : e.key === 'notices' ? 'Print circular' : 'Print') + '</button>');
+  acts.push('<button class="btn soft" data-print>' + icon('print', 16) + (e.key === 'po' ? 'Print order' : e.key === 'quotes' ? 'Print comparison' : e.key === 'approvals' ? 'Print approval note' : e.key === 'notices' ? 'Print circular' : 'Print') + '</button>');
   if (res.canDelete) acts.push('<button class="btn danger" data-del>Delete</button>');
 
   var body = '<div class="acts">' + acts.join('') + '</div>';
@@ -1204,7 +1204,7 @@ function defVal(f) {
   if (String(d).indexOf('T:') === 0) return (S.sess.config.poTerms || {})[d.slice(2)] || '';
   return d;
 }
-function lockedField(e, f) { if (f.ro) return true; if (e.self && !e.perm && (f.k === e.ownerField || f.k === 'department')) return true; return false; }
+function lockedField(e, f) { if (f.ro || f.lock) return true; if (e.self && !e.perm && (f.k === e.ownerField || f.k === 'department')) return true; return false; }
 function openForm(key, rec, preset) {
   var e = ent(key); if (!e) return toast('No access.', true);
   var isNew = !rec, r = {};
@@ -1288,6 +1288,7 @@ function onFieldChange(k) {
   if (key === 'bills' && (k === 'tdsPct' || k === 'taxable')) { if (num(r.tdsPct) > 0) setField('tds', r2(num(r.taxable) * num(r.tdsPct) / 100)); }
   if (key === 'payments' && k === 'billRef') { var b = findOpt('payableBills', r.billRef); if (b) { setField('vendor', b.vendor); setField('amount', r2(b.balance)); assistVendor(b.vendor); } }
   if (key === 'quotes' && /^vendor\d$/.test(k)) renderLines();
+  if (window.PE_FIELD_CHANGE) try { PE_FIELD_CHANGE(F, k, setField, setHint); } catch (x) { }
   if (key === 'approvals' && k === 'toName') { var uo = findOpt('users', r.toName); if (uo) { r.toDept = uo.dept || ''; r.toDesg = uo.des || ''; setHint('toName', esc((uo.des || '') + (uo.dept ? ' · ' + uo.dept : '')), 'ok'); } }
   refreshRoute();
 }
@@ -1669,7 +1670,7 @@ function sysPage(v) {
   setTitle('System admin', 'System · health & diagnostics');
   if (!S.sess.user.admin) { v.innerHTML = '<div class="empty"><b>Super Admin only</b></div>'; return; }
   skeleton(v, 10);
-  call('getSystemStatus', S.token).then(function (d) { drawSys(v, d); }).catch(function (x) { v.innerHTML = '<div class="empty"><b>Could not load</b>' + esc(x.message) + '</div>'; });
+  call('getSystemStatus', S.token).then(function (d) { drawSys(v, d); if (window.PE_SYS_EXTRA) try { PE_SYS_EXTRA(v); } catch (x) { } }).catch(function (x) { v.innerHTML = '<div class="empty"><b>Could not load</b>' + esc(x.message) + '</div>'; });
 }
 function drawSys(v, d) {
   if (S.route.v !== 'sys') return;
@@ -1775,36 +1776,71 @@ function printHtml(body, opt) {
     setTimeout(function () { if (left > 0) { left = 0; go2(); } }, 4000);
   });
 }
-function printRecord(e, r, x) { if (window.PE_PRINT && window.PE_PRINT(e, r, x || {})) return; if (e.key === 'po') return printPO(r, x || {}); if (e.key === 'quotes') return printQuotes(r); if (e.key === 'approvals') return printIOA(r); if (e.key === 'notices') return printCircular(r); if (e.key === 'decisions') return printDecision(r); printGeneric(e, r); }
+function printRecord(e, r, x) { if (window.PE_PRINT && window.PE_PRINT(e, r, x || {})) return; if (e.key === 'po') return printPO(r, x || {}); if (e.key === 'quotes') return printQuotes(r, x || {}); if (e.key === 'approvals') return printIOA(r); if (e.key === 'notices') return printCircular(r); if (e.key === 'decisions') return printDecision(r); printGeneric(e, r); }
 function printPO(r, x) {
-  var v = x.vendor || {}, co = S.sess.config.companies[0];
-  var rows = (r.lines || []).map(function (l, i) { var rate = r2(num(l.rate) * (1 - num(l.disc) / 100)); return '<tr><td class="ct">' + (i + 1) + '.</td><td>' + nl(l.item + (l.desc ? ' - ' + l.desc : '')) + '</td><td class="ct">' + esc(l.uom) + '</td><td class="ct">' + esc(l.qty) + '</td><td class="r">' + rate.toFixed(2) + '</td><td class="r">' + num(l.amount).toFixed(2) + '</td></tr>'; }).join('');
+  var v = x.vendor || {}, co = S.sess.config.companies[0], cfg = S.sess.config;
+  var wo = r.orderType === 'Work Order' || r.orderType === 'Service Order', amd = num(r.amdNo) > 0, no = r.docNo || r.id;
+  var title = (amd ? 'AMENDMENT ' : '') + String(r.orderType || 'Purchase Order').toUpperCase();
+  var rows = (r.lines || []).map(function (l, i) { var rate = r2(num(l.rate) * (1 - num(l.disc) / 100)); return '<tr><td class="ct">' + (i + 1) + '.</td><td>' + nl(l.item + (l.desc ? ' - ' + l.desc : '')) + '</td><td class="ct">' + esc(l.hsn || '') + '</td><td class="ct">' + esc(l.uom) + '</td><td class="ct">' + esc(l.qty) + '</td><td class="r">' + rate.toFixed(2) + '</td><td class="r">' + num(l.amount).toFixed(2) + '</td></tr>'; }).join('');
   var g = {}; (r.lines || []).forEach(function (l) { var k = String(num(l.gst)); g[k] = (g[k] || 0) + num(l.gstAmt != null ? l.gstAmt : r2(num(l.amount) * num(l.gst) / 100)); });
-  var tail = '<tr><td colspan="5" class="r b">Sub-Total in INR</td><td class="r b">' + num(r.subtotal).toFixed(2) + '</td></tr>' +
-    Object.keys(g).filter(function (k) { return num(k) > 0; }).map(function (k) { return '<tr><td colspan="5" class="r b">GST@' + k + '%</td><td class="r b">' + r2(g[k]).toFixed(2) + '</td></tr>'; }).join('') +
-    (num(r.freight) ? '<tr><td colspan="5" class="r b">Freight</td><td class="r b">' + num(r.freight).toFixed(2) + '</td></tr>' : '') + (num(r.otherCharges) ? '<tr><td colspan="5" class="r b">Other Charges</td><td class="r b">' + num(r.otherCharges).toFixed(2) + '</td></tr>' : '') +
-    '<tr><td colspan="5" class="r b">Grand Total in INR</td><td class="r b">' + num(r.total).toFixed(2) + '</td></tr>';
+  var tail = '<tr><td colspan="6" class="r b">Sub-Total in INR</td><td class="r b">' + num(r.subtotal).toFixed(2) + '</td></tr>' +
+    Object.keys(g).filter(function (k) { return num(k) > 0; }).map(function (k) { return '<tr><td colspan="6" class="r b">GST@' + k + '%</td><td class="r b">' + r2(g[k]).toFixed(2) + '</td></tr>'; }).join('') +
+    (num(r.freight) ? '<tr><td colspan="6" class="r b">Freight</td><td class="r b">' + num(r.freight).toFixed(2) + '</td></tr>' : '') + (num(r.otherCharges) ? '<tr><td colspan="6" class="r b">Other Charges</td><td class="r b">' + num(r.otherCharges).toFixed(2) + '</td></tr>' : '') +
+    '<tr><td colspan="6" class="r b">Grand Total in INR</td><td class="r b">' + num(r.total).toFixed(2) + '</td></tr>';
   var addr = String(v.address || '').split(/\n/).map(function (s) { return s.trim().replace(/,$/, ''); }).filter(String);
-  var T = [['DELIVERY PERIOD', r.tDelivery], ['TRANSPORTATION & LOGISTIC', r.tTransport], ['PAYMENT TERMS', r.tPayment], ['WARRANTY / GUARANTEE', r.tWarranty], ['INSPECTION / QUALITY ASSURANCE', r.tInspection], ['TEST CERTIFICATE', r.tTestCert], ['TAXES & DUTIES', r.tTaxes]].filter(function (t) { return String(t[1] || '').trim(); });
-  T.push(['INVOICING DETAILS', co.billing || co.name]);
-  T.push(['CORRESPONDENCE / BILLING ADDRESS', 'Please quote our complete order number in all post order correspondences, invoice and shall be forwarded to ' + String(co.billing || co.name).replace(/\n/g, ' ') + ' to the attention of the undersigned.\nThis order is issued to you in duplicate. You are requested to return one copy duly signed and stamped by you as a token of your acceptance of the same.']);
-  T.push(['DELIVERY ADDRESS', (r.deliveryAddress || '') + (r.receiver ? '\nNote: Receiver Contact details: ' + r.receiver : '')]);
-  var body = '<p class="ct b u" style="font-size:12pt;margin-top:2mm">PURCHASE ORDER</p><table style="width:100%;margin-top:6mm"><tr><td class="b">Order no: ' + esc(r.id) + '</td><td class="b r">Date: ' + ddot(r.date) + '</td></tr></table>' +
-    '<p class="b" style="margin-top:5mm">To,</p><div class="b" style="margin:3mm 0 0 6mm;line-height:1.45">M/s. ' + esc(r.vendor) + '.,<br>' + addr.map(esc).join(',<br>') + (v.gstin ? '<br>GSTIN:' + esc(v.gstin) : '') + '</div>' +
+  var has = function (t) { return String(t || '').trim(); };
+  var pay = (r.paymentTerms === 'Customize' ? r.payCustom : r.paymentTerms) || '';
+  var del = (r.deliveryTerm === 'Customize' ? r.deliveryCustom : r.deliveryTerm) || '';
+  var T = [];
+  if (wo) {
+    if (r.serviceCat) T.push(['SERVICE CATEGORY', r.serviceCat]);
+    [['SCOPE OF WORK', r.tScope1], ['SCOPE OF WORK - 2', r.tScope2], ['SCOPE OF WORK - 3', r.tScope3]].forEach(function (t) { if (has(t[1])) T.push(t); });
+    T.push(['MOBILISATION PERIOD', r.tMobilise], ['COMPLETION PERIOD', r.tCompletion]);
+  } else {
+    T.push(['ADDITIONAL SCOPE', r.tAddScope]);
+  }
+  T.push(['DELIVERY', [del, r.deliveryDate ? 'Delivery date: ' + ddot(r.deliveryDate) : '', r.tDelivery].filter(has).join('\n')]);
+  if (!wo) T.push(['TRANSPORTATION & LOGISTICS', r.tTransport]);
+  T.push(['PAYMENT TERMS', [pay, r.tPayment].filter(has).join('\n')], ['TAXES & DUTIES', r.tTaxes]);
+  if (!wo) T.push(['TEST CERTIFICATE', r.tTestCert], ['INSPECTION / QUALITY ASSURANCE', r.tInspection], ['WARRANTY', r.tWarranty]);
+  if (wo && has(r.tAddScopeWo)) T.push(['ADDITIONAL SCOPE', r.tAddScopeWo]);
+  T.push(['LIQUIDATED DAMAGES (LD)', r.tLD || cfg.poTerms.tLD], ['INDEMNITY', r.tIndemnity || cfg.poTerms.tIndemnity], ['ARBITRATION', r.tArbitration || cfg.poTerms.tArbitration]);
+  T = T.filter(function (t) { return has(t[1]); });
+  T.push(['DELIVERY ADDRESS', (r.deliveryAddress || '') + (r.receiver ? '\nMaterial receiver contact: ' + r.receiver : '')]);
+  T.push(['CORRESPONDENCE', 'Please quote our complete order number (' + no + ') in all correspondence and invoices, addressed to the attention of the undersigned.\nThis order is issued in duplicate. Please return one copy duly signed and stamped as your acceptance, or confirm by email: "We accept your terms and conditions and price part."']);
+  T.push(['INVOICE ADDRESS', co.billing || co.name]);
+  var body = '<p class="ct b u" style="font-size:12pt;margin-top:2mm">' + esc(title) + '</p><table style="width:100%;margin-top:6mm"><tr><td class="b">Order no: ' + esc(no) + '</td><td class="b r">Date: ' + ddot(amd && r.amdDate ? r.amdDate : r.date) + '</td></tr>' +
+    (amd ? '<tr><td colspan="2" style="font-size:9pt">Amendment ' + num(r.amdNo) + ' to order ' + esc(r.id) + ' dated ' + ddot(r.date) + (r.amdReason ? ' · Reason: ' + esc(r.amdReason) : '') + '. This amendment supersedes the earlier version(s).</td></tr>' : '') + '</table>' +
+    '<p class="b" style="margin-top:5mm">To,</p><div class="b" style="margin:3mm 0 0 6mm;line-height:1.45">M/s. ' + esc(r.vendor) + (v.name2 ? ' ' + esc(v.name2) : '') + '.,<br>' + addr.map(esc).join(',<br>') + (v.gstin ? '<br>GSTIN: ' + esc(v.gstin) : '') + (v.pan ? '<br>PAN: ' + esc(v.pan) : '') + (v.code ? '<br>Vendor code: ' + esc(v.code) : '') + '</div>' +
     '<p class="b" style="margin-top:5mm">Dear Sir,</p><p style="margin-top:4mm"><b>Sub</b>: ' + esc(r.subject) + '</p>' + (r.quoteRef ? '<p><b>Ref</b>: ' + esc(r.quoteRef) + '</p>' : '') +
-    '<table class="t" style="margin-top:5mm"><thead><tr><th style="width:9%">S.No</th><th>Description</th><th style="width:9%">UoM</th><th style="width:9%">Qty</th><th style="width:13%">Unit Rate in INR</th><th style="width:15%">Total Amount</th></tr></thead><tbody>' + rows + tail + '</tbody></table>' +
+    '<table class="t" style="margin-top:5mm"><thead><tr><th style="width:7%">S.No</th><th>Description</th><th style="width:9%">HSN/SAC</th><th style="width:8%">UoM</th><th style="width:8%">Qty</th><th style="width:12%">Unit Rate in INR</th><th style="width:14%">Total Amount</th></tr></thead><tbody>' + rows + tail + '</tbody></table>' +
     '<table class="t"><tr><td class="b">Rupees: ' + words(r.total) + '.</td></tr></table><p class="b" style="margin-top:6mm">TERMS AND CONDITIONS:</p>' +
-    T.map(function (t, i) { return '<h4>' + (i + 1) + '. <span class="u">' + esc(t[0]) + ':</span></h4><p style="margin-left:6mm' + (t[0] === 'INVOICING DETAILS' || t[0] === 'DELIVERY ADDRESS' ? ';font-weight:bold' : '') + '">' + nl(t[1]) + '</p>'; }).join('') +
+    T.map(function (t, i) { return '<h4>' + (i + 1) + '. <span class="u">' + esc(t[0]) + ':</span></h4><p style="margin-left:6mm' + (t[0] === 'INVOICE ADDRESS' || t[0] === 'DELIVERY ADDRESS' ? ';font-weight:bold' : '') + '">' + nl(t[1]) + '</p>'; }).join('') +
     '<div style="page-break-inside:avoid"><p class="b" style="margin-top:7mm">Thanking you,</p><p class="b" style="margin-top:4mm">For M/s. ' + esc(co.name.toUpperCase()) + '</p><p class="b" style="margin-top:16mm">Authorized Signatory</p><p class="b" style="margin-top:6mm">For M/s. ' + esc(r.vendor) + '., (All terms and conditions agreed as mutually).</p><p class="b" style="margin-top:14mm">Authorized Signatory with Seal and date.</p></div>';
-  printHtml(body, { title: r.id });
+  if (wo && r.gcPrint !== 'No' && (cfg.gc || []).length) {
+    var food = num(r.gcFood) > 0 ? 'PEPL will provide food worth Rs ' + num(r.gcFood).toFixed(0) + ' per person per day' : 'Food is not provided by PEPL; it is in your scope';
+    var foodTa = num(r.gcFood) > 0 ? 'ஒரு நபருக்கு ஒரு நாளைக்கு ரூ ' + num(r.gcFood).toFixed(0) + ' மதிப்பில் PEPL உணவு வழங்கும்' : 'PEPL உணவு வழங்காது; அது உங்கள் பொறுப்பு';
+    var room = r.gcRoom === 'Yes' ? 'provided by PEPL' : 'not provided; it is in your scope', roomTa = r.gcRoom === 'Yes' ? 'PEPL வழங்கும்' : 'வழங்கப்படாது; அது உங்கள் பொறுப்பு';
+    var fill = function (s) { return String(s).replace('{food}', food).replace('{foodTa}', foodTa).replace('{room}', room).replace('{roomTa}', roomTa); };
+    var gc = cfg.gc.filter(function (c) { return r.gcTransport === 'Yes' || !/local transport/i.test(c.en); });
+    body += '<div class="pb"></div><p class="ct b u" style="font-size:12pt">GENERAL CONDITIONS / பொது நிபந்தனைகள்</p><p class="ct" style="font-size:9pt">Order no: ' + esc(no) + ' · ' + esc(r.vendor) + '</p>' +
+      '<table class="t" style="font-size:8.5pt;line-height:1.35"><thead><tr><th style="width:5%">#</th><th style="width:45%">English</th><th>தமிழ்</th></tr></thead><tbody>' +
+      gc.map(function (c, i) { return '<tr><td class="ct">' + (i + 1) + '</td><td>' + esc(fill(c.en)) + '</td><td>' + esc(fill(c.ta)) + '</td></tr>'; }).join('') + '</tbody></table>' +
+      '<div style="page-break-inside:avoid"><p class="b" style="margin-top:4mm">' + esc(cfg.gcAccept.en) + '</p><p class="b">' + esc(cfg.gcAccept.ta) + '</p>' +
+      '<table style="width:100%;margin-top:14mm"><tr><td class="b">Contractor signature with seal<br><span style="font-weight:normal">Name / Date</span></td><td class="b r">For M/s. ' + esc(co.name.toUpperCase()) + '<br><span style="font-weight:normal">Authorized Signatory</span></td></tr></table></div>';
+  }
+  if (x.pr) body += '<p style="margin-top:8mm;font-size:7.5pt;color:#9AA0B4">PR No: ' + esc(x.pr.id) + ' dated ' + ddot(x.pr.date) + '</p>';
+  printHtml(body, { title: no });
 }
-function printQuotes(r) {
+function printQuotes(r, x) {
+  x = x || {};
   var vs = [1, 2, 3, 4].filter(function (n) { return r['vendor' + n]; });
   var body = '<p class="ct b u" style="font-size:12pt">QUOTATION COMPARISON STATEMENT</p><table style="width:100%;margin:4mm 0"><tr><td class="b">No: ' + esc(r.id) + '</td><td class="b">Subject: ' + esc(r.subject) + '</td><td class="b r">Date: ' + ddot(r.date) + '</td></tr><tr><td colspan="3">Project: ' + esc(r.project || '-') + (r.prRef ? ' · PR: ' + esc(r.prRef) : '') + '</td></tr></table>' +
     '<table class="t" style="font-size:9pt"><thead><tr><th>S.No</th><th>Description</th><th>Qty</th><th>UoM</th><th>GST</th>' + vs.map(function (n) { return '<th>' + esc(r['vendor' + n]) + '<br><span style="font-weight:normal">Rate</span></th>'; }).join('') + '</tr></thead><tbody>' +
     (r.lines || []).map(function (l, i) { return '<tr><td class="ct">' + (i + 1) + '</td><td>' + esc(l.item) + '</td><td class="ct">' + esc(l.qty) + '</td><td class="ct">' + esc(l.uom) + '</td><td class="ct">' + esc(l.gst) + '%</td>' + vs.map(function (n) { return '<td class="r' + (l.best === 'V' + n ? ' win' : '') + '">' + (l['r' + n] !== '' && l['r' + n] != null ? num(l['r' + n]).toFixed(2) : 'NQ') + '</td>'; }).join('') + '</tr>'; }).join('') +
     '<tr class="b"><td colspan="5" class="r">Total incl. GST</td>' + vs.map(function (n) { return '<td class="r' + (r['vendor' + n] === r.l1Vendor ? ' win' : '') + '">' + num(r['tot' + n]).toFixed(2) + '</td>'; }).join('') + '</tr>' +
     '<tr class="b"><td colspan="5" class="r">Ranking</td>' + (function () { var arr = vs.map(function (n) { return { n: n, t: num(r['tot' + n]) }; }).filter(function (x) { return x.t > 0; }).sort(function (a, b) { return a.t - b.t; }); return vs.map(function (n) { var k = arr.map(function (x) { return x.n; }).indexOf(n); return '<td class="ct">' + (k > -1 ? 'L' + (k + 1) : '-') + '</td>'; }).join(''); })() + '</tr></tbody></table>' +
+    (x.po ? '<p class="b" style="margin-top:4mm;font-size:11pt">PO No: ' + esc(x.po.id) + ' dated ' + ddot(x.po.date) + '</p>' : '') +
     '<p class="b" style="margin-top:4mm">Recommended vendor (L1): ' + esc(r.l1Vendor || '-') + (r.l1Total ? ' · ₹ ' + inr(r.l1Total, true) + ' (' + words(r.l1Total) + ')' : '') + '</p>' + (num(r.saving) ? '<p>Saving against L2: ₹ ' + inr(r.saving, true) + '</p>' : '') + (r.remarks ? '<p>Remarks: ' + nl(r.remarks) + '</p>' : '') +
     '<p style="font-size:8.5pt;color:#444">NQ = not quoted. L1 is decided only among vendors who quoted every item. Highlighted = lowest rate per item.</p>' +
     '<table style="width:100%;margin-top:18mm"><tr><td class="b">Prepared by</td><td class="b ct">Checked by</td><td class="b r">Approved by</td></tr></table>';

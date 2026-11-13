@@ -136,5 +136,6 @@
     w.insertAdjacentHTML('afterbegin', mdCard('md-wel'));
   }
   new MutationObserver(function () { addHero(); dnButton(); myTeamButton(); }).observe(document.documentElement, { childList: true, subtree: true });
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', addWelcome); else addWelcome();\n  myTeamButton();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', addWelcome); else addWelcome();
+  myTeamButton();
 })();

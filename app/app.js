@@ -181,7 +181,7 @@ function greet() { var h = new Date().getHours(); return h < 12 ? 'Good morning'
 function dayKey() { var d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
 var welT;
 function welcome(name, pending) {
-  var w = $('welcome'); if (!w) return;
+  var w = $('welcome'); if (!w) return; if (true) { w.classList.remove('show', 'pend'); return; }   /* welcome screen switched off (Nov 2026) - app opens straight away */
   var nm = String(name || '').trim().split(' ').slice(-1)[0];
   $('welHi').textContent = greet() + (nm ? ', ' + nm : '') + '!';
   if (!w.classList.contains('show')) { $('welQ').textContent = pickQ(WQ, 'pe_wq'); $('welDay').textContent = new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' }); }

@@ -71,3 +71,8 @@
 #login .lgx-seg button { color: #3A4677 !important; -webkit-text-fill-color: #3A4677 !important; opacity: 1 !important; }
 #login .lgx-seg button.on, #login .lgx-seg button[aria-pressed="true"], #login .lgx-seg button.active { background: #1B2F9E !important; color: #fff !important; -webkit-text-fill-color: #fff !important; }
 #login .lg-forgot, #login .lg-forgot * { color: #1B2F9E !important; }
+
+/* PEPL AI: "thinking" line was showing as an empty pink box - plain readable text */
+.aib.typing .aity { background: none !important; -webkit-background-clip: border-box !important; background-clip: border-box !important; color: #1B2F9E !important; -webkit-text-fill-color: #1B2F9E !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; min-width: 0 !important; }
+/* no welcome screen - the app opens straight away */
+#welcome { display: none !important; }

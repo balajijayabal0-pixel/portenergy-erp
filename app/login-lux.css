@@ -54,3 +54,20 @@
 #login .lg-card label, #login .lg-card .f { color: #3A4677 !important; font-weight: 600; }
 #login .lg-card input::placeholder { color: #9AA3C7 !important; }
 #login .lg-card .lx-secure, #login .lg-card .note, #login .lg-card .sub { color: #6B7499 !important; }
+
+/* inputs inside the white card: dark text, visible while typing */
+#login .lg-card .in, #login .lg-card input, #login .lg-card select, #login .lg-card .otp input {
+  background: #F6F8FD !important; color: #14205E !important; -webkit-text-fill-color: #14205E !important;
+  border: 1.5px solid #CBD3EC !important; caret-color: #1B2F9E;
+}
+#login .lg-card .in:focus, #login .lg-card input:focus { border-color: #1B2F9E !important; background: #fff !important; box-shadow: 0 0 0 3px rgba(27, 47, 158, .12) !important; }
+#login .lg-card .phone, #login .lg-card .phone * { color: #14205E !important; }
+#login #stepOtp h2, #login #otpInfo, #login #otpInfo b, #login .lgx-hint, #login .lg-card .sub { color: #14205E !important; }
+#login .lgx-hint { color: #6B7499 !important; }
+#login .lg-card .chips .chip:not(.on) { color: #14205E !important; background: #EEF1FA !important; }
+#login .lgx-hero { background: linear-gradient(150deg, #14247F 0%, #0B1442 100%) !important; box-shadow: none !important; }
+#login .lgx-hero::before, #login .lgx-hero::after { display: none !important; }
+#login .lgx-seg { background: #EEF1FA !important; }
+#login .lgx-seg button { color: #3A4677 !important; -webkit-text-fill-color: #3A4677 !important; opacity: 1 !important; }
+#login .lgx-seg button.on, #login .lgx-seg button[aria-pressed="true"], #login .lgx-seg button.active { background: #1B2F9E !important; color: #fff !important; -webkit-text-fill-color: #fff !important; }
+#login .lg-forgot, #login .lg-forgot * { color: #1B2F9E !important; }

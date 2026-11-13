@@ -1,0 +1,56 @@
+/* © 2026 Port Energy Private Limited. All rights reserved.
+   PORT ENERGY ERP - simple luxury sign-in (Nov 2026)
+   No animation, no helicopter, no moving scene. Calm navy page, clean white card.
+   Loaded last so it overrides login.css / fx.css. Delete this file + its <link> line to go back. */
+
+#login, #login * { animation: none !important; transition: none !important; }
+
+/* calm static background */
+#login {
+  background:
+    radial-gradient(1200px 600px at 12% -10%, rgba(27, 47, 158, .55), transparent 60%),
+    radial-gradient(900px 500px at 110% 110%, rgba(232, 18, 124, .14), transparent 60%),
+    linear-gradient(160deg, #0B1442 0%, #070C2B 100%) !important;
+  color: #fff;
+}
+#login .lg-bg, #login .lg-scene, #login .lg-waves, #login .lg-glow,
+#login .lg-heli, #login .lgh, #login .lg-cab, #login .lg-hint, #login .lg-mode,
+#login [class^="ph-"], #login [class*=" ph-"], #login .orb { display: none !important; }
+
+/* header */
+#login .lg-top { border-bottom: 1px solid rgba(255, 255, 255, .08); }
+#login .lg-svc span { color: rgba(255, 255, 255, .62) !important; letter-spacing: .08em; font-size: 11.5px; text-transform: uppercase; background: none !important; border: 0 !important; }
+
+/* left copy */
+#login .lg-eye { color: #C9A96E !important; letter-spacing: .28em; text-transform: uppercase; font-size: 11.5px; font-weight: 600; background: none !important; }
+#login .lg-title { font-family: 'Sora', 'Poppins', sans-serif; font-weight: 700; color: #fff !important; background: none !important; -webkit-text-fill-color: #fff !important; letter-spacing: -.01em; text-shadow: none !important; }
+#login .lg-mods span { color: rgba(255, 255, 255, .72) !important; background: none !important; border: 0 !important; box-shadow: none !important; outline: 0 !important; }
+#login .lg-motto { color: #C9A96E !important; font-style: italic; background: none !important; border: 0 !important; box-shadow: none !important; -webkit-text-fill-color: #C9A96E !important; }
+
+/* sign-in card */
+#login .lg-card {
+  visibility: visible !important; opacity: 1 !important; transform: none !important;
+  background: #fff !important; color: #14205E;
+  border: 1px solid rgba(201, 169, 110, .35) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, .45), 0 2px 0 #C9A96E inset !important;
+  backdrop-filter: none !important;
+}
+#login .lg-card::before, #login .lg-card::after { display: none !important; }
+#login .lg-wb { color: #C9A96E !important; letter-spacing: .22em; text-transform: uppercase; font-size: 11px; font-weight: 700; }
+#login .lg-h { color: #14205E !important; -webkit-text-fill-color: #14205E !important; background: none !important; }
+#login .lg-sub { color: #5B6690 !important; }
+#login .btn.primary { background: #1B2F9E !important; box-shadow: none !important; border-radius: 12px !important; }
+#login .btn.primary:hover { background: #14247F !important; }
+#login .btn.primary::before { display: none !important; }
+
+/* stats strip + footer */
+#login .lg-stats > div { background: rgba(255, 255, 255, .04) !important; border: 1px solid rgba(255, 255, 255, .08) !important; box-shadow: none !important; backdrop-filter: none !important; }
+#login .lg-stats b { color: #fff !important; }
+#login .lg-stats span { color: rgba(255, 255, 255, .6) !important; }
+#login .lg-stats svg { stroke: #C9A96E !important; }
+#login .lg-foot { color: rgba(255, 255, 255, .45) !important; border-top: 1px solid rgba(255, 255, 255, .06); }
+
+#login .lg-card label, #login .lg-card .f { color: #3A4677 !important; font-weight: 600; }
+#login .lg-card input::placeholder { color: #9AA3C7 !important; }
+#login .lg-card .lx-secure, #login .lg-card .note, #login .lg-card .sub { color: #6B7499 !important; }

@@ -387,13 +387,17 @@ function prefetchAll() {
   clearTimeout(pfT);
   pfT = setTimeout(function () {
     if (!S.sess || !navigator.onLine) return;
-    var keys = S.sess.entities.map(function (e) { return e.key; });
-    call('prefetch', S.token, keys).then(function (d) {
-      if (!d || !d.lists) return;
-      Object.keys(d.lists).forEach(function (k) { var r = d.lists[k]; if (!r || !r.rows) return; if (window.PE_CACHE_PUT) PE_CACHE_PUT('listRecords', [S.token, k], r); if (!S.cache[k]) { S.cache[k] = r.rows; S.total[k] = r.total; } });
-      if (d.inbox && window.PE_CACHE_PUT) PE_CACHE_PUT('getInbox', [S.token], d.inbox);
-    }).catch(function () { });
-  }, 1200);
+    var keys = S.sess.entities.map(function (e) { return e.key; }), N = 9, chunks = [];
+    for (var i = 0; i < keys.length; i += N) chunks.push(keys.slice(i, i + N));
+    /* parallel small calls: every screen is ready in ~3 s instead of one 7 s call */
+    chunks.forEach(function (ks, ci) {
+      call('prefetch', S.token, ks).then(function (d) {
+        if (!d || !d.lists) return;
+        Object.keys(d.lists).forEach(function (k) { var r = d.lists[k]; if (!r || !r.rows) return; if (window.PE_CACHE_PUT) PE_CACHE_PUT('listRecords', [S.token, k], r); if (!S.cache[k]) { S.cache[k] = r.rows; S.total[k] = r.total; } });
+        if (ci === 0 && d.inbox && window.PE_CACHE_PUT) PE_CACHE_PUT('getInbox', [S.token], d.inbox);
+      }).catch(function () { });
+    });
+  }, 150);
 }
 window.addEventListener('pe-fresh', function (ev) {
   var d = ev.detail || {}, a = d.args || [];
@@ -531,7 +535,7 @@ function go(r) {
     if (r.v === 'list' && !ent(r.k) && window.PE_LOCKED) return PE_LOCKED(v, r.k);
     if (r.v === 'list') return list(v, r.k, r.s);
   };
-  if (document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) { var vt = document.startViewTransition(run); [vt.ready, vt.finished, vt.updateCallbackDone].forEach(function (p) { if (p && p.catch) p.catch(function () { }); }); } else run();
+  if (document.startViewTransition && window.innerWidth > 900 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) { var vt = document.startViewTransition(run); [vt.ready, vt.finished, vt.updateCallbackDone].forEach(function (p) { if (p && p.catch) p.catch(function () { }); }); } else run();
 }
 function setTitle(t, crumb) { $('ttl').textContent = t; $('crumb').textContent = crumb || ''; document.title = t + ' · Port Energy ERP'; }
 $('refreshBtn').onclick = function () { var b = this; busy(b, true); refreshBoot().then(function () { busy(b, false); if (S.route.v !== 'home') go(S.route); }); };

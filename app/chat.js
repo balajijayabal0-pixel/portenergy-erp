@@ -61,7 +61,7 @@
   function askAlerts(btn) {
     if (!('Notification' in window)) { P().toast('This browser cannot show alerts.', true); return; }
     Notification.requestPermission().then(function (p) {
-      if (p === 'granted') { P().toast('Phone alerts are on.'); alertUser('Port Energy ERP', 'Alerts are on. You will see chat, approvals and status changes here.', 'pe-test'); }
+      if (p === 'granted') { P().toast('Phone alerts are on.'); alertUser('Port Energy ERP', 'Alerts are on. You will see chat, approvals and status changes here.', 'pe-test'); if (window.PE_PUSH) window.PE_PUSH.enable(); }
       else P().toast('Alerts blocked. Allow notifications for this app in phone settings.', true);
       if (btn) drawAlertBtn(btn);
     });
@@ -79,6 +79,7 @@
     P().call('pulse', t, C.cv, C.nv).then(function (r) {
       C.busy = false; if (!r) return;
       if (!C.live) { C.live = true; ui(); }
+      if (window.PE_PUSH) window.PE_PUSH.sync();
       var first = !C.cv; load(r.me); C.admin = !!r.admin;
       if (r.chat && r.chat.length) {
         merge(r.chat);

@@ -397,6 +397,8 @@ function prefetchAll() {
         if (ci === 0 && d.inbox && window.PE_CACHE_PUT) PE_CACHE_PUT('getInbox', [S.token], d.inbox);
       }).catch(function () { });
     });
+    /* warm the other screens too, so they open instantly (and offline) later */
+    ['getOptions', 'pollList', 'myReports', 'myDeptSheets', 'userPhotos'].forEach(function (fn, i) { setTimeout(function () { call(fn, S.token).catch(function () { }); }, 2500 + i * 400); });
   }, 150);
 }
 window.addEventListener('pe-fresh', function (ev) {

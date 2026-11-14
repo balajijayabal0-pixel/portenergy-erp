@@ -59,7 +59,7 @@
        uploaded automatically, in order, when the internet returns
      ================================================================ */
   function offErr() { var e = new Error('No internet connection. Showing saved data where available.'); e.offline = true; return e; }
-  var READS = { bootstrap: 1, prefetch: 0, getHome: 1, getInbox: 1, getOptions: 1, listRecords: 1, getRecord: 1, getLetterhead: 1, myPhoto: 1, myReports: 1, myDeptSheets: 1, getAgeing: 1, vendorLedger: 1 };
+  var READS = { bootstrap: 1, prefetch: 0, teamGet: 1, vendorInsight: 1, itemInsight: 1, userPhotos: 1, pollList: 1, myDeptView: 1, deptInfo: 1, bookSerials: 1, mailCfgGet: 1, mailToGet: 1, mailSwGet: 1, reportAclGet: 1, getSystemStatus: 1, getHealth: 1, search: 1, getHome: 1, getInbox: 1, getOptions: 1, listRecords: 1, getRecord: 1, getLetterhead: 1, myPhoto: 1, myReports: 1, myDeptSheets: 1, getAgeing: 1, vendorLedger: 1 };
   var WRITES = { saveRecord: 1, doAction: 1, ackNotice: 1 };
   var dbp = null;
   function db() {
@@ -129,7 +129,7 @@
   /* wraps send(): cache reads, serve them offline, queue writes offline */
   /* FAST MODE (stale-while-revalidate): a screen opened before shows instantly from this device,
      the server is asked in the background, and the screen refreshes itself if anything changed */
-  var SWR = { getHome: 1, getInbox: 1, getOptions: 1, listRecords: 1, getRecord: 1, getLetterhead: 1, myPhoto: 1, myReports: 1, myDeptSheets: 1, getAgeing: 1, vendorLedger: 1 };
+  var SWR = { teamGet: 1, vendorInsight: 1, itemInsight: 1, userPhotos: 1, pollList: 1, myDeptView: 1, deptInfo: 1, bookSerials: 1, mailCfgGet: 1, mailToGet: 1, mailSwGet: 1, reportAclGet: 1, getSystemStatus: 1, getHealth: 1, getHome: 1, getInbox: 1, getOptions: 1, listRecords: 1, getRecord: 1, getLetterhead: 1, myPhoto: 1, myReports: 1, myDeptSheets: 1, getAgeing: 1, vendorLedger: 1 };
   var inflight = {};
   function fresh(fn, args, oldV) {
     var k = ckey(fn, args); if (inflight[k]) return;

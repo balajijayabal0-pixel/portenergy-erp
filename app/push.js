@@ -54,13 +54,19 @@
     if (!supported()) return;
     if (Notification.permission === 'granted') register(); else if (Notification.permission === 'default') setTimeout(ask, 2500);
   }
-  /** one friendly bar after login: asks once per day until the person taps Allow or Later */
+  /** permission dialog in the middle of the screen (like a normal phone app). Installed app: asks every time it opens until allowed
+      (Later = ask again after 10 min). Browser tab: once a day. The browser only allows its own prompt after a tap, so the tap is on "Allow". */
   function ask() {
+    var app = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
     var last = 0; try { last = Number(localStorage.getItem('pe_push_ask') || 0); } catch (x) { }
-    if (document.getElementById('pePushBar') || Date.now() - last < 86400000) return;
+    if (document.getElementById('pePushBar') || Date.now() - last < (app ? 600000 : 86400000)) return;
     var b = document.createElement('div'); b.id = 'pePushBar';
-    b.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:99999;max-width:94vw;width:420px;background:#14205E;color:#fff;border-radius:14px;padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.35);display:flex;gap:10px;align-items:center;font:14px/1.35 system-ui,sans-serif';
-    b.innerHTML = '<span style="flex:1">Get approval and chat alerts on this device, even when the app is closed.</span><button id="pePushYes" style="background:#E8127C;color:#fff;border:0;border-radius:9px;padding:8px 12px;font-weight:600">Turn on</button><button id="pePushNo" style="background:transparent;color:#cfd6ff;border:0;padding:8px 6px">Later</button>';
+    b.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(10,16,48,.55);display:flex;align-items:center;justify-content:center;padding:18px;font:15px/1.45 system-ui,sans-serif';
+    b.innerHTML = '<div style="background:#fff;color:#14205E;border-radius:18px;max-width:360px;width:100%;padding:22px 20px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.4)">' +
+      '<div style="font-size:34px;line-height:1">\ud83d\udd14</div><div style="font-weight:700;font-size:18px;margin:8px 0 6px">Allow notifications</div>' +
+      '<div style="color:#4a557f;margin-bottom:16px">Get approval requests, status changes and team chat alerts on this device, even when the app is closed.</div>' +
+      '<button id="pePushYes" style="width:100%;background:#E8127C;color:#fff;border:0;border-radius:12px;padding:12px;font-weight:700;font-size:15px">Allow</button>' +
+      '<button id="pePushNo" style="width:100%;background:transparent;color:#5D6894;border:0;padding:12px 0 0;font-size:14px">Not now</button></div>';
     document.body.appendChild(b);
     var close = function () { try { localStorage.setItem('pe_push_ask', String(Date.now())); } catch (x) { } if (b.parentNode) b.parentNode.removeChild(b); };
     document.getElementById('pePushYes').onclick = function () { close(); enable(); };

@@ -274,3 +274,5 @@
   .sidetools button { flex: 1; border: 0; border-radius: 12px; padding: 10px 4px; font: 600 12px/1.2 inherit; background: #EEF3FF; color: #0A2E8A; }
 }
 @media (min-width: 761px) { .sidetools { display: none; } }
+/* web: no Team chat button in the top bar (open it from the side menu) */
+@media (min-width: 761px) { .top #peChatB { display: none !important; } }

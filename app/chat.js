@@ -62,7 +62,7 @@
     if (!('Notification' in window)) { P().toast('This browser cannot show alerts.', true); return; }
     Notification.requestPermission().then(function (p) {
       if (p === 'granted') { P().toast('Phone alerts are on.'); alertUser('Port Energy ERP', 'Alerts are on. You will see chat, approvals and status changes here.', 'pe-test'); if (window.PE_PUSH) window.PE_PUSH.enable(); }
-      else P().toast('Alerts blocked. Allow notifications for this app in phone settings.', true);
+      else if (window.PE_PUSH) window.PE_PUSH.blocked(); else P().toast('Alerts blocked. Allow notifications for this app in phone settings.', true);
       if (btn) drawAlertBtn(btn);
     });
   }

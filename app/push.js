@@ -39,7 +39,7 @@
   function enable() {
     if (!supported()) { P().toast('This browser cannot receive push alerts. On iPhone: Share > Add to Home Screen, then open the app.', true); return Promise.resolve(false); }
     return Notification.requestPermission().then(function (p) {
-      if (p !== 'granted') { P().toast('Alerts blocked. Allow notifications for this app in browser / phone settings.', true); return false; }
+      if (p !== 'granted') { blocked(); return false; }
       return register().then(function (ok) {
         P().toast(ok ? 'Push alerts are on for this device. A test alert is coming.' : 'Alerts allowed, but push setup failed. Try again later.', !ok);
         if (ok) P().call('pushTest', tok()).catch(function () { });
@@ -72,5 +72,17 @@
     document.getElementById('pePushYes').onclick = function () { close(); enable(); };
     document.getElementById('pePushNo').onclick = close;
   }
-  window.PE_PUSH = { enable: enable, sync: sync, register: register, supported: supported };
+  /** the browser has notifications blocked for this site: it will never show its own prompt again, so show how to switch it on */
+  function blocked() {
+    if (document.getElementById('pePushHelp')) return;
+    var ua = navigator.userAgent, phone = /android|iphone|ipad/i.test(ua);
+    var steps = phone
+      ? '1. Open phone <b>Settings &gt; Apps &gt; Port Energy (or Chrome) &gt; Notifications</b><br>2. Switch <b>Allow notifications</b> ON<br>3. Open the app again and tap <b>Turn on</b>'
+      : '1. Click the <b>lock / settings icon</b> left of the address bar<br>2. Set <b>Notifications</b> to <b>Allow</b> (or Site settings &gt; Notifications &gt; Allow)<br>3. Reload this page and tap <b>Turn on</b> again';
+    var b = document.createElement('div'); b.id = 'pePushHelp';
+    b.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(10,16,48,.55);display:flex;align-items:center;justify-content:center;padding:18px;font:15px/1.5 system-ui,sans-serif';
+    b.innerHTML = '<div style="background:#fff;color:#14205E;border-radius:18px;max-width:380px;width:100%;padding:22px 20px;box-shadow:0 20px 50px rgba(0,0,0,.4)"><div style="font-weight:700;font-size:18px;margin-bottom:8px">Notifications are blocked on this device</div><div style="color:#4a557f;margin-bottom:14px">Your browser blocked alerts for this site, so it cannot ask again. Switch it on once:</div><div style="background:#F3F5FF;border-radius:12px;padding:12px 14px;margin-bottom:16px">' + steps + '</div><button id="pePushHelpOk" style="width:100%;background:#E8127C;color:#fff;border:0;border-radius:12px;padding:12px;font-weight:700;font-size:15px">OK</button></div>';
+    document.body.appendChild(b); document.getElementById('pePushHelpOk').onclick = function () { b.remove(); };
+  }
+  window.PE_PUSH = { blocked: blocked, enable: enable, sync: sync, register: register, supported: supported };
 })();

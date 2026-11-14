@@ -585,7 +585,7 @@ function CMDS() {
   add('ME21N', 'Create purchase order', function () { openForm('po'); }, can('po'));
   add('ME23N', 'Purchase orders', function () { go({ v: 'list', k: 'po' }); }, see('po'));
   add('ME51N', 'Create purchase request', function () { openForm('pr'); }, can('pr'));
-  add('ME53N', 'Purchase requests', function () { go({ v: 'list', k: 'pr' }); }, see('pr'));
+  add('ME53N', 'Indent (Purchase requests)', function () { go({ v: 'list', k: 'pr' }); }, see('pr'));
   add('ME47', 'Create quotation comparison', function () { openForm('quotes'); }, can('quotes'));
   add('ME49', 'Quotation comparisons', function () { go({ v: 'list', k: 'quotes' }); }, see('quotes'));
   add('MIGO', 'Goods receipt against PO', function () { openForm('grn'); }, can('grn'));
@@ -682,7 +682,7 @@ function home(v) {
   skeleton(v, 10);
   call('getHome', S.token).then(function (h) { S.home = h; renderHome(v, h); }).catch(function (e) { v.innerHTML = '<div class="empty"><b>Could not load</b>' + esc(e.message) + '</div>'; });
 }
-var QUICK = [['po', 'New PO', '#00249C', 'ME21N'], ['pr', 'Purchase request', '#F0006C', 'ME51N'], ['quotes', 'Compare quotations', '#B5309F', 'ME47'], ['grn', 'Goods receipt', '#00B49C', 'MIGO'],
+var QUICK = [['po', 'New PO', '#00249C', 'ME21N'], ['pr', 'Indent (PR)', '#F0006C', 'ME51N'], ['quotes', 'Compare quotations', '#B5309F', 'ME47'], ['grn', 'Goods receipt', '#00B49C', 'MIGO'],
   ['bills', 'Vendor bill', '#0084F0', 'MIRO'], ['payments', 'Payment request', '#F0006C', 'F-53'], ['expenses', 'Expense claim', '#0E9F6E', ''], ['clientbills', 'Client invoice', '#1667C4', 'FB70'],
   ['pettycash', 'Petty cash', '#5D6894', ''], ['photos', 'Upload photos', '#F0569C', ''], ['maintenance', 'Maintenance', '#C26A00', ''], ['vendors', 'New vendor', '#00B49C', 'XK01']];
 function renderHome(v, h, silent) {
@@ -734,7 +734,7 @@ var WS_TILES = [['approvals', 'Approval note', 'Inter-office approval', 'stamp',
   ['leaves', 'Leave / permission', 'Apply & track', 'calendar', 'linear-gradient(135deg,#1667C4,#5AB0FF)'],
   ['photos', 'Site photos', 'Upload from phone', 'camera', 'linear-gradient(135deg,#F0006C,#FF7AB8)'],
   ['tasks', 'Assign a task', 'To you or your team', 'target', 'linear-gradient(135deg,#121B54,#0060D0)'],
-  ['pr', 'Purchase request', 'Need material?', 'cart', 'linear-gradient(135deg,#0B7A8F,#00B49C)']];
+  ['pr', 'Indent (Purchase request)', 'Need material?', 'cart', 'linear-gradient(135deg,#0B7A8F,#00B49C)']];
 function wsHtml(w) {
   if (!w) return '';
   var h = '';

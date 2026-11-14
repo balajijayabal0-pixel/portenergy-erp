@@ -261,3 +261,16 @@
   .glass, .kpi, #tbl.pe-cards .tb tr { border: 1.5px solid #8A93B8 !important; }
   .top::after { opacity: 1; }
 }
+
+/* ---------- mobile header: only what fits (burger, title, chat, bell, refresh) ---------- */
+@media (max-width: 760px) {
+  .top #aiBtn, .top #peMyTeam, .top #peDN, .top #peCalc, .top .clk, .top .topfind { display: none !important; }
+  .top .burger { flex: none !important; width: 42px !important; height: 42px !important; }
+  .top .burger svg { width: 24px !important; height: 24px !important; min-width: 24px; }
+  .top > div:not(.grow) { min-width: 0; }
+  .top h1 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .top .pe-tb, .top #refreshBtn { width: 40px !important; height: 40px !important; min-width: 40px !important; flex: none !important; }
+  .sidetools { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 12px 2px; }
+  .sidetools button { flex: 1; border: 0; border-radius: 12px; padding: 10px 4px; font: 600 12px/1.2 inherit; background: #EEF3FF; color: #0A2E8A; }
+}
+@media (min-width: 761px) { .sidetools { display: none; } }

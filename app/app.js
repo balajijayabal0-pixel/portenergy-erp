@@ -553,6 +553,13 @@ $('bnav').querySelectorAll('button').forEach(function (b) {
   b.onclick = function () { var v = b.dataset.v; if (v === 'find') return openPal(); if (v === 'menu') return openSide(); go({ v: v }); };
 });
 $('sideFind').onclick = function () { closeSide(); openPal(); };
+(function () {
+  var f = $('sideFind'); if (!f || $('sideTools')) return;
+  var d = document.createElement('div'); d.id = 'sideTools'; d.className = 'sidetools';
+  d.innerHTML = '<button data-t="peCalc">🧮 Calculator</button><button data-t="peDN">🌙 Day / Night</button><button data-t="peMyTeam">👥 My Team</button><button data-t="aiBtn">✨ PEPL AI</button>';
+  d.onclick = function (e) { var b = e.target.closest('button'); if (!b) return; var t = document.getElementById(b.dataset.t); closeSide(); if (t) setTimeout(function () { t.click(); }, 120); else toast('Not available for your login.'); };
+  f.parentNode.insertBefore(d, f.nextSibling);
+})();
 $('topFind').onclick = openPal;
 
 function pinModal() {

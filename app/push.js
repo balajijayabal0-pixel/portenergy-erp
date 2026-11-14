@@ -49,6 +49,22 @@
   }
   /** on every login: if alerts are already allowed, refresh this device's address */
   var done = '';
-  function sync() { var t = tok(); if (!t || done === t) return; done = t; register(); }
+  function sync() {
+    var t = tok(); if (!t || done === t) return; done = t;
+    if (!supported()) return;
+    if (Notification.permission === 'granted') register(); else if (Notification.permission === 'default') setTimeout(ask, 2500);
+  }
+  /** one friendly bar after login: asks once per day until the person taps Allow or Later */
+  function ask() {
+    var last = 0; try { last = Number(localStorage.getItem('pe_push_ask') || 0); } catch (x) { }
+    if (document.getElementById('pePushBar') || Date.now() - last < 86400000) return;
+    var b = document.createElement('div'); b.id = 'pePushBar';
+    b.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:99999;max-width:94vw;width:420px;background:#14205E;color:#fff;border-radius:14px;padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.35);display:flex;gap:10px;align-items:center;font:14px/1.35 system-ui,sans-serif';
+    b.innerHTML = '<span style="flex:1">Get approval and chat alerts on this device, even when the app is closed.</span><button id="pePushYes" style="background:#E8127C;color:#fff;border:0;border-radius:9px;padding:8px 12px;font-weight:600">Turn on</button><button id="pePushNo" style="background:transparent;color:#cfd6ff;border:0;padding:8px 6px">Later</button>';
+    document.body.appendChild(b);
+    var close = function () { try { localStorage.setItem('pe_push_ask', String(Date.now())); } catch (x) { } if (b.parentNode) b.parentNode.removeChild(b); };
+    document.getElementById('pePushYes').onclick = function () { close(); enable(); };
+    document.getElementById('pePushNo').onclick = close;
+  }
   window.PE_PUSH = { enable: enable, sync: sync, register: register, supported: supported };
 })();

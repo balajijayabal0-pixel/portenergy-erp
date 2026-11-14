@@ -57,3 +57,26 @@
   document.addEventListener('DOMContentLoaded', buttons);
   if (document.readyState !== 'loading') buttons();
 })();
+
+/* In-app update: when a new version is published, ask the person to update (like Play Store apps) */
+(function () {
+  if (!('serviceWorker' in navigator)) return;
+  var had = !!navigator.serviceWorker.controller, shown = false;
+  function bar() {
+    if (shown || !had) return; shown = true;
+    var d = document.createElement('div');
+    d.id = 'peUpd';
+    d.setAttribute('style', 'position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:9999;max-width:460px;margin:0 auto;background:#0A2E8A;color:#fff;border-radius:16px;padding:14px 14px 14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 18px 40px -12px rgba(0,0,0,.45);font:500 14px/1.35 system-ui,sans-serif');
+    d.innerHTML = '<div style="flex:1"><b style="display:block;font-size:15px">Update available</b>A new version of Port Energy ERP is ready.</div>' +
+      '<button id="peUpdL" style="border:0;background:transparent;color:#C9D6FF;font-weight:600;padding:8px">Later</button>' +
+      '<button id="peUpdN" style="border:0;background:#fff;color:#0A2E8A;font-weight:700;border-radius:10px;padding:10px 14px">Update</button>';
+    document.body.appendChild(d);
+    document.getElementById('peUpdN').onclick = function () { this.textContent = 'Updating…'; location.reload(); };
+    document.getElementById('peUpdL').onclick = function () { d.remove(); };
+  }
+  navigator.serviceWorker.addEventListener('controllerchange', bar);
+  /* check for a new version every time the app comes back to the screen, and every 30 min */
+  function check() { navigator.serviceWorker.getRegistration().then(function (r) { if (r) r.update(); }).catch(function () { }); }
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') check(); });
+  setInterval(check, 30 * 60 * 1000);
+})();

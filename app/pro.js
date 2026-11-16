@@ -291,91 +291,77 @@
   function teamPage(v) {
     P().setTitle('My Team', 'Choose your team members for quick task assignment');
     P().skeleton(v, 6);
-    var isAdm = admin();
-    var me = sess().user.name;
-    P().call('teamGet', tok(), isAdm ? null : me).then(function (d) { drawTeam(v, d, isAdm); }).catch(function (e) { v.innerHTML = '<div class="empty"><b>Could not load</b>' + esc(e.message) + '</div>'; });
+    var me = sess().user;
+    P().call('teamGet', tok(), me.id).then(function (d) { drawTeam(v, d, admin(), me.id); }).catch(function (e) { v.innerHTML = '<div class="empty"><b>Could not load</b>' + esc(e.message) + '</div>'; });
   }
 
-  function drawTeam(v, d, isAdm) {
+  /* same server calls as the saved-team popup: teamGet(token, userId) -> {members, users}; teamSave(token, userId, ids) */
+  function drawTeam(v, d, isAdm, forId) {
     var COL = ['#0084F0', '#F0006C', '#00B49C', '#6F42C1', '#E8590C', '#0CA678', '#C2255C', '#1C7ED6'];
     function col(n) { var h = 7; String(n).split('').forEach(function (c) { h = (h * 37 + c.charCodeAt(0)) >>> 0; }); return COL[h % COL.length]; }
+    var me = sess().user;
     var users = d.users || [];
-    var forUser = d.name;
-    var sel = (d.team || []).slice();
+    var byId = {}; users.forEach(function (u) { byId[u.id] = u; });
+    (d.members || []).forEach(function (m) { if (!byId[m.id]) byId[m.id] = m; });
+    var sel = (d.members || []).map(function (m) { return m.id; });
+    var forName = (byId[forId] && byId[forId].name) || me.name;
 
     var h = '<div class="glass panel pe-team">';
-    // Admin: user selector at top
     if (isAdm) {
       h += '<div class="pe-team-top"><label class="pe-team-lbl">' + ic('users', 16) + ' Manage team for:</label>' +
         '<select class="in pe-team-sel" id="tmFor">' + users.map(function (u) {
-          return '<option value="' + esc(u.n) + '"' + (u.n === forUser ? ' selected' : '') + '>' + esc(u.n) + (u.d ? ' - ' + esc(u.d) : '') + '</option>';
+          return '<option value="' + esc(u.id) + '"' + (u.id === forId ? ' selected' : '') + '>' + esc(u.name) + (u.designation ? ' - ' + esc(u.designation) : '') + '</option>';
         }).join('') + '</select></div>';
     }
-    h += '<h3 style="margin:4px 0 2px">' + esc(isAdm ? forUser + '\'s team' : 'My team') + '</h3>' +
-      '<p class="note" style="margin:0 0 12px">People listed here are added when you tap <b>+ My team</b> on any task or approval form.</p>';
-
-    // chips for selected members
-    h += '<div class="pe-team-chips" id="tmChips">' + (sel.length ? sel.map(function (n) {
-      return '<span class="mp-chip"><i style="background:' + col(n) + '">' + esc(P().initials(n)) + '</i>' + esc(n) + '<button type="button" data-rm="' + esc(n) + '" title="Remove">×</button></span>';
-    }).join('') : '<span class="mp-none">No team members yet</span>') + '</div>';
-
-    // search + add
+    h += '<h3 style="margin:4px 0 2px">' + esc(forId === me.id ? 'My team' : forName + '\'s team') + '</h3>' +
+      '<p class="note" style="margin:0 0 12px">People listed here are added when you tap <b>+ My team</b> on any task or approval form. Reporting lines are not changed.</p>';
+    h += '<div class="pe-team-chips" id="tmChips"></div>';
     h += '<div class="pe-team-add"><input class="in" id="tmQ" placeholder="Type a name to add…" autocomplete="off"><div class="pe-team-list" id="tmList"></div></div>';
-
     h += '<div class="mfoot" style="justify-content:flex-start;margin-top:14px"><button class="btn primary" id="tmSave">' + ic('check', 15) + ' Save team</button>' +
-      '<span class="note pe-team-ct" id="tmCt">' + sel.length + ' member' + (sel.length !== 1 ? 's' : '') + '</span></div></div>';
-
+      '<span class="note pe-team-ct" id="tmCt"></span></div></div>';
     v.innerHTML = h;
 
+    function chip(id) {
+      var n = (byId[id] && byId[id].name) || id;
+      return '<span class="mp-chip"><i style="background:' + col(n) + '">' + esc(P().initials(n)) + '</i>' + esc(n) + '<button type="button" data-rm="' + esc(id) + '" title="Remove">×</button></span>';
+    }
     function drawList() {
       var q = $('tmQ').value.trim().toLowerCase();
-      var list = users.filter(function (u) { return u.n !== forUser && sel.indexOf(u.n) < 0 && (!q || u.n.toLowerCase().indexOf(q) > -1 || (u.d + ' ' + u.dept).toLowerCase().indexOf(q) > -1); }).slice(0, q ? 12 : 8);
+      var list = users.filter(function (u) {
+        return u.id !== forId && sel.indexOf(u.id) < 0 && (!q || [u.name, u.empNo, u.designation, u.dept].join(' ').toLowerCase().indexOf(q) > -1);
+      }).slice(0, q ? 12 : 8);
       $('tmList').innerHTML = list.map(function (u) {
-        return '<button type="button" class="mp-o" data-add="' + esc(u.n) + '"><i style="background:' + col(u.n) + '">' + esc(P().initials(u.n)) + '</i><span><b>' + esc(u.n) + '</b><small>' + esc([u.d, u.dept].filter(String).join(' · ')) + '</small></span><em>+</em></button>';
+        return '<button type="button" class="mp-o" data-add="' + esc(u.id) + '"><i style="background:' + col(u.name) + '">' + esc(P().initials(u.name)) + '</i><span><b>' + esc(u.name) + '</b><small>' + esc([u.empNo, u.designation, u.dept].filter(Boolean).join(' · ')) + '</small></span><em>+</em></button>';
       }).join('') + (!list.length && q ? '<div class="pe-team-empty">No match for "' + esc(q) + '"</div>' : '');
       $('tmList').querySelectorAll('[data-add]').forEach(function (b) {
         b.onclick = function () { sel.push(b.dataset.add); $('tmQ').value = ''; refresh(); $('tmQ').focus(); };
       });
     }
-
     function refresh() {
-      // re-draw chips
-      $('tmChips').innerHTML = sel.length ? sel.map(function (n) {
-        return '<span class="mp-chip"><i style="background:' + col(n) + '">' + esc(P().initials(n)) + '</i>' + esc(n) + '<button type="button" data-rm="' + esc(n) + '" title="Remove">×</button></span>';
-      }).join('') : '<span class="mp-none">No team members yet</span>';
+      $('tmChips').innerHTML = sel.length ? sel.map(chip).join('') : '<span class="mp-none">No team members yet</span>';
       $('tmChips').querySelectorAll('[data-rm]').forEach(function (b) {
         b.onclick = function () { sel = sel.filter(function (x) { return x !== b.dataset.rm; }); refresh(); };
       });
       $('tmCt').textContent = sel.length + ' member' + (sel.length !== 1 ? 's' : '');
       drawList();
     }
-
-    // wire events
     $('tmQ').oninput = drawList;
-    $('tmChips').querySelectorAll('[data-rm]').forEach(function (b) {
-      b.onclick = function () { sel = sel.filter(function (x) { return x !== b.dataset.rm; }); refresh(); };
-    });
-    drawList();
+    refresh();
 
-    // admin user switch
     if (isAdm && $('tmFor')) {
       $('tmFor').onchange = function () {
+        var id = this.value;
         P().skeleton(v, 6);
-        P().call('teamGet', tok(), this.value).then(function (d2) { drawTeam(v, d2, true); }).catch(function (e) { P().toast(e.message, true); });
+        P().call('teamGet', tok(), id).then(function (d2) { drawTeam(v, d2, true, id); }).catch(function (e) { P().toast(e.message, true); drawTeam(v, d, true, forId); });
       };
     }
-
-    // save
     $('tmSave').onclick = function () {
       var btn = this;
       P().busy(btn, true);
-      P().call('teamSave', tok(), forUser, sel).then(function (r) {
-        // update session team if saving own team
-        if (forUser === sess().user.name) {
-          sess().user.team = r.team;
-        }
-        drawTeam(v, r, isAdm);
-        P().toast('Team saved for ' + r.name + '.');
+      P().call('teamSave', tok(), forId, sel).then(function (r) {
+        if (forId === me.id) me.myTeam = (r.members || []).map(function (p) { return p.name; });
+        drawTeam(v, { users: users, members: r.members || [] }, isAdm, forId);
+        P().toast('Team saved for ' + forName + '.');
       }).catch(function (e) { P().busy(btn, false); P().fail(e); });
     };
   }

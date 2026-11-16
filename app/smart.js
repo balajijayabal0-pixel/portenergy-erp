@@ -3,7 +3,8 @@
  * PORT ENERGY ERP - Smart tools (client-side, free, no API key)
  *  1. Item Finder      - meaning/fuzzy search over the item master ("4 inch cutting wheel" finds "AG4 Cutting Disc 100mm")
  *  2. Voice Indent     - speak or type "50 bag cement, 20 litre diesel urgent" -> review -> opens the Indent (PR) form filled
- *  3. Temporary ID     - photo + name ID card (front and back), printed on A4
+ *  3. Scan Bill        - photo / PDF of a vendor bill -> Bill form (and Vendor form if new) via the server's Gemini key
+ *  4. Temporary ID     - photo + name ID card (front and back), printed on A4
  * Nothing is sent anywhere. Item data comes from the lists the ERP already loaded for the signed-in user.
  */
 (function () {
@@ -100,7 +101,7 @@
     var rec = null;
     function close() { try { if (rec) rec.stop(); } catch (x) { } host.remove(); }
     function shell(inner) {
-      var T = [['find', 'Item Finder'], ['voice', 'Voice Indent'], ['id', 'Temporary ID']];
+      var T = [['find', 'Item Finder'], ['voice', 'Voice Indent'], ['scan', 'Scan Bill'], ['id', 'Temporary ID']];
       host.innerHTML = '<div class="glass box pesm"><div class="mh"><h3>Smart tools</h3><button class="x" aria-label="Close">×</button></div><div class="pesm-tabs">' +
         T.map(function (t) { return '<button data-t="' + t[0] + '" class="' + (t[0] === tab ? 'on' : '') + '">' + t[1] + '</button>'; }).join('') + '</div><div id="pesmBody">' + inner + '</div></div>';
       host.querySelector('.x').onclick = close; host.onclick = function (e) { if (e.target === host) close(); };
@@ -171,7 +172,60 @@
       if (prefill) $('#smGo', host).click();
     }
 
-    /* 3. Temporary ID */
+
+    /* 3. Scan Bill: photo / PDF -> bill form (+ vendor form if the vendor is new) */
+    function readFile(f) {
+      return new Promise(function (ok, no) {
+        if (/^image\//.test(f.type) && f.type !== 'image/gif') {
+          var r = new FileReader();
+          r.onload = function () { var im = new Image(); im.onload = function () { var s = Math.min(1, 1800 / Math.max(im.width, im.height)), c = document.createElement('canvas'); c.width = Math.round(im.width * s); c.height = Math.round(im.height * s); c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); ok({ mime: 'image/jpeg', b64: c.toDataURL('image/jpeg', .85).split(',')[1], name: f.name }); }; im.onerror = function () { no(new Error('This image cannot be read.')); }; im.src = r.result; };
+          r.onerror = function () { no(new Error('This file cannot be read.')); }; r.readAsDataURL(f);
+        } else if (f.type === 'application/pdf') {
+          if (f.size > 7 * 1024 * 1024) return no(new Error('PDF is too big (maximum 7 MB). Send a photo instead.'));
+          var p = new FileReader(); p.onload = function () { ok({ mime: 'application/pdf', b64: String(p.result).split(',')[1], name: f.name }); }; p.onerror = function () { no(new Error('This file cannot be read.')); }; p.readAsDataURL(f);
+        } else no(new Error('Use a photo or a PDF of the bill.'));
+      });
+    }
+    var PANT = { P: 'Individual / Proprietor', H: 'HUF', C: 'Company', F: 'Firm / LLP', A: 'Trust / AOP / BOI', B: 'Trust / AOP / BOI', T: 'Trust / AOP / BOI', J: 'Trust / AOP / BOI', G: 'Government', L: 'Government' };
+    function drawScan() {
+      shell('<p class="note" style="margin:0 0 8px">Take a straight, well-lit photo of the vendor bill (or choose a PDF). The bill is read, the vendor is looked up in the vendor list by GSTIN, the PO is looked up by PO number, and the Bill form opens already filled. Check every value before saving.</p>' +
+        '<input class="in" type="file" id="scF" accept="image/*,application/pdf"><div id="scR" style="margin-top:12px"></div>');
+      var inp = $('#scF', host), box = $('#scR', host);
+      inp.onchange = function () {
+        var f = this.files && this.files[0]; if (!f) return;
+        box.innerHTML = '<p class="note">Reading the bill… this takes 5 to 15 seconds.</p>';
+        readFile(f).then(function (file) { return P().call('scanBill', P().S.token, file); }).then(show).catch(function (e) { box.innerHTML = ''; P().fail(e); });
+      };
+      function show(x) {
+        var vm = x.vendorMatch, pm = x.poMatch;
+        var F = [['vendorName', 'Vendor name'], ['gstin', 'GSTIN'], ['billNo', 'Bill no.'], ['billDate', 'Bill date', 'date'], ['poNo', 'PO no. on bill'], ['taxable', 'Taxable value', 'number'], ['gstRate', 'GST %'], ['cgst', 'CGST', 'number'], ['sgst', 'SGST', 'number'], ['igst', 'IGST', 'number'], ['total', 'Bill total', 'number'], ['dueDate', 'Due date', 'date']];
+        var sum = Math.round((Number(x.taxable) + Number(x.cgst) + Number(x.sgst) + Number(x.igst)) * 100) / 100, bad = x.total && Math.abs(sum - Number(x.total)) > 1;
+        box.innerHTML = '<div class="hit"><div><b>Vendor: ' + (vm ? esc(vm.name) : esc(x.vendorName || 'not read')) + '</b><small>' + (vm ? 'Found in vendor list (matched by ' + esc(vm.by) + ')' : 'Not in the vendor list. Add the vendor first, then create the bill.') + '</small></div>' + (vm ? '' : '<button class="btn sm" id="scV">Add vendor</button>') + '</div>' +
+          '<div class="hit"><div><b>PO: ' + (pm ? esc(pm.docNo || pm.id) : esc(x.poNo || 'none on bill')) + '</b><small>' + (pm ? 'Found. Project and department are taken from the PO.' : (x.poNo ? 'This PO number is not in the ERP.' : 'No PO number printed on the bill.')) + '</small></div></div>' +
+          (pm && vm && pm.vendor && pm.vendor !== vm.name ? '<p class="warn">The PO is for "' + esc(pm.vendor) + '" but the bill is from "' + esc(vm.name) + '". Check before saving.</p>' : '') +
+          (bad ? '<p class="warn">Taxable + GST = ' + sum + ' but the bill total is ' + esc(x.total) + '. Check the amounts.</p>' : '') +
+          '<div class="row2" style="margin-top:10px">' + F.map(function (f) { return '<div><label class="f">' + f[1] + '</label><input class="in" data-k="' + f[0] + '" type="' + (f[2] || 'text') + '"' + (f[2] === 'number' ? ' step="any"' : '') + ' value="' + esc(x[f[0]] || '') + '"></div>'; }).join('') + '</div>' +
+          '<div class="mfoot"><button class="btn" id="scB">' + (vm ? 'Open Bill form' : 'Open Bill form (vendor must be added first)') + '</button></div>';
+        function val(k) { var e = box.querySelector('[data-k="' + k + '"]'); return e ? e.value.trim() : ''; }
+        var vbtn = $('#scV', host);
+        if (vbtn) vbtn.onclick = function () {
+          var nm = val('vendorName'), a = nm.slice(0, 32), b = '', gs = val('gstin'), pan = (x.pan || (gs && gs.slice(2, 12)) || '').toUpperCase();
+          if (nm.length > 32) { var cut = nm.lastIndexOf(' ', 32); cut = cut > 10 ? cut : 32; a = nm.slice(0, cut).trim(); b = nm.slice(cut).trim().slice(0, 32); }
+          var pre = { name: a, name2: b, gstin: gs, pan: pan, address: x.address, commAddress: x.address, pin: x.pin, mobile: x.mobile, email: x.email };
+          if (/^[A-Z]{5}\d{4}[A-Z]$/.test(pan) && PANT[pan.charAt(3)]) pre.entityType = PANT[pan.charAt(3)];
+          close(); P().openForm('vendors', null, pre); P().toast('Vendor form filled from the bill. Verify the name and address on the GST portal, then Submit for approval.');
+        };
+        $('#scB', host).onclick = function () {
+          var pre = { billNo: val('billNo'), billDate: val('billDate'), taxable: val('taxable'), gstRate: val('gstRate'), cgst: val('cgst'), sgst: val('sgst'), igst: val('igst'), dueDate: val('dueDate'), remarks: x.description || '' };
+          if (vm) pre.vendor = vm.name;
+          if (pm) { pre.poRef = pm.id; if (pm.project) pre.project = pm.project; if (pm.department) pre.department = pm.department; if (!vm && pm.vendor) pre.vendor = pm.vendor; }
+          Object.keys(pre).forEach(function (k) { if (pre[k] === '' || pre[k] === 0 || pre[k] === '0') delete pre[k]; });
+          close(); P().openForm('bills', null, pre);
+        };
+      }
+    }
+
+    /* 4. Temporary ID */
     var photo = '';
     function drawId() {
       var co = (P().S.sess && P().S.sess.config && P().S.sess.config.companies && P().S.sess.config.companies[0]) || {};
@@ -214,7 +268,7 @@
         setTimeout(function () { try { f.contentWindow.focus(); f.contentWindow.print(); } catch (x) { P().toast('Print is not available here.'); } }, 400);
       };
     }
-    function draw() { if (tab === 'voice') drawVoice(); else if (tab === 'id') drawId(); else drawFind(); }
+    function draw() { if (tab === 'voice') drawVoice(); else if (tab === 'scan') drawScan(); else if (tab === 'id') drawId(); else drawFind(); }
     draw();
   }
   window.PE_SMART = { search: search, parse: parse, open: open };

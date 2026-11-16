@@ -51,8 +51,21 @@
 
   /* ---------------- phone / desktop alerts ---------------- */
   function canAlert() { return 'Notification' in window && Notification.permission === 'granted'; }
+  var ACTX = null;
+  function chime() {   /* short two-note alert sound for in-app alerts */
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+      ACTX = ACTX || new AC(); if (ACTX.state === 'suspended') ACTX.resume();
+      [[880, 0], [1175, .13]].forEach(function (n) {
+        var o = ACTX.createOscillator(), g = ACTX.createGain(), t = ACTX.currentTime + n[1];
+        o.type = 'sine'; o.frequency.value = n[0]; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.22, t + .02); g.gain.exponentialRampToValueAtTime(.001, t + .28);
+        o.connect(g); g.connect(ACTX.destination); o.start(t); o.stop(t + .3);
+      });
+    } catch (x) { }
+  }
   function inAppPop(title, body, route) {
     if (document.hidden) return;
+    chime();
     var host = document.getElementById('peNfPop');
     if (!host) { host = document.createElement('div'); host.id = 'peNfPop'; host.style.cssText = 'position:fixed;top:14px;right:14px;z-index:99998;display:flex;flex-direction:column;gap:8px;max-width:340px;width:calc(100% - 28px);pointer-events:none'; document.body.appendChild(host); }
     var d = document.createElement('div');
@@ -69,7 +82,7 @@
   function alertUser(title, body, tag, route) {
     inAppPop(title, body, route);
     if (!canAlert()) return;
-    var opt = { body: body, tag: tag, icon: '../icons/icon-192.png', badge: '../icons/icon-192.png', renotify: true, data: { route: route || null } };
+    var opt = { body: body, tag: tag, icon: '../icons/icon-192.png', badge: '../icons/icon-192.png', renotify: true, silent: false, vibrate: [200, 100, 200], data: { route: route || null } };
     if (navigator.serviceWorker && navigator.serviceWorker.getRegistration) {
       navigator.serviceWorker.getRegistration().then(function (r) { if (r) r.showNotification(title, opt); else new Notification(title, opt); }).catch(function () { try { new Notification(title, opt); } catch (x) { } });
     } else { try { new Notification(title, opt); } catch (x) { } }

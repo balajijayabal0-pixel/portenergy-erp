@@ -6,7 +6,7 @@
  * Screens: open from the saved copy, then quietly fetch the newest copy for next time.
  * Change VERSION on each upload to clear old copies.
  */
-const VERSION = 'pe-app-v60';
+const VERSION = 'pe-app-v61';
 const SHELL = ['./', './index.html', './app.js', './smart.js', './bridge.js', './logo.js', './polish.css', './apple.css', './dash.css', './motion.js', './install.js', './wa.js', './dash.js', './login.css', './login.js', './loading.css', './fx.css', './refine.css', './pro.css', './brand.css', './dark.css', './login-lux.css', './img/heli.webp', './img/bg-day.webp', './img/bg-night.webp', './pro.js', './reports.js', './print.js', './books.js', './chat.js', './push.js', './ui2.js', './procure.js', './spell.js', './wx.js', './polls.js', './greetings.js', './greetings.css', './fx.js',
   './manifest.webmanifest', '../config.js', '../icons/icon-192.png', '../icons/icon-512.png', '../icons/favicon.png'];
 
@@ -61,7 +61,7 @@ self.addEventListener('push', function (e) {
   e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (list) {
     for (var i = 0; i < list.length; i++) { if (list[i].visibilityState === 'visible' && list[i].focused) return null; }
     var route = d.k ? { k: d.k, id: d.id } : (d.v ? { v: d.v } : null);
-    return self.registration.showNotification(d.title || 'Port Energy ERP', { body: d.body || '', tag: d.tag || 'pe-push', renotify: true, icon: '../icons/icon-192.png', badge: '../icons/icon-192.png', data: { route: route } });
+    return self.registration.showNotification(d.title || 'Port Energy ERP', { body: d.body || '', tag: d.tag || 'pe-push', renotify: true, silent: false, vibrate: [200, 100, 200], icon: '../icons/icon-192.png', badge: '../icons/icon-192.png', data: { route: route } });
   }));
 });
 

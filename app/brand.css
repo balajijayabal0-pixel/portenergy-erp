@@ -492,3 +492,9 @@ iframe.pv-frame { display: block; border: 0; position: static !important; left: 
   html body .dx-row, html body .dx-row.dx-wx-row { grid-template-columns: minmax(0, 1fr) !important; }
   html body .dx-row > * { grid-column: 1 / -1 !important; grid-row: auto !important; }
 }
+
+/* dashboard banner: plain, no animation */
+.dx-hero .dx-art, .dx-hero .dx-shine, .md-hero, .md-q, .md-q b, .md-glow { animation: none !important; }
+.dx-hero .dx-shine { display: none !important; }
+.dx-hero .dx-art { background-position: 72% 52% !important; background-size: cover !important; }
+.md-glow { opacity: .8; }

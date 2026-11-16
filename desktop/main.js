@@ -7,10 +7,11 @@
 const { app, BrowserWindow, shell, session, Menu } = require('electron');
 const path = require('path');
 
-const ERP_URL = 'https://balajijayabal0-pixel.github.io/portenergy-erp/app/?source=desktop';
-const ERP_ORIGIN = 'https://balajijayabal0-pixel.github.io';
+const ERP_URL = 'https://portenergy-in.github.io/portenergy-erp/app/?source=desktop';
+const ERP_ORIGIN = 'https://portenergy-in.github.io';
+const OLD_ORIGIN = 'https://balajijayabal0-pixel.github.io';   // older installs / links keep working
 // pages the ERP itself opens and should stay inside the app (Google sign-in for Drive files, printing helpers)
-const INSIDE = [ERP_ORIGIN, 'https://script.google.com', 'https://script.googleusercontent.com'];
+const INSIDE = [ERP_ORIGIN, OLD_ORIGIN, 'https://script.google.com', 'https://script.googleusercontent.com'];
 
 let win = null, splash = null;
 

@@ -5,7 +5,7 @@
 The same ERP screens, hosted on GitHub Pages instead of inside Google Apps Script.
 Data, login, PINs, permissions and approvals stay on the Apps Script server (Google Sheet).
 
-Link: `https://balajijayabal0-pixel.github.io/portenergy-erp/app/`
+Link: `https://portenergy-in.github.io/portenergy-erp/app/`
 
 | File | What it is |
 |---|---|

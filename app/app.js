@@ -2043,7 +2043,7 @@ function tickClock() {
   t.textContent = d.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true }).toUpperCase();
   if (d.getMinutes() !== CK.m) { CK.m = d.getMinutes(); var i = Math.floor(Math.random() * TQ.length); if (i === CK.q) i = (i + 1) % TQ.length; CK.q = i; var q = $('clkQ'); q.style.opacity = 0; setTimeout(function () { q.textContent = TQ[i]; q.style.opacity = 1; }, 250); }
 }
-tickClock(); setInterval(tickClock, 1000);
+tickClock(); setInterval(function () { if (!document.hidden) tickClock(); }, 1000);
 /* ---------------- Android / browser BACK button: go to previous screen, never close the app ---------------- */
 var HB = { on: false, skip: false, started: false };
 try { HB.on = !!(google && google.script && google.script.history); } catch (e) { }

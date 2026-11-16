@@ -20,6 +20,15 @@
     if (el) el.classList.toggle('on', busy > 0);
   }
 
+  /* read-only calls are tried once more if the server was slow or hiccuped (Apps Script cold start). Writes are never repeated. */
+  var SAFE_RETRY = { bootstrap: 1, getHome: 1, getInbox: 1, listRecords: 1, getRecord: 1, search: 1, getOptions: 1, teamGet: 1, pollList: 1, greetToday: 1, dobGet: 1, getAgeing: 1, vendorLedger: 1, getHealth: 1, userPhotos: 1, myPhoto: 1 };
+  function sendR(fn, args) {
+    return send(fn, args).catch(function (e) {
+      if (!SAFE_RETRY[fn] || !e || e.offline || e.user || /SESSION_EXPIRED|Unknown request|Setup needed/i.test(e.message || '')) throw e;
+      if (!/took too long|Server error|did not answer/i.test(e.message || '')) throw e;
+      return new Promise(function (ok) { setTimeout(ok, 700); }).then(function () { return send(fn, args); });
+    });
+  }
   function post(fn, args) {
     net(1);
     return smart(fn, args).then(function (r) { net(-1); return r; }, function (e) { net(-1); throw e; });
@@ -134,7 +143,7 @@
   function fresh(fn, args, oldV) {
     var k = ckey(fn, args); if (inflight[k]) return;
     inflight[k] = 1; net(1);
-    send(fn, args).then(function (res) {
+    sendR(fn, args).then(function (res) {
       cachePut(fn, args, res);
       var changed = false; try { changed = JSON.stringify(res) !== JSON.stringify(oldV); } catch (x) { changed = true; }
       if (changed) try { window.dispatchEvent(new CustomEvent('pe-fresh', { detail: { fn: fn, args: args, res: res } })); } catch (x) { }
@@ -151,7 +160,7 @@
     return network(fn, args);
   }
   function network(fn, args) {
-    return send(fn, args).then(function (res) { cachePut(fn, args, res); return res; }, function (e) {
+    return (WRITES[fn] ? send : sendR)(fn, args).then(function (res) { cachePut(fn, args, res); return res; }, function (e) {
       if (!e || !e.offline) throw e;
       if (READS[fn]) return cacheGet2(fn, args).then(function (c) { offState(); if (c) return c.v; throw new Error('You are offline and this screen was not opened before on this device.'); });
       if (WRITES[fn]) return queue(fn, args).then(function (qid) { offState(); return fn === 'saveRecord' ? { id: '', offline: true, qid: qid } : { offline: true, qid: qid }; });

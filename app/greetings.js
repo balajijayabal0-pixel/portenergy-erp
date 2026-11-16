@@ -451,7 +451,7 @@
   function boot() {
     if (!window.PE) return setTimeout(boot, 150);
     initLogin();
-    setInterval(checkGate, 1500);
+    setInterval(function () { if (!document.hidden) checkGate(); }, 2500);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();

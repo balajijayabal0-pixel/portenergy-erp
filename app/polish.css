@@ -278,3 +278,6 @@
 .top #peMyTeam { display: none !important; }
 /* web: no Team chat button in the top bar (open it from the side menu) */
 @media (min-width: 761px) { .top #peChatB { display: none !important; } }
+
+/* sidebar: "Impossible can be possible" card removed on every screen size */
+html body .side nav::after, .side nav::after { display: none !important; content: none !important; }

@@ -1,0 +1,63 @@
+/* © 2026 Port Energy Private Limited. All rights reserved. */
+/* ---------- sign-in page: festival / birthday wishes ---------- */
+#peGreet, .pg-prev { position: fixed; inset: 0; z-index: 40; pointer-events: none; }
+.pg-prev { z-index: 100001; pointer-events: auto; background: rgba(7, 12, 43, .84); }
+.pg-cv { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.pg-cards { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); width: min(580px, 92vw); display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+.pg-prev .pg-cards { bottom: auto; top: 50%; transform: translate(-50%, -50%); }
+.pg-card { display: flex; align-items: center; gap: 14px; padding: 12px 18px; border-radius: 18px; color: #fff; background: linear-gradient(135deg, rgba(201, 169, 110, .26), rgba(11, 20, 66, .78)); border: 1px solid rgba(201, 169, 110, .5); box-shadow: 0 18px 40px -18px rgba(0, 0, 0, .75); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.pg-t { min-width: 0; }
+.pg-t h2 { margin: 0; font: 800 clamp(19px, 3.2vw, 26px)/1.15 Sora, Poppins, sans-serif; color: #FFE08A; letter-spacing: -.01em; }
+.pg-bday .pg-t h2 { color: #fff; }
+.pg-t small { display: block; margin-bottom: 2px; color: #C9A96E; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; font-size: 11px; }
+.pg-t p { margin: 3px 0 0; color: rgba(255, 255, 255, .86); font-size: 13.5px; line-height: 1.35; }
+.pg-img { flex: none; width: 66px; height: 66px; border-radius: 14px; object-fit: cover; border: 2px solid rgba(255, 224, 138, .7); }
+.pg-avs { display: flex; flex: none; }
+.pg-av { width: 58px; height: 58px; border-radius: 50%; overflow: hidden; display: grid; place-items: center; background: linear-gradient(135deg, #0084F0, #F0006C); color: #fff; font: 800 20px Poppins, sans-serif; border: 3px solid #FFD76A; box-shadow: 0 0 0 4px rgba(255, 215, 106, .22), 0 0 26px rgba(255, 215, 106, .55); }
+.pg-av + .pg-av { margin-left: -16px; }
+.pg-av img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pg-x { position: absolute; top: -12px; right: -8px; width: 30px; height: 30px; border-radius: 50%; border: 0; background: rgba(0, 0, 0, .6); color: #fff; font-size: 19px; line-height: 1; cursor: pointer; pointer-events: auto; }
+.pg-x:hover { background: rgba(240, 0, 108, .9); }
+@media (max-width: 560px) {
+  .pg-cards { bottom: 12px; gap: 8px; } .pg-card { padding: 9px 13px; gap: 11px; border-radius: 15px; }
+  .pg-av { width: 46px; height: 46px; font-size: 16px; border-width: 2px; } .pg-img { width: 50px; height: 50px; }
+  .pg-t p { font-size: 12.5px; }
+}
+
+/* ---------- date of birth gate ---------- */
+#peDob { position: fixed; inset: 0; z-index: 100000; display: grid; place-items: center; padding: 16px; background: rgba(7, 12, 43, .8); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.pd-box { width: min(420px, 100%); padding: 28px 26px 22px; border-radius: 22px; background: #fff; color: #0B1442; text-align: center; box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .6); }
+.pd-box h2 { margin: 6px 0 4px; font: 800 22px Sora, Poppins, sans-serif; }
+.pd-box p { margin: 0 0 14px; color: #4A5578; font-size: 14px; line-height: 1.45; }
+.pd-ic { font-size: 44px; line-height: 1; }
+.pd-box .in { width: 100%; text-align: center; font-size: 16px; margin-bottom: 6px; color: #0B1442; background: #fff; }
+.pd-err { min-height: 20px; color: #D6003F; font-size: 13px; margin-bottom: 6px; }
+.pd-box .btn { width: 100%; }
+.pd-box .linkbtn { display: inline-block; margin-top: 10px; background: none; border: 0; color: #6B7699; font-size: 12.5px; cursor: pointer; text-decoration: underline; }
+
+/* ---------- admin page ---------- */
+.pg-adm h3 { font-size: 17px; }
+.pg-fe { border: 1px solid rgba(120, 135, 190, .3); border-radius: 14px; padding: 12px 14px; margin-bottom: 12px; }
+.pg-fe.off { opacity: .6; }
+.pg-fe-h { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.pg-fe-n { font-size: 15px; }
+.pg-sp { flex: 1; }
+.pg-sw { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13px; }
+.pg-badge { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 700; background: #FFF1D6; color: #9A5B00; }
+.pg-today { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 700; background: #D9F7EC; color: #0A7A5A; }
+.pg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; }
+.pg-grid label { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; font-weight: 600; }
+.pg-grid .pg-wide { grid-column: 1 / -1; }
+.pg-grid .pg-chk { flex-direction: row; align-items: center; gap: 6px; font-weight: 500; }
+.pg-an { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; font-size: 12.5px; }
+.pg-an > span, .pg-ph > span { font-weight: 600; width: 100%; }
+.pg-ph { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; font-size: 12.5px; }
+.pg-ph img { width: 64px; height: 64px; object-fit: cover; border-radius: 12px; }
+.pg-bar { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
+.pg-bar .in { flex: 1; min-width: 180px; }
+.pg-tw { max-height: 460px; overflow: auto; border: 1px solid rgba(120, 135, 190, .25); border-radius: 12px; }
+.pg-tb { width: 100%; border-collapse: collapse; }
+.pg-tb th, .pg-tb td { padding: 8px 12px; text-align: left; font-size: 13.5px; border-bottom: 1px solid rgba(120, 135, 190, .18); }
+.pg-tb th { position: sticky; top: 0; background: inherit; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; opacity: .8; }
+.pg-tb td small { display: block; opacity: .7; }
+@media (max-width: 640px) { .pg-grid { grid-template-columns: 1fr; } }

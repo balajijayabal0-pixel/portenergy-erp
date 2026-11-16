@@ -58,6 +58,7 @@ jobs:
 
   release:
     needs: [android, windows]
+    if: ${{ always() && needs.windows.result == 'success' }}   # Windows installer is published even if the Android build is not set up
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
@@ -68,7 +69,7 @@ jobs:
           name: Port Energy ERP apps - build ${{ github.run_number }}
           make_latest: true
           body: |
-            **Android:** download the .apk on the phone and open it (allow "Install unknown apps" once).
+            **Android:** (only present if the Android build is set up) download the .apk on the phone and open it.
             **Windows:** download the Setup .exe and run it (if SmartScreen shows, click More info > Run anyway).
             Both open the same Port Energy ERP. Data stays in the company Google Sheet.
           files: out/*

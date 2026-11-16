@@ -51,7 +51,23 @@
 
   /* ---------------- phone / desktop alerts ---------------- */
   function canAlert() { return 'Notification' in window && Notification.permission === 'granted'; }
+  function inAppPop(title, body, route) {
+    if (document.hidden) return;
+    var host = document.getElementById('peNfPop');
+    if (!host) { host = document.createElement('div'); host.id = 'peNfPop'; host.style.cssText = 'position:fixed;top:14px;right:14px;z-index:99998;display:flex;flex-direction:column;gap:8px;max-width:340px;width:calc(100% - 28px);pointer-events:none'; document.body.appendChild(host); }
+    var d = document.createElement('div');
+    d.style.cssText = 'pointer-events:auto;cursor:pointer;background:#fff;color:#14205E;border-radius:14px;padding:11px 14px;box-shadow:0 14px 34px -10px rgba(0,20,90,.45);border-left:4px solid #E8127C;font:14px/1.35 system-ui,sans-serif;transform:translateY(-12px);opacity:0;transition:all .28s ease';
+    var t = document.createElement('b'); t.textContent = String(title || 'Port Energy ERP').slice(0, 80); t.style.display = 'block';
+    var m = document.createElement('span'); m.textContent = String(body || '').slice(0, 140); m.style.cssText = 'color:#4a557f;font-size:13px';
+    d.appendChild(t); d.appendChild(m); host.appendChild(d);
+    setTimeout(function () { d.style.transform = 'none'; d.style.opacity = '1'; }, 20);
+    var gone = function () { d.style.opacity = '0'; setTimeout(function () { if (d.parentNode) d.parentNode.removeChild(d); }, 300); };
+    d.onclick = function () { gone(); var p = P(); if (p && route) { if (route.v) p.go({ v: route.v }); else if (route.k) p.go({ k: route.k, id: route.id }); } };
+    setTimeout(gone, 6500);
+    try { var host2 = host; while (host2.children.length > 3) host2.removeChild(host2.firstChild); } catch (x) { }
+  }
   function alertUser(title, body, tag, route) {
+    inAppPop(title, body, route);
     if (!canAlert()) return;
     var opt = { body: body, tag: tag, icon: '../icons/icon-192.png', badge: '../icons/icon-192.png', renotify: true, data: { route: route || null } };
     if (navigator.serviceWorker && navigator.serviceWorker.getRegistration) {

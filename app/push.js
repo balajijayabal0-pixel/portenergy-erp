@@ -84,5 +84,9 @@
     b.innerHTML = '<div style="background:#fff;color:#14205E;border-radius:18px;max-width:380px;width:100%;padding:22px 20px;box-shadow:0 20px 50px rgba(0,0,0,.4)"><div style="font-weight:700;font-size:18px;margin-bottom:8px">Notifications are blocked on this device</div><div style="color:#4a557f;margin-bottom:14px">Your browser blocked alerts for this site, so it cannot ask again. Switch it on once:</div><div style="background:#F3F5FF;border-radius:12px;padding:12px 14px;margin-bottom:16px">' + steps + '</div><button id="pePushHelpOk" style="width:100%;background:#E8127C;color:#fff;border:0;border-radius:12px;padding:12px;font-weight:700;font-size:15px">OK</button></div>';
     document.body.appendChild(b); document.getElementById('pePushHelpOk').onclick = function () { b.remove(); };
   }
+  /* ask right after sign-in (do not wait for the first chat poll) and again whenever the app comes back to the front */
+  var prevNav = window.PE_NAV;
+  window.PE_NAV = function () { if (prevNav) try { prevNav(); } catch (x) { } setTimeout(sync, 1200); };
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && tok()) { if (Notification && Notification.permission === 'granted') register(); } });
   window.PE_PUSH = { blocked: blocked, enable: enable, sync: sync, register: register, supported: supported };
 })();

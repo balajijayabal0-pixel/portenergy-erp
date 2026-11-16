@@ -5,6 +5,7 @@
  *  2. Voice Indent     - speak or type "50 bag cement, 20 litre diesel urgent" -> review -> opens the Indent (PR) form filled
  *  3. Scan Bill        - photo / PDF of a vendor bill -> Bill form (and Vendor form if new) via the server's Gemini key
  *  4. ID Card          - photo + name ID card (front and back), printed on A4
+ *  5. Meetings         - schedule Google Meet / in-person meetings, invite staff, mail attendees (server: gmCreate/gmList/gmCancel/gmMail)
  * Nothing is sent anywhere. Item data comes from the lists the ERP already loaded for the signed-in user.
  */
 (function () {
@@ -93,6 +94,7 @@
     if ($('#peSmart')) return; var a = $('#peCalc') || $('#refreshBtn'); if (!a) return;
     a.insertAdjacentHTML('beforebegin', '<button class="btn soft sm" id="peSmart" type="button" aria-label="Smart tools" title="Item Finder · Voice Indent · Scan Bill · ID Card" style="display:inline-flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></button>');
     $('#peSmart').onclick = function () { open('find'); };
+    if (!$('#peMeet')) { $('#peSmart').insertAdjacentHTML('beforebegin', '<button class="btn soft sm" id="peMeet" type="button" aria-label="Meetings" title="Schedule a meeting" style="display:inline-flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="13" height="12" rx="2"/><path d="M15 10l6-3v10l-6-3z"/></svg></button>'); $('#peMeet').onclick = function () { open('meet'); }; }
   }
 
   function open(tab) {
@@ -101,7 +103,7 @@
     var rec = null;
     function close() { try { if (rec) rec.stop(); } catch (x) { } host.remove(); }
     function shell(inner) {
-      var T = [['find', 'Item Finder'], ['voice', 'Voice Indent'], ['scan', 'Scan Bill'], ['id', 'ID Card']];
+      var T = [['find', 'Item Finder'], ['voice', 'Voice Indent'], ['scan', 'Scan Bill'], ['id', 'ID Card'], ['meet', 'Meetings']];
       host.innerHTML = '<div class="glass box pesm"><div class="mh"><h3>Smart tools</h3><button class="x" aria-label="Close">×</button></div><div class="pesm-tabs">' +
         T.map(function (t) { return '<button data-t="' + t[0] + '" class="' + (t[0] === tab ? 'on' : '') + '">' + t[1] + '</button>'; }).join('') + '</div><div id="pesmBody">' + inner + '</div></div>';
       host.querySelector('.x').onclick = close; host.onclick = function (e) { if (e.target === host) close(); };
@@ -278,7 +280,80 @@ var ID_CSS = '.idc{width:85.6mm;height:54mm;border-radius:3mm;overflow:hidden;po
         setTimeout(function () { try { f.contentWindow.focus(); f.contentWindow.print(); } catch (x) { P().toast('Print is not available here.'); } }, 400);
       };
     }
-    function draw() { if (tab === 'voice') drawVoice(); else if (tab === 'scan') drawScan(); else if (tab === 'id') drawId(); else drawFind(); }
+    /* 5. Meetings: schedule Google Meet / in-person meetings, invite staff, mail attendees */
+    function drawMeet() {
+      var o = P().S.opts || {}, users = o.users || [], projects = o.projects || [], sel = [];
+      var today = (P().S.sess && P().S.sess.today) || new Date().toISOString().slice(0, 10);
+      var nh = new Date(); nh.setHours(nh.getHours() + 1, 0, 0, 0); var st = ('0' + nh.getHours()).slice(-2) + ':00';
+      var DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      function when(a, b) { var d = new Date(+a.slice(0, 4), +a.slice(5, 7) - 1, +a.slice(8, 10)); return DAYS[d.getDay()] + ' ' + (+a.slice(8, 10)) + ' ' + MON[d.getMonth()] + ' · ' + a.slice(11, 16) + (b ? '–' + b.slice(11, 16) : ''); }
+      shell('<div class="row2"><div style="grid-column:1/-1"><label class="f">Meeting title</label><input class="in" id="gmT" maxlength="200" placeholder="e.g. Weekly project review"></div>' +
+        '<div><label class="f">Date</label><input class="in" type="date" id="gmD" value="' + esc(today) + '"></div><div><label class="f">Start time</label><input class="in" type="time" id="gmS" value="' + st + '"></div>' +
+        '<div><label class="f">Duration</label><select class="in" id="gmM"><option value="30">30 min</option><option value="45">45 min</option><option value="60" selected>1 hour</option><option value="90">1.5 hours</option><option value="120">2 hours</option><option value="180">3 hours</option></select></div>' +
+        '<div><label class="f">Type</label><select class="in" id="gmMode"><option value="online">Online (Google Meet link)</option><option value="offline">In person</option></select></div>' +
+        '<div id="gmLw" style="display:none"><label class="f">Venue</label><input class="in" id="gmL" maxlength="300" placeholder="e.g. Mannady office, conference room"></div>' +
+        '<div><label class="f">Project (optional)</label><select class="in" id="gmP"><option value="">—</option>' + projects.map(function (x) { return '<option>' + esc(x.v) + '</option>'; }).join('') + '</select></div>' +
+        '<div style="grid-column:1/-1"><label class="f">Attendees (staff)</label><input class="in" id="gmQ" list="gmU" placeholder="Type a name and pick" autocomplete="off"><datalist id="gmU">' + users.map(function (x) { return '<option value="' + esc(x.v) + '">' + esc(x.des || x.dept || '') + '</option>'; }).join('') + '</datalist><div id="gmC" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"></div></div>' +
+        '<div style="grid-column:1/-1"><label class="f">Other emails (clients, vendors) — separate with comma</label><input class="in" id="gmX" placeholder="name@company.com, other@company.com"></div>' +
+        '<div style="grid-column:1/-1"><label class="f">Agenda (optional)</label><textarea class="in" id="gmA" placeholder="Points to discuss"></textarea></div></div>' +
+        '<label style="display:flex;gap:8px;align-items:center;margin:10px 0"><input type="checkbox" id="gmN" checked> Send invitation mail and calendar invite to everyone</label>' +
+        '<div class="mfoot"><button class="btn" id="gmGo">Schedule meeting</button></div><div id="gmR"></div><h4 style="margin:18px 0 6px">Upcoming meetings</h4><div id="gmList"></div>');
+      var V = function (id) { return ($('#' + id, host).value || '').trim(); };
+      $('#gmMode', host).onchange = function () { $('#gmLw', host).style.display = this.value === 'offline' ? '' : 'none'; };
+      function chips() {
+        $('#gmC', host).innerHTML = sel.map(function (n) { return '<span class="hit" style="margin:0;padding:4px 10px;border-radius:999px">' + esc(n) + ' <button type="button" data-rm="' + esc(n) + '" style="border:0;background:none;cursor:pointer;font-size:16px">×</button></span>'; }).join('');
+        $('#gmC', host).querySelectorAll('[data-rm]').forEach(function (b) { b.onclick = function () { sel = sel.filter(function (x) { return x !== b.getAttribute('data-rm'); }); chips(); }; });
+      }
+      $('#gmQ', host).oninput = function () {
+        var v = this.value.trim(), m = users.filter(function (x) { return x.v === v; })[0];
+        if (m && sel.indexOf(m.v) < 0) { sel.push(m.v); this.value = ''; chips(); }
+      };
+      $('#gmGo', host).onclick = function () {
+        var b = this, box = $('#gmR', host);
+        if (!V('gmT')) { P().toast('Enter the meeting title.'); return; }
+        var d = { title: V('gmT'), date: V('gmD'), start: V('gmS'), mins: V('gmM'), mode: V('gmMode'), location: V('gmL'), project: V('gmP'), people: sel, extra: V('gmX'), agenda: V('gmA'), notify: $('#gmN', host).checked };
+        b.disabled = true; b.textContent = 'Scheduling…';
+        P().call('gmCreate', P().S.token, d).then(function (r) {
+          box.innerHTML = '<div class="hit" style="display:block;border-color:var(--ok,#1a9b6c)"><b>Meeting scheduled · ' + esc(when(r.start, r.end)) + '</b><small>' + (d.notify ? 'Invitation sent to ' + r.invited + ' people.' : 'No invitation sent.') + '</small>' +
+            (r.meet ? '<div style="margin-top:6px;word-break:break-all">Meet link: <a href="' + esc(r.meet) + '" target="_blank" rel="noopener">' + esc(r.meet) + '</a></div>' : '') +
+            (r.skipped && r.skipped.length ? '<div class="warn">No email on file for: ' + esc(r.skipped.join(', ')) + '. Add their email in Users & Access, or type it in Other emails.</div>' : '') + '</div>';
+          $('#gmT', host).value = ''; $('#gmA', host).value = ''; sel = []; chips(); loadList();
+        }).catch(function (e) { P().fail(e); }).then(function () { b.disabled = false; b.textContent = 'Schedule meeting'; });
+      };
+      function loadList() {
+        var box = $('#gmList', host); box.innerHTML = '<p class="note">Loading…</p>';
+        P().call('gmList', P().S.token).then(function (r) {
+          if (!r.length) { box.innerHTML = '<div class="empty"><b>No upcoming meetings</b>Meetings you schedule here, or are invited to, appear in this list.</div>'; return; }
+          box.innerHTML = r.map(function (m, i) {
+            return '<div class="hit" data-i="' + i + '" style="flex-wrap:wrap"><div style="min-width:0;flex:1"><b>' + esc(m.title) + '</b><small>' + esc(when(m.start, m.end)) + ' · by ' + esc(m.by || '—') + ' · ' + m.people.length + ' invited' + (m.project ? ' · ' + esc(m.project) : '') + '</small>' +
+              (m.location ? '<small>Venue: ' + esc(m.location) + '</small>' : '') + '</div><div style="display:flex;gap:6px;flex-wrap:wrap">' +
+              (m.meet ? '<a class="btn sm" href="' + esc(m.meet) + '" target="_blank" rel="noopener">Join</a><button class="btn soft sm" data-a="copy">Copy link</button>' : '') +
+              (m.canEdit ? '<button class="btn soft sm" data-a="mail">Mail</button><button class="btn soft sm" data-a="cancel">Cancel</button>' : '') + '</div><div class="gmx" style="flex-basis:100%"></div></div>';
+          }).join('');
+          box.querySelectorAll('.hit').forEach(function (row) {
+            var m = r[+row.getAttribute('data-i')], x = $('.gmx', row);
+            row.querySelectorAll('[data-a]').forEach(function (b) {
+              b.onclick = function () {
+                var a = this.getAttribute('data-a');
+                if (a === 'copy') { try { navigator.clipboard.writeText(m.meet); P().toast('Meet link copied.'); } catch (e) { P().toast(m.meet); } }
+                else if (a === 'cancel') {
+                  if (this.getAttribute('data-c') !== '1') { this.setAttribute('data-c', '1'); this.textContent = 'Tap again to cancel'; return; }
+                  this.disabled = true; P().call('gmCancel', P().S.token, m.id).then(function () { P().toast('Meeting cancelled. Attendees are notified.'); loadList(); }).catch(function (e) { b.disabled = false; P().fail(e); });
+                } else if (a === 'mail') {
+                  x.innerHTML = '<div style="margin-top:8px"><input class="in" id="gmMs" value="' + esc('Meeting: ' + m.title) + '"><textarea class="in" id="gmMb" style="margin-top:6px" placeholder="Message to all attendees (agenda, minutes, reminder)"></textarea><div class="mfoot"><button class="btn sm" id="gmMg">Send mail to ' + m.people.length + ' attendees</button></div></div>';
+                  $('#gmMg', x).onclick = function () {
+                    var g = this; g.disabled = true; g.textContent = 'Sending…';
+                    P().call('gmMail', P().S.token, m.id, $('#gmMs', x).value, $('#gmMb', x).value).then(function (res) { P().toast('Mail sent to ' + res.sent + ' attendees.'); x.innerHTML = ''; }).catch(function (e) { g.disabled = false; g.textContent = 'Send mail'; P().fail(e); });
+                  };
+                }
+              };
+            });
+          });
+        }).catch(function (e) { box.innerHTML = '<div class="empty"><b>Meetings not available</b>' + esc((e && e.message) || String(e)) + '</div>'; });
+      }
+      loadList();
+    }
+    function draw() { if (tab === 'voice') drawVoice(); else if (tab === 'scan') drawScan(); else if (tab === 'id') drawId(); else if (tab === 'meet') drawMeet(); else drawFind(); }
     draw();
   }
   window.PE_SMART = { search: search, parse: parse, open: open };

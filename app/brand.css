@@ -228,15 +228,16 @@ body { background: radial-gradient(900px 500px at 100% 0%, rgba(240, 0, 108, .06
 
 /* ===================== MD's MESSAGE ===================== */
 .md { position: relative; display: flex; align-items: flex-end; gap: 0; pointer-events: none; }
-.md-hero { position: absolute !important; right: 18px; bottom: 0; top: 10px; z-index: 1; animation: mdIn .9s .2s cubic-bezier(.2, .9, .3, 1) both; }
+.md-hero { position: absolute !important; right: 18px; bottom: 0; top: 10px; z-index: 1; animation: mdFade .8s .1s ease-out both; }
 .md-ph { height: 100%; width: auto; filter: drop-shadow(0 10px 20px rgba(0, 10, 60, .5)); position: relative; z-index: 1; }
-.md-glow { position: absolute; right: 30px; bottom: 0; width: 210px; height: 210px; border-radius: 50%; background: radial-gradient(circle, rgba(255, 255, 255, .35), rgba(240, 0, 108, .15) 50%, transparent 70%); animation: lgxAura 3s ease-in-out infinite alternate; }
+.md-glow { position: absolute; right: 30px; bottom: 0; width: 210px; height: 210px; border-radius: 50%; background: radial-gradient(circle, rgba(255, 255, 255, .35), rgba(240, 0, 108, .15) 50%, transparent 70%); opacity: .8; }
 .md-q { position: relative; z-index: 2; order: -1; margin: 0 -14px 26px 0; max-width: 270px; padding: 12px 16px 12px 18px; border-radius: 18px 18px 4px 18px; color: #fff;
-  background: linear-gradient(135deg, rgba(255, 255, 255, .26), rgba(255, 255, 255, .1)); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .35), 0 16px 30px -16px rgba(0, 0, 0, .5); animation: mdQ 1s .7s cubic-bezier(.2, 1.2, .4, 1) both; }
+  background: linear-gradient(135deg, rgba(255, 255, 255, .26), rgba(255, 255, 255, .1)); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .35), 0 16px 30px -16px rgba(0, 0, 0, .5); animation: mdFade .7s .4s ease-out both; }
 .md-mark { position: absolute; left: 8px; top: -18px; font: 900 54px/1 Georgia, serif; font-style: normal; background: linear-gradient(135deg, #FFFFFF, #FFC1DC); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.md-q b { display: block; font: 800 18px/1.25 var(--ap-display, system-ui); letter-spacing: -.01em; background: linear-gradient(90deg, #FFFFFF, #FFD3E6, #FFFFFF); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: mdShim 4s linear infinite; }
+.md-q b { display: block; font: 800 18px/1.25 var(--ap-display, system-ui); letter-spacing: -.01em; color: #fff; text-shadow: 0 2px 10px rgba(0, 20, 90, .35); }
 .md-q small { display: block; margin-top: 4px; font-size: 11.5px; line-height: 1.4; color: rgba(255, 255, 255, .85); }
 .md-by { display: flex; align-items: center; gap: 6px; margin-top: 7px; font-size: 11px; font-weight: 700; letter-spacing: .03em; color: #fff; } .md-by em { width: 18px; height: 2px; background: #F0006C; border-radius: 2px; }
+@keyframes mdFade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes mdIn { from { opacity: 0; transform: translateX(40px); } }
 @keyframes mdQ { from { opacity: 0; transform: translateY(14px) scale(.9); } }
 @keyframes mdShim { to { background-position: 200% 0; } }

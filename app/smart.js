@@ -4,7 +4,7 @@
  *  1. Item Finder      - meaning/fuzzy search over the item master ("4 inch cutting wheel" finds "AG4 Cutting Disc 100mm")
  *  2. Voice Indent     - speak or type "50 bag cement, 20 litre diesel urgent" -> review -> opens the Indent (PR) form filled
  *  3. Scan Bill        - photo / PDF of a vendor bill -> Bill form (and Vendor form if new) via the server's Gemini key
- *  4. Temporary ID     - photo + name ID card (front and back), printed on A4
+ *  4. ID Card          - photo + name ID card (front and back), printed on A4
  * Nothing is sent anywhere. Item data comes from the lists the ERP already loaded for the signed-in user.
  */
 (function () {
@@ -86,12 +86,12 @@
       '.pesm .hit{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:12px;margin:6px 0;background:#fff}.pesm .hit b{display:block}.pesm .hit small{color:var(--muted)}' +
       '.pesm .row2{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}.pesm .in{width:100%}.pesm textarea.in{min-height:84px}' +
       '.pesm .rec{background:var(--magenta)!important;color:#fff!important}.pesm .tb input.in,.pesm .tb select.in{padding:6px 8px}.pesm .warn{color:var(--warn);font-size:12px}' +
-      '.pesm .pv{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}.idc{width:324px;height:204px;border-radius:12px;overflow:hidden;position:relative;background:#fff;border:1px solid var(--line);font-size:11px}' +
+      '.pesm .pv{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}' +
       '[data-theme=dark] .pesm .hit,body.dark .pesm .hit{background:rgba(255,255,255,.06)}</style>');
   }
   function add() {
     if ($('#peSmart')) return; var a = $('#peCalc') || $('#refreshBtn'); if (!a) return;
-    a.insertAdjacentHTML('beforebegin', '<button class="btn soft sm" id="peSmart" type="button" aria-label="Smart tools" title="Item Finder · Voice Indent · Temporary ID" style="display:inline-flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></button>');
+    a.insertAdjacentHTML('beforebegin', '<button class="btn soft sm" id="peSmart" type="button" aria-label="Smart tools" title="Item Finder · Voice Indent · Scan Bill · ID Card" style="display:inline-flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></button>');
     $('#peSmart').onclick = function () { open('find'); };
   }
 
@@ -101,7 +101,7 @@
     var rec = null;
     function close() { try { if (rec) rec.stop(); } catch (x) { } host.remove(); }
     function shell(inner) {
-      var T = [['find', 'Item Finder'], ['voice', 'Voice Indent'], ['scan', 'Scan Bill'], ['id', 'Temporary ID']];
+      var T = [['find', 'Item Finder'], ['voice', 'Voice Indent'], ['scan', 'Scan Bill'], ['id', 'ID Card']];
       host.innerHTML = '<div class="glass box pesm"><div class="mh"><h3>Smart tools</h3><button class="x" aria-label="Close">×</button></div><div class="pesm-tabs">' +
         T.map(function (t) { return '<button data-t="' + t[0] + '" class="' + (t[0] === tab ? 'on' : '') + '">' + t[1] + '</button>'; }).join('') + '</div><div id="pesmBody">' + inner + '</div></div>';
       host.querySelector('.x').onclick = close; host.onclick = function (e) { if (e.target === host) close(); };
@@ -226,28 +226,38 @@
     }
 
     /* 4. Temporary ID */
+var ID_CSS = '.idc{width:85.6mm;height:54mm;border-radius:3mm;overflow:hidden;position:relative;background:#fff;border:.25mm solid #cfd6ea;font-family:Manrope,Arial,sans-serif;color:#121B54;font-size:6.6pt;box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact;flex:none}.idc *{box-sizing:border-box}' +
+      '.idh{height:12mm;background:linear-gradient(115deg,#00249C,#121B54);color:#fff;display:flex;align-items:center;gap:2.5mm;padding:0 3.5mm}.idh img{height:8mm;width:auto;max-width:none;background:#fff;border-radius:1.5mm;padding:.6mm}.idh b{display:block;font-size:8pt;line-height:1.15;letter-spacing:.2pt}.idh span{display:block;font-size:5.2pt;letter-spacing:.9pt;opacity:.85;margin-top:.5mm}' +
+      '.idb{display:flex;gap:3.5mm;padding:3.2mm 3.5mm 0}.idp{width:20mm;height:25mm;border:.4mm solid #00249C;border-radius:1.5mm;background:#eef1f9 center/cover no-repeat;flex:none}.idi{flex:1;min-width:0}.idn{font-size:10pt;font-weight:800;line-height:1.15;text-transform:uppercase;word-break:break-word}.idd{font-size:7pt;font-weight:700;color:#F0006C;margin:.6mm 0 1.8mm}' +
+      '.idg{display:grid;grid-template-columns:auto 1fr;gap:.8mm 2mm;font-size:6.4pt}.idg i{font-style:normal;color:#6b7390;text-transform:uppercase;font-size:5.2pt;letter-spacing:.3pt;padding-top:.25mm}.idg b{font-weight:700}' +
+      '.idf{position:absolute;left:0;right:0;bottom:1.2mm;height:5mm;background:#f3f5fb;border-top:.25mm solid #e1e6f3;display:flex;align-items:center;justify-content:space-between;padding:0 3.5mm;font-size:5.6pt;color:#4a5272}.ids{position:absolute;left:0;right:0;bottom:0;height:1.2mm;background:linear-gradient(90deg,#00B49C,#0084F0,#00249C,#F0006C)}' +
+      '.idt{margin:2.5mm 3.5mm 0 7mm;padding:0;font-size:6.2pt;line-height:1.5}.ide{margin:1.5mm 3.5mm 0;font-size:6.2pt}.idsg{position:absolute;left:3.5mm;right:3.5mm;bottom:10mm;display:flex;justify-content:space-between;font-size:5.6pt}.idsg span{border-top:.25mm solid #444;padding-top:.6mm;min-width:32mm;text-align:center}';
     var photo = '';
     function drawId() {
+      if (!document.getElementById('peIdCss')) { var st = document.createElement('style'); st.id = 'peIdCss'; st.textContent = ID_CSS; document.head.appendChild(st); }
       var co = (P().S.sess && P().S.sess.config && P().S.sess.config.companies && P().S.sess.config.companies[0]) || {};
       var seq = 1, yy = new Date().toISOString().slice(2, 7).replace('-', ''); try { seq = (Number(localStorage.getItem('pe_tid_' + yy)) || 0) + 1; } catch (x) { }
       var today = (P().S.sess && P().S.sess.today) || new Date().toISOString().slice(0, 10);
       shell('<div class="row2"><div><label class="f">Name</label><input class="in" id="idN"></div><div><label class="f">Designation / Trade</label><input class="in" id="idD" placeholder="e.g. Welder, Painter, Helper"></div>' +
         '<div><label class="f">Company</label><input class="in" id="idC" value="' + esc(co.name || 'Port Energy Private Limited') + '"></div><div><label class="f">Site / Project</label><input class="in" id="idS"></div>' +
-        '<div><label class="f">ID No.</label><input class="in" id="idI" value="TMP-' + yy + '-' + String(seq).padStart(3, '0') + '"></div><div><label class="f">Blood group (optional)</label><input class="in" id="idB" maxlength="4"></div>' +
+        '<div><label class="f">ID No.</label><input class="in" id="idI" value="PE-' + yy + '-' + String(seq).padStart(3, '0') + '"></div><div><label class="f">Blood group (optional)</label><input class="in" id="idB" maxlength="4"></div>' +
         '<div><label class="f">Valid from</label><input class="in" type="date" id="idF" value="' + esc(today) + '"></div><div><label class="f">Valid till</label><input class="in" type="date" id="idT"></div>' +
         '<div><label class="f">Emergency contact (optional)</label><input class="in" id="idE" inputmode="tel"></div><div><label class="f">Photo</label><input class="in" type="file" id="idP" accept="image/*" capture="user"></div></div>' +
         '<div class="mfoot"><button class="btn" id="idGo">Print ID card (A4)</button></div><p class="note">Cut along the border. Front and back print side by side so it can be folded and laminated.</p><div class="pv" id="idPv"></div>');
       var pv = $('#idPv', host);
       function V(id) { return ($('#' + id, host).value || '').trim(); }
       function card() {
-        var lg = window.LOGO_MARK || '', until = V('idT'), fd = function (d) { return d ? d.split('-').reverse().join('-') : '—'; };
-        var front = '<div class="idc"><div style="background:linear-gradient(120deg,#F0006C,#00249C);height:46px;color:#fff;display:flex;align-items:center;gap:8px;padding:0 10px">' + (lg ? '<img src="' + lg + '" alt="" style="height:30px;background:#fff;border-radius:6px;padding:2px">' : '') + '<div style="font-weight:800;font-size:11px;line-height:1.2">' + esc(V('idC')) + '<div style="font-weight:600;font-size:8.5px;opacity:.9">TEMPORARY IDENTITY CARD</div></div></div>' +
-          '<div style="display:flex;gap:10px;padding:10px"><div style="width:76px;height:96px;border:1px solid #cfd6ea;border-radius:6px;background:#f1f4fb center/cover no-repeat' + (photo ? ';background-image:url(' + photo + ')' : '') + '"></div><div style="flex:1;min-width:0;line-height:1.35"><div style="font-size:14px;font-weight:800;color:#121B54;word-break:break-word">' + esc(V('idN') || 'Name') + '</div><div style="font-weight:700;color:#00249C">' + esc(V('idD')) + '</div>' +
-          '<div style="margin-top:4px">Site: <b>' + esc(V('idS') || '—') + '</b></div><div>ID: <b>' + esc(V('idI')) + '</b>' + (V('idB') ? ' · Blood: <b>' + esc(V('idB')) + '</b>' : '') + '</div><div>Valid: <b>' + fd(V('idF')) + '</b> to <b>' + fd(until) + '</b></div></div></div>' +
-          '<div style="position:absolute;left:0;right:0;bottom:0;height:7px;background:linear-gradient(90deg,#00B49C,#0084F0,#00249C,#F0006C)"></div></div>';
-        var back = '<div class="idc" style="padding:12px 14px;line-height:1.45"><b style="color:#00249C">Terms</b><ol style="margin:4px 0 0 16px;padding:0;font-size:9.5px"><li>This card is temporary and valid only for the period shown.</li><li>Wear it visibly at all times inside the site.</li><li>It is not transferable. Report loss to the site office at once.</li><li>Return it to the company on completion of work.</li></ol>' +
-          (V('idE') ? '<div style="margin-top:6px">Emergency: <b>' + esc(V('idE')) + '</b></div>' : '') + '<div style="position:absolute;left:14px;right:14px;bottom:16px;display:flex;justify-content:space-between;font-size:9px"><span style="border-top:1px solid #444;padding-top:2px">Holder signature</span><span style="border-top:1px solid #444;padding-top:2px">Authorised signatory</span></div>' +
-          '<div style="position:absolute;left:0;right:0;bottom:0;height:7px;background:linear-gradient(90deg,#00B49C,#0084F0,#00249C,#F0006C)"></div></div>';
+        var lg = window.LOGO_MARK || '', fd = function (d) { return d ? d.split('-').reverse().join('-') : '—'; }, co = V('idC');
+        var strip = '<div class="ids"></div>';
+        var front = '<div class="idc"><div class="idh">' + (lg ? '<img src="' + lg + '" alt="">' : '') + '<div><b>' + esc(co) + '</b><span>SITE IDENTITY CARD</span></div></div>' +
+          '<div class="idb"><div class="idp"' + (photo ? ' style="background-image:url(' + photo + ')"' : '') + '></div><div class="idi"><div class="idn">' + esc(V('idN') || 'Name') + '</div><div class="idd">' + esc(V('idD') || ' ') + '</div>' +
+          '<div class="idg"><i>ID No.</i><b>' + esc(V('idI')) + '</b><i>Site</i><b>' + esc(V('idS') || '—') + '</b>' + (V('idB') ? '<i>Blood</i><b>' + esc(V('idB')) + '</b>' : '') + '</div></div></div>' +
+          '<div class="idf"><span>Valid: <b>' + fd(V('idF')) + '</b> to <b>' + fd(V('idT')) + '</b></span><span>portenergy.in</span></div>' + strip + '</div>';
+        var back = '<div class="idc"><div class="idh" style="height:8mm"><div><b>TERMS OF USE</b></div></div>' +
+          '<ol class="idt"><li>This card is the property of ' + esc(co) + ' and must be carried at all times.</li><li>Wear it visibly while inside the site.</li><li>It is not transferable. Report loss to the site office immediately.</li><li>Return it to the company on completion of work or expiry.</li></ol>' +
+          (V('idE') ? '<div class="ide">Emergency contact: <b>' + esc(V('idE')) + '</b></div>' : '') +
+          '<div class="idsg"><span>Holder signature</span><span>Authorised signatory</span></div>' +
+          '<div class="idf" style="font-size:4.8pt"><span>If found, return to: #261/140, 1st Floor A, Thambhu Chetty Street, Mannady, Chennai 600 001</span></div>' + strip + '</div>';
         return front + back;
       }
       function pvDraw() { pv.innerHTML = card(); }
@@ -260,7 +270,7 @@
       pvDraw();
       $('#idGo', host).onclick = function () {
         if (!V('idN')) { P().toast('Enter the name.'); return; }
-        var h = '<!doctype html><html><head><meta charset="utf-8"><title>Temporary ID - ' + esc(V('idN')) + '</title><style>@page{size:A4;margin:12mm}body{margin:0;font-family:Manrope,Arial,sans-serif;color:#121B54}.w{display:flex;gap:6mm;flex-wrap:wrap}.idc{width:85.6mm;height:54mm;border:.3mm dashed #888;border-radius:3mm;overflow:hidden;position:relative;background:#fff;font-size:8.2pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}.idc img{max-width:none}</style></head><body><div class="w">' + card().replace(/width:76px;height:96px/g, 'width:20mm;height:26mm').replace(/font-size:14px/g, 'font-size:11pt').replace(/font-size:11px/g, 'font-size:8.5pt') + '</div></body></html>';
+        var h = '<!doctype html><html><head><meta charset="utf-8"><title>ID Card - ' + esc(V('idN')) + '</title><style>@page{size:A4;margin:12mm}body{margin:0}.w{display:flex;gap:6mm;flex-wrap:wrap}' + ID_CSS + '.idc{border:.3mm dashed #888}</style></head><body><div class="w">' + card() + '</div></body></html>';
         var old = document.querySelector('iframe.pf'); if (old) old.remove();
         var f = document.createElement('iframe'); f.className = 'pf'; document.body.appendChild(f);
         var d = f.contentWindow.document; d.open(); d.write(h); d.close();
